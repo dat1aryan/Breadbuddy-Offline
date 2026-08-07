@@ -533,10 +533,6 @@ export function FidgetZone() {
                 </g>
               </svg>
             </div>
-
-            <p className="text-[10px] text-bb-text-muted mt-3 font-mono uppercase tracking-wide pointer-events-none">
-              {isSquished ? 'Squeezing memory foam...' : 'Hold to squish (Slow-rising!)'}
-            </p>
           </div>
         )}
 
