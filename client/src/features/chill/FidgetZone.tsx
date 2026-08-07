@@ -509,48 +509,7 @@ export function FidgetZone() {
                     fill="none"
                   />
 
-                  {/* ── 3. MELTING BUTTER PAT & DRIPS (ASMR Feature) ── */}
-                  {/* Golden Butter Pat on top */}
-                  <g transform="translate(130, 48)">
-                    <rect
-                      x="-18"
-                      y="-12"
-                      width="36"
-                      height="24"
-                      rx="5"
-                      fill="url(#butter-pat-grad)"
-                      stroke="#ca8a04"
-                      strokeWidth="1.5"
-                      transform={isSquished ? 'scale(1.3, 0.45) translateY(12px)' : 'scale(1, 1)'}
-                      style={{ transition: 'transform 0.15s ease-out' }}
-                    />
-                    {/* Butter Pat Top Specular Gloss */}
-                    <rect
-                      x="-14"
-                      y="-9"
-                      width="16"
-                      height="7"
-                      rx="3"
-                      fill="#ffffff"
-                      fillOpacity="0.5"
-                      transform={isSquished ? 'scale(1.3, 0.45) translateY(12px)' : 'scale(1, 1)'}
-                      style={{ transition: 'transform 0.15s ease-out' }}
-                    />
-                  </g>
-
-                  {/* When Squished: Golden Butter Drips Melt & Stream Down! */}
-                  {isSquished && (
-                    <g className="animate-pulse">
-                      {/* Drip 1 */}
-                      <path d="M 115 60 Q 112 85 116 105 Q 118 112 114 114 Q 110 112 112 105 Q 108 85 111 60 Z" fill="url(#butter-drip-grad)" />
-                      {/* Drip 2 */}
-                      <path d="M 132 60 Q 134 90 130 120 Q 132 128 136 128 Q 140 128 138 120 Q 138 90 135 60 Z" fill="url(#butter-drip-grad)" />
-                      {/* Drip 3 */}
-                      <path d="M 148 60 Q 152 80 149 95 Q 147 100 150 100 Q 153 100 152 95 Q 155 80 151 60 Z" fill="url(#butter-drip-grad)" />
-                    </g>
-                  )}
-
-                  {/* ── 4. KAWAII FACE EXPRESSION ── */}
+                  {/* ── 3. KAWAII FACE EXPRESSION ── */}
                   {loafExpression === 'calm' && (
                     <g>
                       {/* Calm happy arc eyes ^ ^ */}
