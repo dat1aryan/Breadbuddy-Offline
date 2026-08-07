@@ -359,7 +359,7 @@ export function FidgetZone() {
               <button
                 onClick={handleTurboSpin}
                 className={[
-                  'flex items-center gap-1.5 px-5 py-2.5',
+                  'flex items-center justify-center gap-2 px-6 py-2.5',
                   'bg-bb-violet text-white font-mono text-xs font-black uppercase tracking-wider',
                   'border-2 border-black rounded-bb-xs shadow-[3px_3px_0px_#000]',
                   'hover:bg-[#833ab4] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none',
@@ -367,8 +367,9 @@ export function FidgetZone() {
                 ].join(' ')}
                 title="Turbo spin to maximum speed!"
               >
-                <Zap size={15} className="fill-current text-bb-lime" />
-                Turbo Spin ⚡
+                <Zap size={15} className="fill-current text-white" />
+                <span>TURBO SPIN</span>
+                <Zap size={15} className="fill-current text-white" />
               </button>
             </div>
           </div>
