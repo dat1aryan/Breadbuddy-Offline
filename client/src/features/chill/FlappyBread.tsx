@@ -1259,8 +1259,12 @@ export function FlappyBread() {
     let lastTime = performance.now();
 
     const gameLoop = (currentTime: number) => {
-      const dt = (currentTime - lastTime) / 1000;
+      const rawDt = (currentTime - lastTime) / 1000;
       lastTime = currentTime;
+      // Clamp dt: cap at 1/30s so tab-switch/freeze doesn't cause huge jumps.
+      // Normalize to 60fps: scale=1 at 60fps, scale<1 at higher fps, scale>1 at lower fps.
+      const dt = Math.min(rawDt, 1 / 30);
+      const scale = dt * 60; // multiply physics values by this to be frame-rate independent
       timeRef.current += dt;
       const time = timeRef.current;
 
@@ -1277,7 +1281,7 @@ export function FlappyBread() {
       }
 
       // Continuous ambient lava embers rising from the fire floor across all game states (preview, gameplay, pause)
-      if (Math.random() < 0.25) {
+      if (Math.random() < 0.25 * scale) {
         addParticles(Math.random() * W, H - GROUND_H + 5, 1, 'ember');
       }
 
@@ -1307,27 +1311,28 @@ export function FlappyBread() {
       }
 
       if (engine.state === 'PLAYING') {
-        engine.bgScroll += 1.8; // Slightly faster scroll for more energy
+        engine.bgScroll += 1.8 * scale; // Slightly faster scroll for more energy
 
-        // Bird Physics
-        engine.bird.vel += GRAVITY;
-        engine.bird.y += engine.bird.vel;
-        engine.bird.vel *= 0.95;
+        // Bird Physics (all scaled by dt so speed is identical on all devices)
+        engine.bird.vel += GRAVITY * scale;
+        engine.bird.y += engine.bird.vel * scale;
+        // Drag: equivalent per-second decay independent of framerate
+        engine.bird.vel *= Math.pow(0.95, scale);
         // Dynamic rotation based on velocity
         engine.bird.rot = Math.min(Math.PI / 4, Math.max(-Math.PI / 5, engine.bird.vel * 0.08));
         
-        // Recover squish factor towards 1
-        engine.bird.squish += (1 - engine.bird.squish) * 0.15;
+        // Recover squish factor towards 1 (frame-rate independent lerp)
+        engine.bird.squish += (1 - engine.bird.squish) * (1 - Math.pow(0.85, scale));
 
         // Leave a trail of golden particles while moving up
-        if (engine.bird.vel < -1 && Math.random() < 0.4) {
+        if (engine.bird.vel < -1 && Math.random() < 0.4 * scale) {
           addParticles(engine.bird.x - 20, engine.bird.y + 10, 1, 'crumb');
         }
 
         // Toaster Obstacles Logic
         for (const t of engine.toasters) {
-          t.x -= t.speed;
-          t.heatPulse += 0.1;
+          t.x -= t.speed * scale;
+          t.heatPulse += 0.1 * scale;
 
           // Check Score
           if (!t.passed && engine.bird.x > t.x + t.w / 2) {
@@ -1352,8 +1357,8 @@ export function FlappyBread() {
           engine.toasters.shift();
         }
 
-        // Spawn new toasters periodically
-        engine.frameCount++;
+        // Spawn new toasters periodically (use time-based accumulator instead of frame count)
+        engine.frameCount += scale;
         if (engine.frameCount >= 140) {
           engine.toasters.push(createToaster());
           engine.frameCount = 0;
@@ -1434,10 +1439,10 @@ export function FlappyBread() {
           const particles = particlesRef.current;
           for (let i = particles.length - 1; i >= 0; i--) {
             const p = particles[i];
-            p.x += p.vx;
-            p.y += p.vy;
-            p.rot += p.vRot;
-            p.life++;
+            p.x += p.vx * scale;
+            p.y += p.vy * scale;
+            p.rot += p.vRot * scale;
+            p.life += scale;
             p.alpha = Math.max(0, 1 - p.life / p.maxLife);
 
             ctx.save();
