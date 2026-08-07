@@ -293,85 +293,50 @@ export function FidgetZone() {
                   </defs>
 
                   <g filter="url(#fs-shadow)">
-                    {/* ─── GREEN PLASTIC BODY (3 smooth arms) ─── */}
-                    {/* Arm 1 — Top */}
+                    {/* ─── PERFECT SYMMETRICAL GREEN PLASTIC BODY ─── */}
                     <path
-                      d="M100 100 Q82 85 78 55 Q76 38 82 28 Q88 18 100 18 Q112 18 118 28 Q124 38 122 55 Q118 85 100 100 Z"
+                      d="M 78.86 56.37 A 24 24 0 1 1 121.14 56.37 A 32 32 0 0 0 148.35 103.51 A 24 24 0 1 1 127.21 140.12 A 32 32 0 0 0 72.79 140.12 A 24 24 0 1 1 51.65 103.51 A 32 32 0 0 0 78.86 56.37 Z"
                       fill="url(#plastic-body)"
+                      stroke="#15803d"
+                      strokeWidth="1.2"
                     />
-                    {/* Arm 2 — Bottom-left */}
-                    <path
-                      d="M100 100 Q85 108 62 118 Q46 126 35 122 Q22 116 18 104 Q14 92 24 82 Q34 74 58 80 Q80 90 100 100 Z"
-                      fill="url(#plastic-body)"
-                    />
-                    {/* Arm 3 — Bottom-right */}
-                    <path
-                      d="M100 100 Q115 108 138 118 Q154 126 165 122 Q178 116 182 104 Q186 92 176 82 Q166 74 142 80 Q120 90 100 100 Z"
-                      fill="url(#plastic-body)"
-                    />
-                    {/* Center body mass (covers seams) */}
-                    <circle cx="100" cy="100" r="26" fill="url(#plastic-body)" />
 
-                    {/* Rubbery sheen overlay on the whole body */}
+                    {/* Top plastic highlight / bevel overlay */}
                     <path
-                      d="M100 100 Q82 85 78 55 Q76 38 82 28 Q88 18 100 18 Q112 18 118 28 Q124 38 122 55 Q118 85 100 100 Z"
-                      fill="url(#plastic-highlight)"
-                    />
-                    <path
-                      d="M100 100 Q85 108 62 118 Q46 126 35 122 Q22 116 18 104 Q14 92 24 82 Q34 74 58 80 Q80 90 100 100 Z"
-                      fill="url(#plastic-highlight)"
-                    />
-                    <path
-                      d="M100 100 Q115 108 138 118 Q154 126 165 122 Q178 116 182 104 Q186 92 176 82 Q166 74 142 80 Q120 90 100 100 Z"
+                      d="M 78.86 56.37 A 24 24 0 1 1 121.14 56.37 A 32 32 0 0 0 148.35 103.51 A 24 24 0 1 1 127.21 140.12 A 32 32 0 0 0 72.79 140.12 A 24 24 0 1 1 51.65 103.51 A 32 32 0 0 0 78.86 56.37 Z"
                       fill="url(#plastic-highlight)"
                     />
 
-                    {/* Subtle edge stroke for plastic definition */}
-                    <path
-                      d="M100 100 Q82 85 78 55 Q76 38 82 28 Q88 18 100 18 Q112 18 118 28 Q124 38 122 55 Q118 85 100 100 Z"
-                      fill="none" stroke="#1a8a3e" strokeWidth="1" strokeOpacity="0.5"
-                    />
-                    <path
-                      d="M100 100 Q85 108 62 118 Q46 126 35 122 Q22 116 18 104 Q14 92 24 82 Q34 74 58 80 Q80 90 100 100 Z"
-                      fill="none" stroke="#1a8a3e" strokeWidth="1" strokeOpacity="0.5"
-                    />
-                    <path
-                      d="M100 100 Q115 108 138 118 Q154 126 165 122 Q178 116 182 104 Q186 92 176 82 Q166 74 142 80 Q120 90 100 100 Z"
-                      fill="none" stroke="#1a8a3e" strokeWidth="1" strokeOpacity="0.5"
-                    />
+                    {/* ─── 3 BALL BEARINGS AT ARM TIPS ─── */}
+                    {/* Bearing 1 (Top: 100, 45) */}
+                    <circle cx="100" cy="45" r="14.5" fill="#18181b" stroke="#09090b" strokeWidth="1" />
+                    <circle cx="100" cy="45" r="12" fill="url(#bearing-inner)" />
+                    <circle cx="100" cy="45" r="9.5" fill="#18181b" />
+                    <circle cx="100" cy="45" r="7" fill="url(#bearing-inner)" />
+                    <circle cx="100" cy="45" r="5" fill="#09090b" />
+                    <ellipse cx="97.5" cy="42.5" rx="2" ry="1.2" fill="#ffffff" fillOpacity="0.4" />
 
-                    {/* ─── BALL BEARINGS (3 arm tips) ─── */}
-                    {/* Bearing 1 — Top */}
-                    <circle cx="100" cy="34" r="16" fill="url(#bearing-outer)" />
-                    <circle cx="100" cy="34" r="11" fill="#1a1a1a" />
-                    <circle cx="100" cy="34" r="8" fill="url(#bearing-inner)" />
-                    <circle cx="100" cy="34" r="4.5" fill="#333" />
-                    <ellipse cx="97" cy="31" rx="2.5" ry="1.5" fill="white" fillOpacity="0.25" />
+                    {/* Bearing 2 (Bottom-right: 147.63, 127.5) */}
+                    <circle cx="147.63" cy="127.5" r="14.5" fill="#18181b" stroke="#09090b" strokeWidth="1" />
+                    <circle cx="147.63" cy="127.5" r="12" fill="url(#bearing-inner)" />
+                    <circle cx="147.63" cy="127.5" r="9.5" fill="#18181b" />
+                    <circle cx="147.63" cy="127.5" r="7" fill="url(#bearing-inner)" />
+                    <circle cx="147.63" cy="127.5" r="5" fill="#09090b" />
+                    <ellipse cx="145.13" cy="125" rx="2" ry="1.2" fill="#ffffff" fillOpacity="0.4" />
 
-                    {/* Bearing 2 — Bottom-left */}
-                    <circle cx="30" cy="106" r="16" fill="url(#bearing-outer)" />
-                    <circle cx="30" cy="106" r="11" fill="#1a1a1a" />
-                    <circle cx="30" cy="106" r="8" fill="url(#bearing-inner)" />
-                    <circle cx="30" cy="106" r="4.5" fill="#333" />
-                    <ellipse cx="27" cy="103" rx="2.5" ry="1.5" fill="white" fillOpacity="0.25" />
+                    {/* Bearing 3 (Bottom-left: 52.37, 127.5) */}
+                    <circle cx="52.37" cy="127.5" r="14.5" fill="#18181b" stroke="#09090b" strokeWidth="1" />
+                    <circle cx="52.37" cy="127.5" r="12" fill="url(#bearing-inner)" />
+                    <circle cx="52.37" cy="127.5" r="9.5" fill="#18181b" />
+                    <circle cx="52.37" cy="127.5" r="7" fill="url(#bearing-inner)" />
+                    <circle cx="52.37" cy="127.5" r="5" fill="#09090b" />
+                    <ellipse cx="49.87" cy="125" rx="2" ry="1.2" fill="#ffffff" fillOpacity="0.4" />
 
-                    {/* Bearing 3 — Bottom-right */}
-                    <circle cx="170" cy="106" r="16" fill="url(#bearing-outer)" />
-                    <circle cx="170" cy="106" r="11" fill="#1a1a1a" />
-                    <circle cx="170" cy="106" r="8" fill="url(#bearing-inner)" />
-                    <circle cx="170" cy="106" r="4.5" fill="#333" />
-                    <ellipse cx="167" cy="103" rx="2.5" ry="1.5" fill="white" fillOpacity="0.25" />
-
-                    {/* ─── CENTER HUB ─── */}
-                    {/* Outer bearing ring */}
-                    <circle cx="100" cy="100" r="22" fill="url(#bearing-outer)" />
-                    <circle cx="100" cy="100" r="17" fill="#1a1a1a" />
-                    {/* Raised green center cap/button */}
-                    <circle cx="100" cy="100" r="14" fill="url(#center-cap)" />
-                    {/* Cap highlight shine */}
-                    <ellipse cx="96" cy="95" rx="6" ry="4" fill="white" fillOpacity="0.22" />
-                    {/* Center dot */}
-                    <circle cx="100" cy="100" r="3" fill="#1a8a3e" />
+                    {/* ─── CENTER HUB / CAP ─── */}
+                    <circle cx="100" cy="100" r="18" fill="#18181b" stroke="#09090b" strokeWidth="1" />
+                    <circle cx="100" cy="100" r="16" fill="url(#bearing-inner)" />
+                    <circle cx="100" cy="100" r="14" fill="url(#center-cap)" stroke="#15803d" strokeWidth="1" />
+                    <ellipse cx="97" cy="96" rx="5" ry="3" fill="#ffffff" fillOpacity="0.35" />
                   </g>
                 </svg>
               </div>
