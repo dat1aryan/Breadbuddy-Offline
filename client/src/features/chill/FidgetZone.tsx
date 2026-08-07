@@ -4,13 +4,6 @@ import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
-interface FloatText {
-  id: number;
-  text: string;
-  x: number;
-  y: number;
-}
-
 type FidgetTab = 'spinner' | 'squishy' | 'popit';
 
 const FIDGET_TABS: {
@@ -166,8 +159,6 @@ export function FidgetZone() {
   // ── Squishy Loaf ───────────────────────────────────────────────────────────
   const [isSquished, setIsSquished]         = useState(false);
   const [loafExpression, setLoafExpression] = useState<'calm' | 'squished' | 'happy'>('calm');
-  const [floatTexts, setFloatTexts]         = useState<FloatText[]>([]);
-  const floatId = useRef<number>(0);
 
   const handleSquishStart = (e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -179,13 +170,6 @@ export function FidgetZone() {
     if (!isSquished) return;
     setIsSquished(false);
     setLoafExpression('happy');
-
-    const phrases = ['squish!', 'stress gone', 'satisfying', 'nice.', 'again?'];
-    const text    = phrases[Math.floor(Math.random() * phrases.length)];
-    const id      = floatId.current++;
-
-    setFloatTexts((prev) => [...prev, { id, text, x: 120 + (Math.random() - 0.5) * 40, y: 80 }]);
-    setTimeout(() => setFloatTexts((prev) => prev.filter((ft) => ft.id !== id)), 1500);
     setTimeout(() => setLoafExpression((curr) => (curr === 'happy' ? 'calm' : curr)), 800);
   };
 
@@ -541,16 +525,6 @@ export function FidgetZone() {
             <p className="text-[10px] text-bb-text-muted mt-3 font-mono uppercase tracking-wide pointer-events-none">
               {isSquished ? 'Squeezing memory foam...' : 'Hold to squish (Slow-rising!)'}
             </p>
-
-            {floatTexts.map((ft) => (
-              <span
-                key={ft.id}
-                className="absolute text-[10px] font-bold text-bb-coral font-mono tracking-wider uppercase pointer-events-none animate-bb-slide-up"
-                style={{ left: ft.x, top: ft.y }}
-              >
-                {ft.text}
-              </span>
-            ))}
           </div>
         )}
 
