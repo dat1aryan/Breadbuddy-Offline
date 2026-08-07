@@ -426,63 +426,126 @@ export function FidgetZone() {
               onMouseLeave={handleSquishEnd}
               onTouchStart={handleSquishStart}
               onTouchEnd={handleSquishEnd}
-              className="cursor-pointer select-none transition-all duration-150 relative z-10"
+              className="cursor-pointer select-none relative z-10"
               style={{
                 transform: isSquished
-                  ? 'scale(1.25, 0.58) translateY(24px)'
+                  ? 'scale(1.32, 0.46) translateY(38px)'
                   : 'scale(1, 1) translateY(0)',
+                transition: isSquished
+                  ? 'transform 0.08s cubic-bezier(0.1, 0.9, 0.2, 1)'
+                  : 'transform 0.85s cubic-bezier(0.34, 1.56, 0.64, 1)', // Slow-rising memory foam effect!
               }}
             >
-              <svg width="120" height="90" viewBox="0 0 120 90" fill="none">
-                <path d="M10 50C10 25 35 15 60 15C85 15 110 25 110 50C110 75 90 80 60 80C30 80 10 75 10 50Z" fill="url(#loaf-grad)" stroke="#6F4E37" strokeWidth="2.5" />
-                <path d="M15 50C15 32 38 23 60 23C82 23 105 32 105 50C105 68 85 73 60 73C35 73 15 68 15 50Z" fill="url(#inner-loaf)" />
-
-                {loafExpression === 'calm' && (
-                  <>
-                    <path d="M42 48Q46 51 50 48" stroke="#331A00" strokeWidth="2" strokeLinecap="round" fill="none" />
-                    <path d="M70 48Q74 51 78 48" stroke="#331A00" strokeWidth="2" strokeLinecap="round" fill="none" />
-                    <path d="M58 55Q60 57 62 55" stroke="#331A00" strokeWidth="1.5" strokeLinecap="round" fill="none" />
-                  </>
-                )}
-                {loafExpression === 'squished' && (
-                  <>
-                    <path d="M42 44L48 50L42 56" stroke="#331A00" strokeWidth="2" strokeLinecap="round" fill="none" />
-                    <path d="M78 44L72 50L78 56" stroke="#331A00" strokeWidth="2" strokeLinecap="round" fill="none" />
-                    <circle cx="60" cy="56" r="4.5" fill="#C43B3B" />
-                  </>
-                )}
-                {loafExpression === 'happy' && (
-                  <>
-                    <circle cx="45" cy="46" r="3" fill="#331A00" />
-                    <circle cx="75" cy="46" r="3" fill="#331A00" />
-                    <path d="M56 52Q60 55 64 52" stroke="#331A00" strokeWidth="2" strokeLinecap="round" fill="none" />
-                  </>
-                )}
-
-                <circle cx="36" cy="52" r="5" fill="#FF71CE" fillOpacity="0.4" />
-                <circle cx="84" cy="52" r="5" fill="#FF71CE" fillOpacity="0.4" />
-
+              {/* 3D Hokkaido Milk Bread Loaf Squishy Toy */}
+              <svg width="210" height="155" viewBox="0 0 200 150" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <defs>
-                  <linearGradient id="loaf-grad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#D2B48C" />
-                    <stop offset="100%" stopColor="#8B5A2B" />
+                  {/* Soft Memory Foam Drop Shadow */}
+                  <filter id="foam-shadow" x="-20%" y="-20%" width="140%" height="140%">
+                    <feDropShadow dx="0" dy="8" stdDeviation="6" floodColor="#000000" floodOpacity="0.38" />
+                  </filter>
+
+                  {/* Golden Baked Top Crust Gradient */}
+                  <linearGradient id="crust-golden" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#f3a743" />
+                    <stop offset="30%" stopColor="#d97724" />
+                    <stop offset="75%" stopColor="#b35717" />
+                    <stop offset="100%" stopColor="#873c0a" />
                   </linearGradient>
-                  <linearGradient id="inner-loaf" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#FFFDD0" />
-                    <stop offset="100%" stopColor="#F5DEB3" />
+
+                  {/* Warm Cream Bread Crumb Body Gradient */}
+                  <linearGradient id="crumb-body" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#fff8e7" />
+                    <stop offset="45%" stopColor="#fae7b5" />
+                    <stop offset="85%" stopColor="#edd08a" />
+                    <stop offset="100%" stopColor="#cfa85e" />
                   </linearGradient>
+
+                  {/* Side Toast Spot Radial Gradient (matching reference photo) */}
+                  <radialGradient id="side-toast-spot" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" stopColor="#e28c38" stopOpacity="0.85" />
+                    <stop offset="60%" stopColor="#f3b562" stopOpacity="0.4" />
+                    <stop offset="100%" stopColor="#fae7b5" stopOpacity="0" />
+                  </radialGradient>
                 </defs>
+
+                <g filter="url(#foam-shadow)">
+                  {/* ── 1. MAIN BREAD FOAM BODY (Cream Crumb Side) ── */}
+                  <path
+                    d="M 30 65 C 30 48, 52 45, 68 55 C 80 45, 102 45, 115 55 C 128 45, 150 48, 170 65 C 174 80, 172 118, 168 128 C 164 136, 145 138, 100 138 C 55 138, 36 136, 32 128 C 28 118, 26 80, 30 65 Z"
+                    fill="url(#crumb-body)"
+                    stroke="#9c561a"
+                    strokeWidth="2"
+                  />
+
+                  {/* ── 2. SIDE TOAST SPOT (Authentic bread squishy look from photo) ── */}
+                  <ellipse cx="100" cy="100" rx="42" ry="24" fill="url(#side-toast-spot)" />
+
+                  {/* ── 3. GOLDEN BAKED 3-HUMP TOP CRUST ── */}
+                  <path
+                    d="M 28 65 C 28 38, 58 32, 72 48 C 85 32, 115 32, 128 48 C 142 32, 172 38, 172 65 C 172 75, 162 78, 150 77 C 135 73, 125 73, 115 76 C 100 73, 85 73, 70 76 C 55 73, 40 73, 28 65 Z"
+                    fill="url(#crust-golden)"
+                    stroke="#733508"
+                    strokeWidth="2"
+                  />
+
+                  {/* Hump crevices / score lines */}
+                  <path d="M 72 45 C 71 56, 72 68, 74 76" stroke="#5c2906" strokeWidth="2.5" strokeLinecap="round" opacity="0.8" />
+                  <path d="M 128 45 C 129 56, 128 68, 126 76" stroke="#5c2906" strokeWidth="2.5" strokeLinecap="round" opacity="0.8" />
+
+                  {/* Flour Dusting Highlights on Humps */}
+                  <ellipse cx="50" cy="44" rx="14" ry="5" fill="#ffffff" fillOpacity="0.4" />
+                  <ellipse cx="100" cy="41" rx="16" ry="6" fill="#ffffff" fillOpacity="0.45" />
+                  <ellipse cx="150" cy="44" rx="14" ry="5" fill="#ffffff" fillOpacity="0.4" />
+
+                  {/* ── 4. KAWAII FACE EXPRESSION ── */}
+                  {loafExpression === 'calm' && (
+                    <g>
+                      {/* Calm happy eyes ^ ^ */}
+                      <path d="M 74 94 Q 80 88 86 94" stroke="#4a2507" strokeWidth="2.5" strokeLinecap="round" fill="none" />
+                      <path d="M 114 94 Q 120 88 126 94" stroke="#4a2507" strokeWidth="2.5" strokeLinecap="round" fill="none" />
+                      {/* Soft mouth */}
+                      <path d="M 97 102 Q 100 106 103 102" stroke="#4a2507" strokeWidth="2" strokeLinecap="round" fill="none" />
+                    </g>
+                  )}
+
+                  {loafExpression === 'squished' && (
+                    <g>
+                      {/* Squeezed shut eyes > < */}
+                      <path d="M 74 90 L 82 96 L 74 102" stroke="#4a2507" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+                      <path d="M 126 90 L 118 96 L 126 102" stroke="#4a2507" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+                      {/* Open squish mouth */}
+                      <ellipse cx="100" cy="104" rx="5" ry="6" fill="#c0392b" />
+                      <path d="M 97 102 Q 100 105 103 102" fill="#ff7675" />
+                    </g>
+                  )}
+
+                  {loafExpression === 'happy' && (
+                    <g>
+                      {/* Joyful shiny eyes */}
+                      <circle cx="80" cy="94" r="4" fill="#4a2507" />
+                      <circle cx="78.5" cy="92.5" r="1.5" fill="#ffffff" />
+                      <circle cx="120" cy="94" r="4" fill="#4a2507" />
+                      <circle cx="118.5" cy="92.5" r="1.5" fill="#ffffff" />
+                      {/* Big happy smile */}
+                      <path d="M 94 100 Q 100 108 106 100" stroke="#4a2507" strokeWidth="2.5" strokeLinecap="round" fill="none" />
+                    </g>
+                  )}
+
+                  {/* Rosy blush cheeks */}
+                  <ellipse cx="68" cy="100" rx="6" ry="4" fill="#ff7675" fillOpacity="0.45" />
+                  <ellipse cx="132" cy="100" rx="6" ry="4" fill="#ff7675" fillOpacity="0.45" />
+                </g>
               </svg>
             </div>
 
-            <p className="text-[10px] text-bb-text-muted mt-5 font-mono uppercase tracking-wide pointer-events-none">
-              {isSquished ? 'Squeezing...' : 'Hold to squish'}
+            <p className="text-[10px] text-bb-text-muted mt-3 font-mono uppercase tracking-wide pointer-events-none">
+              {isSquished ? 'Squeezing memory foam...' : 'Hold to squish (Slow-rising!)'}
             </p>
 
             {floatTexts.map((ft) => (
               <span
                 key={ft.id}
-                className="absolute text-[10px] font-bold text-bb-lime font-mono tracking-wider uppercase pointer-events-none animate-bb-slide-up"
+                className="absolute text-[10px] font-bold text-bb-coral font-mono tracking-wider uppercase pointer-events-none animate-bb-slide-up"
                 style={{ left: ft.x, top: ft.y }}
               >
                 {ft.text}
