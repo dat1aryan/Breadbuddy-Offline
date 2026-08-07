@@ -159,11 +159,24 @@ export function FidgetZone() {
   // ── Squishy Loaf ───────────────────────────────────────────────────────────
   const [isSquished, setIsSquished]         = useState(false);
   const [loafExpression, setLoafExpression] = useState<'calm' | 'squished' | 'happy'>('calm');
+  const [asmrParticles, setAsmrParticles]   = useState<{ id: number; emoji: string; x: number; y: number; scale: number }[]>([]);
+  const particleId = useRef<number>(0);
 
   const handleSquishStart = (e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
     e.preventDefault();
     setIsSquished(true);
     setLoafExpression('squished');
+
+    // ASMR Sparkles & Butter Drops pop out around the toast when squished!
+    const emojis = ['✨', '🧈', '✨', '💛', '⭐'];
+    const newParticles = Array.from({ length: 5 }, (_, i) => ({
+      id: particleId.current++,
+      emoji: emojis[i % emojis.length],
+      x: 30 + Math.random() * 190,
+      y: 15 + Math.random() * 110,
+      scale: 0.9 + Math.random() * 0.4,
+    }));
+    setAsmrParticles(newParticles);
   };
 
   const handleSquishEnd = () => {
@@ -171,6 +184,7 @@ export function FidgetZone() {
     setIsSquished(false);
     setLoafExpression('happy');
     setTimeout(() => setLoafExpression((curr) => (curr === 'happy' ? 'calm' : curr)), 800);
+    setTimeout(() => setAsmrParticles([]), 700);
   };
 
   // ── Pop It ─────────────────────────────────────────────────────────────────
@@ -420,119 +434,177 @@ export function FidgetZone() {
                   : 'transform 0.85s cubic-bezier(0.34, 1.56, 0.64, 1)', // Slow-rising memory foam effect!
               }}
             >
-              {/* Cartoon-Hyper-Realistic 3D Bread Loaf Squishy Toy */}
-              <svg width="210" height="155" viewBox="0 0 200 150" fill="none" xmlns="http://www.w3.org/2000/svg">
+              {/* 3D Big Toast Slice / Bread Loaf Squishy Toy with ASMR Butter */}
+              <svg width="260" height="210" viewBox="0 0 260 210" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <defs>
                   {/* Soft Memory Foam Drop Shadow */}
-                  <filter id="foam-shadow" x="-20%" y="-20%" width="140%" height="140%">
-                    <feDropShadow dx="0" dy="7" stdDeviation="6" floodColor="#000000" floodOpacity="0.45" />
+                  <filter id="toast-shadow" x="-20%" y="-20%" width="140%" height="140%">
+                    <feDropShadow dx="0" dy="10" stdDeviation="8" floodColor="#000000" floodOpacity="0.42" />
                   </filter>
 
-                  {/* Golden Baked 3D Crust Gradient */}
-                  <linearGradient id="crust-golden-3d" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#fbbd54" />
-                    <stop offset="25%" stopColor="#e38622" />
-                    <stop offset="65%" stopColor="#b95914" />
-                    <stop offset="100%" stopColor="#7c3209" />
+                  {/* Rich Golden Baked Crust Gradient */}
+                  <linearGradient id="crust-toast-gradient" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#f59e0b" />
+                    <stop offset="25%" stopColor="#d97706" />
+                    <stop offset="65%" stopColor="#b45309" />
+                    <stop offset="100%" stopColor="#78350f" />
                   </linearGradient>
 
-                  {/* Soft Cream Bread Crumb Body Gradient */}
-                  <linearGradient id="crumb-soft-body" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#fffef5" />
-                    <stop offset="40%" stopColor="#f9e8be" />
-                    <stop offset="80%" stopColor="#e6c57f" />
-                    <stop offset="100%" stopColor="#cca052" />
+                  {/* Warm Cream Soft Bread Crumb Interior Gradient */}
+                  <linearGradient id="crumb-toast-interior" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#fffdf5" />
+                    <stop offset="35%" stopColor="#fef3c7" />
+                    <stop offset="75%" stopColor="#fde68a" />
+                    <stop offset="100%" stopColor="#f59e0b" stopOpacity="0.8" />
                   </linearGradient>
 
-                  {/* Soft Toast Blush Patch Gradient */}
-                  <radialGradient id="toast-blush-patch" cx="50%" cy="50%" r="50%">
-                    <stop offset="0%" stopColor="#df852c" stopOpacity="0.75" />
-                    <stop offset="55%" stopColor="#f2b260" stopOpacity="0.3" />
-                    <stop offset="100%" stopColor="#f9e8be" stopOpacity="0" />
+                  {/* Golden Toast Center Sheen Radial Gradient */}
+                  <radialGradient id="toast-center-blush" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" stopColor="#f59e0b" stopOpacity="0.75" />
+                    <stop offset="60%" stopColor="#fbbf24" stopOpacity="0.35" />
+                    <stop offset="100%" stopColor="#fef3c7" stopOpacity="0" />
                   </radialGradient>
 
-                  {/* Crust Underside Ambient Shadow */}
-                  <linearGradient id="crust-shadow" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#4a1e04" stopOpacity="0.35" />
-                    <stop offset="100%" stopColor="#4a1e04" stopOpacity="0" />
+                  {/* Golden Melting Butter Gradient */}
+                  <linearGradient id="butter-pat-grad" x1="0.2" y1="0" x2="0.8" y2="1">
+                    <stop offset="0%" stopColor="#fef08a" />
+                    <stop offset="40%" stopColor="#facc15" />
+                    <stop offset="100%" stopColor="#eab308" />
+                  </linearGradient>
+
+                  {/* Melting Butter Drip Gradient */}
+                  <linearGradient id="butter-drip-grad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#facc15" stopOpacity="0.95" />
+                    <stop offset="100%" stopColor="#ca8a04" stopOpacity="0.75" />
                   </linearGradient>
                 </defs>
 
-                <g filter="url(#foam-shadow)">
-                  {/* ── 1. BREAD CRUMB BODY (Cream Side) ── */}
+                <g filter="url(#toast-shadow)">
+                  {/* ── 1. OUTER GOLDEN CRUST (Thick Toast Slice / Bread Loaf Contour) ── */}
                   <path
-                    d="M 25 70 C 25 45, 52 38, 70 52 C 82 38, 118 38, 130 52 C 148 38, 175 45, 175 70 C 175 115, 170 135, 155 138 C 130 141, 70 141, 45 138 C 30 135, 25 115, 25 70 Z"
-                    fill="url(#crumb-soft-body)"
-                    stroke="#4a2206"
-                    strokeWidth="2.5"
+                    d="M 45 60 C 45 35, 75 25, 130 25 C 185 25, 215 35, 215 60 C 218 80, 218 160, 205 178 C 190 190, 70 190, 55 178 C 42 160, 42 80, 45 60 Z"
+                    fill="url(#crust-toast-gradient)"
+                    stroke="#451a03"
+                    strokeWidth="3"
                   />
 
-                  {/* Toast Blush Spot in Middle */}
-                  <ellipse cx="100" cy="102" rx="44" ry="25" fill="url(#toast-blush-patch)" />
-
-                  {/* Ambient Shadow under Crust overhang */}
+                  {/* ── 2. INNER SOFT CREAM CRUMB INTERIOR ── */}
                   <path
-                    d="M 25 72 C 38 82, 162 82, 175 72 L 175 85 C 162 93, 38 93, 25 85 Z"
-                    fill="url(#crust-shadow)"
+                    d="M 54 65 C 54 44, 80 34, 130 34 C 180 34, 206 44, 206 65 C 208 82, 208 153, 196 169 C 183 179, 77 179, 64 169 C 52 153, 52 82, 54 65 Z"
+                    fill="url(#crumb-toast-interior)"
+                    stroke="#78350f"
+                    strokeWidth="1.8"
                   />
 
-                  {/* ── 2. GOLDEN BAKED 3-HUMP TOP CRUST ── */}
+                  {/* Toast Center Warm Sheen */}
+                  <ellipse cx="130" cy="110" rx="55" ry="32" fill="url(#toast-center-blush)" />
+
+                  {/* Crust Top Shine Highlight Arc */}
                   <path
-                    d="M 25 72 C 25 45, 52 38, 70 52 C 82 38, 118 38, 130 52 C 148 38, 175 45, 175 72 C 175 82, 162 84, 148 83 C 132 82, 118 82, 100 84 C 82 82, 68 82, 52 83 C 38 84, 25 82, 25 72 Z"
-                    fill="url(#crust-golden-3d)"
-                    stroke="#4a2206"
-                    strokeWidth="2.5"
+                    d="M 60 48 C 85 36, 175 36, 200 48"
+                    stroke="#ffffff"
+                    strokeWidth="3"
+                    strokeLinecap="round"
+                    strokeOpacity="0.35"
+                    fill="none"
                   />
 
-                  {/* Hump Crevices / Score Lines */}
-                  <path d="M 70 52 C 68 64, 70 76, 72 83" stroke="#4a2206" strokeWidth="2.5" strokeLinecap="round" opacity="0.9" />
-                  <path d="M 130 52 C 132 64, 130 76, 128 83" stroke="#4a2206" strokeWidth="2.5" strokeLinecap="round" opacity="0.9" />
+                  {/* ── 3. MELTING BUTTER PAT & DRIPS (ASMR Feature) ── */}
+                  {/* Golden Butter Pat on top */}
+                  <g transform="translate(130, 48)">
+                    <rect
+                      x="-18"
+                      y="-12"
+                      width="36"
+                      height="24"
+                      rx="5"
+                      fill="url(#butter-pat-grad)"
+                      stroke="#ca8a04"
+                      strokeWidth="1.5"
+                      transform={isSquished ? 'scale(1.3, 0.45) translateY(12px)' : 'scale(1, 1)'}
+                      style={{ transition: 'transform 0.15s ease-out' }}
+                    />
+                    {/* Butter Pat Top Specular Gloss */}
+                    <rect
+                      x="-14"
+                      y="-9"
+                      width="16"
+                      height="7"
+                      rx="3"
+                      fill="#ffffff"
+                      fillOpacity="0.5"
+                      transform={isSquished ? 'scale(1.3, 0.45) translateY(12px)' : 'scale(1, 1)'}
+                      style={{ transition: 'transform 0.15s ease-out' }}
+                    />
+                  </g>
 
-                  {/* 3D Specular Gloss Caps on Humps (Matching reference screenshot) */}
-                  <ellipse cx="48" cy="46" rx="14" ry="6" fill="#ffffff" fillOpacity="0.42" />
-                  <ellipse cx="100" cy="43" rx="18" ry="7" fill="#ffffff" fillOpacity="0.48" />
-                  <ellipse cx="152" cy="46" rx="14" ry="6" fill="#ffffff" fillOpacity="0.42" />
+                  {/* When Squished: Golden Butter Drips Melt & Stream Down! */}
+                  {isSquished && (
+                    <g className="animate-pulse">
+                      {/* Drip 1 */}
+                      <path d="M 115 60 Q 112 85 116 105 Q 118 112 114 114 Q 110 112 112 105 Q 108 85 111 60 Z" fill="url(#butter-drip-grad)" />
+                      {/* Drip 2 */}
+                      <path d="M 132 60 Q 134 90 130 120 Q 132 128 136 128 Q 140 128 138 120 Q 138 90 135 60 Z" fill="url(#butter-drip-grad)" />
+                      {/* Drip 3 */}
+                      <path d="M 148 60 Q 152 80 149 95 Q 147 100 150 100 Q 153 100 152 95 Q 155 80 151 60 Z" fill="url(#butter-drip-grad)" />
+                    </g>
+                  )}
 
-                  {/* ── 3. KAWAII CHARACTER EXPRESSIONS ── */}
+                  {/* ── 4. KAWAII FACE EXPRESSION ── */}
                   {loafExpression === 'calm' && (
                     <g>
-                      {/* Calm happy eyes ^ ^ */}
-                      <path d="M 74 96 Q 80 90 86 96" stroke="#3d1c05" strokeWidth="2.8" strokeLinecap="round" fill="none" />
-                      <path d="M 114 96 Q 120 90 126 96" stroke="#3d1c05" strokeWidth="2.8" strokeLinecap="round" fill="none" />
-                      {/* Cute small mouth */}
-                      <path d="M 97 103 Q 100 107 103 103" stroke="#3d1c05" strokeWidth="2.2" strokeLinecap="round" fill="none" />
+                      {/* Calm happy arc eyes ^ ^ */}
+                      <path d="M 98 106 Q 106 98 114 106" stroke="#451a03" strokeWidth="3.2" strokeLinecap="round" fill="none" />
+                      <path d="M 146 106 Q 154 98 162 106" stroke="#451a03" strokeWidth="3.2" strokeLinecap="round" fill="none" />
+                      {/* Cute small smile mouth */}
+                      <path d="M 126 116 Q 130 122 134 116" stroke="#451a03" strokeWidth="2.5" strokeLinecap="round" fill="none" />
                     </g>
                   )}
 
                   {loafExpression === 'squished' && (
                     <g>
                       {/* Squeezed shut eyes > < */}
-                      <path d="M 74 92 L 82 98 L 74 104" stroke="#3d1c05" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-                      <path d="M 126 92 L 118 98 L 126 104" stroke="#3d1c05" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+                      <path d="M 98 100 L 108 108 L 98 116" stroke="#451a03" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+                      <path d="M 162 100 L 152 108 L 162 116" stroke="#451a03" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round" fill="none" />
                       {/* Open squish mouth */}
-                      <ellipse cx="100" cy="106" rx="5" ry="6" fill="#c0392b" />
-                      <path d="M 97 104 Q 100 107 103 104" fill="#ff7675" />
+                      <ellipse cx="130" cy="118" rx="6" ry="7" fill="#dc2626" />
+                      <path d="M 126 116 Q 130 120 134 116" fill="#fca5a5" />
                     </g>
                   )}
 
                   {loafExpression === 'happy' && (
                     <g>
                       {/* Joyful shiny eyes */}
-                      <circle cx="80" cy="96" r="4.2" fill="#3d1c05" />
-                      <circle cx="78.5" cy="94.5" r="1.5" fill="#ffffff" />
-                      <circle cx="120" cy="96" r="4.2" fill="#3d1c05" />
-                      <circle cx="118.5" cy="94.5" r="1.5" fill="#ffffff" />
+                      <circle cx="106" cy="106" r="5" fill="#451a03" />
+                      <circle cx="104" cy="104" r="1.8" fill="#ffffff" />
+                      <circle cx="154" cy="106" r="5" fill="#451a03" />
+                      <circle cx="152" cy="104" r="1.8" fill="#ffffff" />
                       {/* Big happy smile */}
-                      <path d="M 94 102 Q 100 110 106 102" stroke="#3d1c05" strokeWidth="2.8" strokeLinecap="round" fill="none" />
+                      <path d="M 122 114 Q 130 124 138 114" stroke="#451a03" strokeWidth="3.2" strokeLinecap="round" fill="none" />
                     </g>
                   )}
 
                   {/* Rosy blush cheeks */}
-                  <ellipse cx="68" cy="102" rx="7" ry="4.5" fill="#ff7675" fillOpacity="0.5" />
-                  <ellipse cx="132" cy="102" rx="7" ry="4.5" fill="#ff7675" fillOpacity="0.5" />
+                  <ellipse cx="90" cy="114" rx="8" ry="5" fill="#f87171" fillOpacity="0.5" />
+                  <ellipse cx="170" cy="114" rx="8" ry="5" fill="#f87171" fillOpacity="0.5" />
                 </g>
               </svg>
             </div>
+
+            {/* ASMR Floating Sparkles & Butter Drops when squished! */}
+            {asmrParticles.map((pt) => (
+              <span
+                key={pt.id}
+                className="absolute text-base pointer-events-none animate-bb-slide-up select-none"
+                style={{
+                  left: pt.x,
+                  top: pt.y,
+                  transform: `scale(${pt.scale})`,
+                }}
+              >
+                {pt.emoji}
+              </span>
+            ))}
           </div>
         )}
 
