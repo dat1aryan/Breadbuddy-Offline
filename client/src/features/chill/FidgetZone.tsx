@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
-import { RefreshCw } from 'lucide-react';
+import { RefreshCw, Zap } from 'lucide-react';
 import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 
@@ -112,6 +112,13 @@ export function FidgetZone() {
     // Give a nice 300–500 deg/s boost, alternating direction with a slight preference to forward
     const direction = angularVelRef.current >= 0 ? 1 : -1;
     angularVelRef.current = direction * Math.min(Math.abs(angularVelRef.current) + 420, 1200);
+  };
+
+  // ── Turbo Spin (purple brutalist button) ──
+  const handleTurboSpin = () => {
+    const currentSpeed = Math.abs(angularVelRef.current);
+    const direction = angularVelRef.current < 0 ? -1 : 1;
+    angularVelRef.current = direction * Math.max(currentSpeed + 1500, 2400);
   };
 
   // ── Drag to spin ──
@@ -350,14 +357,31 @@ export function FidgetZone() {
               />
             </div>
 
-            {/* RPM & hint */}
-            <div className="flex flex-col items-center gap-1 pointer-events-none">
-              <p className="text-[11px] font-mono font-bold text-bb-lime tracking-widest">
-                {parseInt(rpmDisplay) > 0 ? `${rpmDisplay} RPM` : 'Drag or tap center to spin'}
-              </p>
-              <p className="text-[9px] text-bb-text-muted font-mono uppercase tracking-wider opacity-60">
-                {parseInt(rpmDisplay) > 200 ? '🔥 zooming!' : parseInt(rpmDisplay) > 80 ? '⚡ nice spin' : parseInt(rpmDisplay) > 10 ? '🌀 spinning...' : 'flick it!'}
-              </p>
+            {/* RPM, hint & Turbo Spin Button */}
+            <div className="flex flex-col items-center gap-2">
+              <div className="flex flex-col items-center gap-0.5 pointer-events-none">
+                <p className="text-[11px] font-mono font-bold text-bb-lime tracking-widest">
+                  {parseInt(rpmDisplay) > 0 ? `${rpmDisplay} RPM` : 'Drag or tap center to spin'}
+                </p>
+                <p className="text-[9px] text-bb-text-muted font-mono uppercase tracking-wider opacity-60">
+                  {parseInt(rpmDisplay) > 300 ? '⚡ TURBO HYPERSPACE!' : parseInt(rpmDisplay) > 150 ? '🔥 zooming!' : parseInt(rpmDisplay) > 40 ? '⚡ nice spin' : parseInt(rpmDisplay) > 0 ? '🌀 spinning...' : 'flick it!'}
+                </p>
+              </div>
+
+              <button
+                onClick={handleTurboSpin}
+                className={[
+                  'flex items-center gap-1.5 px-4 py-2 mt-1',
+                  'bg-bb-violet text-white font-mono text-xs font-black uppercase tracking-wider',
+                  'border-2 border-black rounded-bb-xs shadow-[3px_3px_0px_#000]',
+                  'hover:bg-[#833ab4] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none',
+                  'transition-all cursor-pointer select-none',
+                ].join(' ')}
+                title="Turbo spin to maximum speed!"
+              >
+                <Zap size={14} className="fill-current text-bb-lime" />
+                Turbo Spin ⚡
+              </button>
             </div>
           </div>
         )}
