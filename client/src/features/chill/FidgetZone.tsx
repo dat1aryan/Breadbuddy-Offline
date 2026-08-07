@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { RefreshCw, Zap } from 'lucide-react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
+import { RefreshCw } from 'lucide-react';
 import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 
@@ -47,53 +47,117 @@ const BUBBLE_COLORS = [
   'bg-bb-lime text-black',
 ];
 
-type SpinnerModel = 'fs01' | 'fs02' | 'svg';
-
 // ─── Component ────────────────────────────────────────────────────────────────
 export function FidgetZone() {
   const [activeTab, setActiveTab] = useState<FidgetTab>('spinner');
 
-  // ── Fidget Spinner ──────────────────────────────────────────────────────────
-  const [spinnerModel, setSpinnerModel] = useState<SpinnerModel>('fs01');
-  const [rotation, setRotation]         = useState(0);
-  const [speed, setSpeed]               = useState(0);
-  const requestRef      = useRef<number>(0);
-  const prevTimeRef     = useRef<number>(0);
-  const cumulativeAngle = useRef<number>(0);
+  // ── Fidget Spinner — physics engine ────────────────────────────────────────
+  // Uses delta-time physics so it's identical speed at 60fps / 144fps / any fps
+  const rotationRef      = useRef<number>(0);        // actual angle in degrees (used in rAF)
+  const angularVelRef    = useRef<number>(0);         // degrees/sec
+  const lastFrameTimeRef = useRef<number | null>(null);
+  const rafRef           = useRef<number>(0);
+  const spinnerElemRef   = useRef<HTMLDivElement>(null);
 
-  const spin = (boost: number = 20) => {
-    setSpeed((s) => Math.min(s + boost, 100));
-  };
+  // Drag state (stored in refs to avoid stale closures in rAF)
+  const isDraggingRef      = useRef(false);
+  const dragStartAngleRef  = useRef(0);   // spinner angle at drag start
+  const dragPrevMouseAngle = useRef(0);   // previous pointer angle relative to center
+  const dragPrevTime       = useRef(0);
+  const dragAngularVelRef  = useRef(0);   // running angular velocity from drag (deg/s)
 
-  const slowDown = () => {
-    setSpeed((s) => Math.max(0, s - 12));
-  };
+  const FRICTION        = 0.97;   // per-second friction multiplier (applied via Math.pow)
+  const MIN_VEL         = 0.05;   // deg/sec below which we stop
 
-  const stopSpinner = () => {
-    setSpeed(0);
-  };
+  // rAF loop — only physics + transform, no setState per frame
+  const loop = useCallback((now: number) => {
+    if (lastFrameTimeRef.current === null) lastFrameTimeRef.current = now;
+    const dt = Math.min((now - lastFrameTimeRef.current) / 1000, 1 / 20); // clamp to 20fps min
+    lastFrameTimeRef.current = now;
 
-  const animateSpinner = (time: number) => {
-    if (prevTimeRef.current !== undefined) {
-      setSpeed((s) => {
-        const nextSpeed = s * 0.985;
-        if (nextSpeed < 0.05) return 0;
-        setRotation((r) => (r + nextSpeed) % 360);
-        cumulativeAngle.current += nextSpeed;
-        if (cumulativeAngle.current >= 360) cumulativeAngle.current %= 360;
-        return nextSpeed;
-      });
+    if (!isDraggingRef.current) {
+      // Apply friction: each second speed multiplies by FRICTION
+      angularVelRef.current *= Math.pow(FRICTION, dt * 60);
+      if (Math.abs(angularVelRef.current) < MIN_VEL) angularVelRef.current = 0;
+
+      rotationRef.current = (rotationRef.current + angularVelRef.current * dt) % 360;
     }
-    prevTimeRef.current = time;
-    requestRef.current = requestAnimationFrame(animateSpinner);
-  };
 
-  useEffect(() => {
-    requestRef.current = requestAnimationFrame(animateSpinner);
-    return () => cancelAnimationFrame(requestRef.current);
+    // Apply rotation directly to DOM for silky smooth 60fps without React setState overhead
+    if (spinnerElemRef.current) {
+      spinnerElemRef.current.style.transform = `rotate(${rotationRef.current}deg)`;
+    }
+
+    rafRef.current = requestAnimationFrame(loop);
   }, []);
 
-  const rpm = (speed * 10).toFixed(1);
+  useEffect(() => {
+    rafRef.current = requestAnimationFrame(loop);
+    return () => cancelAnimationFrame(rafRef.current);
+  }, [loop]);
+
+  // Helper: get angle of pointer relative to spinner center (degrees)
+  const getPointerAngle = (clientX: number, clientY: number): number => {
+    const el = spinnerElemRef.current?.parentElement;
+    if (!el) return 0;
+    const rect = el.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top  + rect.height / 2;
+    return Math.atan2(clientY - cy, clientX - cx) * (180 / Math.PI);
+  };
+
+  // ── Center click boost (click the center bearing) ──
+  const handleCenterClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    // Give a nice 300–500 deg/s boost, alternating direction with a slight preference to forward
+    const direction = angularVelRef.current >= 0 ? 1 : -1;
+    angularVelRef.current = direction * Math.min(Math.abs(angularVelRef.current) + 420, 1200);
+  };
+
+  // ── Drag to spin ──
+  const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    e.currentTarget.setPointerCapture(e.pointerId);
+    isDraggingRef.current   = true;
+    dragStartAngleRef.current     = rotationRef.current;
+    dragPrevMouseAngle.current    = getPointerAngle(e.clientX, e.clientY);
+    dragPrevTime.current          = performance.now();
+    dragAngularVelRef.current     = 0;
+    angularVelRef.current         = 0; // stop free spin while dragging
+  };
+
+  const onPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!isDraggingRef.current) return;
+    const now           = performance.now();
+    const dt            = (now - dragPrevTime.current) / 1000;
+    const mouseAngle    = getPointerAngle(e.clientX, e.clientY);
+    let   delta         = mouseAngle - dragPrevMouseAngle.current;
+
+    // Wrap delta to [-180, 180]
+    if (delta >  180) delta -= 360;
+    if (delta < -180) delta += 360;
+
+    rotationRef.current = (rotationRef.current + delta) % 360;
+
+    // Track angular velocity for release-flick
+    if (dt > 0) {
+      const instantVel       = delta / dt;
+      // Smooth with exponential moving average
+      dragAngularVelRef.current = dragAngularVelRef.current * 0.6 + instantVel * 0.4;
+    }
+
+    dragPrevMouseAngle.current = mouseAngle;
+    dragPrevTime.current       = now;
+  };
+
+  const onPointerUp = () => {
+    if (!isDraggingRef.current) return;
+    isDraggingRef.current = false;
+    // Transfer drag velocity to free-spin, capped for sanity
+    angularVelRef.current = Math.max(-1200, Math.min(1200, dragAngularVelRef.current));
+  };
+
+  // Derived RPM display
+  const rpmDisplay = Math.round(Math.abs(angularVelRef.current) / 6).toString();
 
   // ── Squishy Loaf ───────────────────────────────────────────────────────────
   const [isSquished, setIsSquished]         = useState(false);
@@ -145,7 +209,7 @@ export function FidgetZone() {
   return (
     <div className="space-y-4">
 
-      {/* Inner tab row — balanced vibrant hero colors */}
+      {/* Inner tab row */}
       <div className="flex bg-bb-surface border-2 border-bb-border p-1 rounded-bb-sm gap-1">
         {FIDGET_TABS.map((tab) => {
           const isActive = activeTab === tab.id;
@@ -175,99 +239,108 @@ export function FidgetZone() {
 
         {/* ── SPINNER ── */}
         {activeTab === 'spinner' && (
-          <div className="flex flex-col items-center justify-center gap-4 w-full">
-            {/* Model Selector Bar */}
-            <div className="flex items-center gap-2 bg-black/40 p-1 rounded-bb-xs border border-white/10">
-              <button
-                onClick={() => setSpinnerModel('fs01')}
-                className={`px-3 py-1 rounded-bb-xs text-[11px] font-bold transition-all ${
-                  spinnerModel === 'fs01'
-                    ? 'bg-bb-coral text-white shadow-sm'
-                    : 'text-bb-text-muted hover:text-white'
-                }`}
-              >
-                FS Model 1 🔴
-              </button>
-              <button
-                onClick={() => setSpinnerModel('fs02')}
-                className={`px-3 py-1 rounded-bb-xs text-[11px] font-bold transition-all ${
-                  spinnerModel === 'fs02'
-                    ? 'bg-bb-violet text-white shadow-sm'
-                    : 'text-bb-text-muted hover:text-white'
-                }`}
-              >
-                FS Model 2 🔵
-              </button>
-              <button
-                onClick={() => setSpinnerModel('svg')}
-                className={`px-3 py-1 rounded-bb-xs text-[11px] font-bold transition-all ${
-                  spinnerModel === 'svg'
-                    ? 'bg-bb-lime text-black shadow-sm'
-                    : 'text-bb-text-muted hover:text-white'
-                }`}
-              >
-                Neon SVG ✨
-              </button>
-            </div>
+          <div className="flex flex-col items-center justify-center gap-4 select-none">
 
-            {/* Spinner Display */}
+            {/* Drag zone — captures all pointer events over the full spinner area */}
             <div
-              onClick={() => spin(25)}
-              className="cursor-pointer active:scale-95 transition-transform duration-75 p-2 rounded-full flex items-center justify-center"
-              title="Click or flick to spin!"
+              onPointerDown={onPointerDown}
+              onPointerMove={onPointerMove}
+              onPointerUp={onPointerUp}
+              onPointerLeave={onPointerUp}
+              className="relative flex items-center justify-center cursor-grab active:cursor-grabbing"
+              style={{ width: 170, height: 170, touchAction: 'none' }}
+              title="Drag to spin, or click the center bearing"
             >
-              <div style={{ transform: `rotate(${rotation}deg)` }} className="transition-transform ease-out">
-                {spinnerModel === 'fs01' && (
-                  <img
-                    src="/fidget-spinner/fs01.png"
-                    alt="Fidget Spinner 1"
-                    className="w-36 h-36 object-contain drop-shadow-[0_8px_16px_rgba(0,0,0,0.6)] select-none pointer-events-none"
+              {/* Spinner blades (rotate via ref — no setState per frame) */}
+              <div ref={spinnerElemRef} style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <svg width="160" height="160" viewBox="0 0 160 160" fill="none">
+                  <defs>
+                    {/* Neon lime glow filter */}
+                    <filter id="spinner-glow" x="-40%" y="-40%" width="180%" height="180%">
+                      <feGaussianBlur stdDeviation="3" result="blur" />
+                      <feMerge>
+                        <feMergeNode in="blur" />
+                        <feMergeNode in="SourceGraphic" />
+                      </feMerge>
+                    </filter>
+                    <filter id="blade-glow" x="-30%" y="-30%" width="160%" height="160%">
+                      <feGaussianBlur stdDeviation="2.5" result="blur" />
+                      <feMerge>
+                        <feMergeNode in="blur" />
+                        <feMergeNode in="SourceGraphic" />
+                      </feMerge>
+                    </filter>
+                    {/* Neon lime radial gradient for blades */}
+                    <radialGradient id="blade-grad-top" cx="50%" cy="50%">
+                      <stop offset="0%" stopColor="#d9f99d" />
+                      <stop offset="60%" stopColor="#84cc16" />
+                      <stop offset="100%" stopColor="#3f6212" />
+                    </radialGradient>
+                    <radialGradient id="hub-grad" cx="50%" cy="50%">
+                      <stop offset="0%" stopColor="#ecfccb" />
+                      <stop offset="50%" stopColor="#a3e635" />
+                      <stop offset="100%" stopColor="#4d7c0f" />
+                    </radialGradient>
+                  </defs>
+
+                  {/* Blade 1 — Top */}
+                  <path
+                    d="M80 80 C65 75 52 52 60 25 C64 10 74 5 80 5 C86 5 96 10 100 25 C108 52 95 75 80 80Z"
+                    fill="url(#blade-grad-top)"
+                    stroke="#84cc16"
+                    strokeWidth="1.5"
+                    filter="url(#blade-glow)"
                   />
-                )}
-                {spinnerModel === 'fs02' && (
-                  <img
-                    src="/fidget-spinner/fs02.png"
-                    alt="Fidget Spinner 2"
-                    className="w-36 h-36 object-contain drop-shadow-[0_8px_16px_rgba(0,0,0,0.6)] select-none pointer-events-none"
+                  <circle cx="80" cy="32" r="10" fill="#0a0a0a" stroke="#84cc16" strokeWidth="1.5" filter="url(#blade-glow)" />
+                  <circle cx="80" cy="32" r="4.5" fill="#a3e635" />
+
+                  {/* Blade 2 — Bottom-left */}
+                  <path
+                    d="M80 80 C72 95 48 98 26 82 C13 72 12 61 17 56 C22 51 34 47 48 54 C70 66 80 80 80 80Z"
+                    fill="url(#blade-grad-top)"
+                    stroke="#84cc16"
+                    strokeWidth="1.5"
+                    filter="url(#blade-glow)"
                   />
-                )}
-                {spinnerModel === 'svg' && (
-                  <svg width="130" height="130" viewBox="0 0 120 120" fill="none">
-                    <circle cx="60" cy="60" r="16" fill="var(--bb-lime)" stroke="var(--bb-border)" strokeWidth="2" />
-                    <circle cx="60" cy="60" r="8" fill="#121212" />
+                  <circle cx="38" cy="76" r="10" fill="#0a0a0a" stroke="#84cc16" strokeWidth="1.5" filter="url(#blade-glow)" />
+                  <circle cx="38" cy="76" r="4.5" fill="#a3e635" />
 
-                    <path d="M60 16C50 16 46 28 50 36C54 44 66 44 70 36C74 28 70 16 60 16Z" fill="var(--bb-lime)" />
-                    <circle cx="60" cy="30" r="10" fill="#121212" stroke="var(--bb-border)" strokeWidth="2" />
-                    <circle cx="60" cy="30" r="4" fill="var(--bb-lime)" />
+                  {/* Blade 3 — Bottom-right */}
+                  <path
+                    d="M80 80 C95 95 112 82 134 80 C147 78 152 67 149 61 C146 55 136 50 120 54 C96 62 80 80 80 80Z"
+                    fill="url(#blade-grad-top)"
+                    stroke="#84cc16"
+                    strokeWidth="1.5"
+                    filter="url(#blade-glow)"
+                  />
+                  <circle cx="122" cy="76" r="10" fill="#0a0a0a" stroke="#84cc16" strokeWidth="1.5" filter="url(#blade-glow)" />
+                  <circle cx="122" cy="76" r="4.5" fill="#a3e635" />
 
-                    <path d="M21.9 82C16.9 73.3 29.5 68.3 35.3 75.2C41.1 82.2 32.1 92.6 26.3 89.2C20.5 85.8 26.9 90.7 21.9 82Z" fill="var(--bb-coral)" />
-                    <circle cx="34" cy="76.2" r="10" fill="#121212" stroke="var(--bb-border)" strokeWidth="2" />
-                    <circle cx="34" cy="76.2" r="4" fill="var(--bb-coral)" />
-
-                    <path d="M98.1 82C103.1 73.3 90.5 68.3 84.7 75.2C78.9 82.2 87.9 92.6 93.7 89.2C99.5 85.8 93.1 90.7 98.1 82Z" fill="var(--bb-violet)" />
-                    <circle cx="86" cy="76.2" r="10" fill="#121212" stroke="var(--bb-border)" strokeWidth="2" />
-                    <circle cx="86" cy="76.2" r="4" fill="var(--bb-violet)" />
-                  </svg>
-                )}
+                  {/* Center hub ring */}
+                  <circle cx="80" cy="80" r="20" fill="#0a0a0a" stroke="#84cc16" strokeWidth="2.5" filter="url(#spinner-glow)" />
+                  <circle cx="80" cy="80" r="13" fill="url(#hub-grad)" />
+                  {/* Inner bearing dot */}
+                  <circle cx="80" cy="80" r="5" fill="#0a0a0a" />
+                  <circle cx="78" cy="78" r="2" fill="#ecfccb" fillOpacity="0.6" />
+                </svg>
               </div>
+
+              {/* Invisible center click target — sits on top, covers the hub */}
+              <div
+                onClick={handleCenterClick}
+                className="absolute rounded-full z-10 cursor-pointer"
+                style={{ width: 44, height: 44, top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}
+                title="Click center bearing to spin!"
+              />
             </div>
 
-            {/* Spinner Control Buttons & RPM Gauge */}
-            <div className="flex flex-col items-center gap-2">
-              <div className="flex items-center gap-2">
-                <Button variant="secondary" size="sm" onClick={() => spin(35)} leftIcon={<Zap size={12} />} className="font-mono">
-                  Spin (+)
-                </Button>
-                <Button variant="secondary" size="sm" onClick={slowDown} className="font-mono">
-                  Slow (-)
-                </Button>
-                <Button variant="danger" size="sm" onClick={stopSpinner} className="font-mono">
-                  Stop (Parar)
-                </Button>
-              </div>
-
-              <p className="text-xs text-bb-lime font-mono font-bold tracking-wider">
-                RPM = {rpm}
+            {/* RPM & hint */}
+            <div className="flex flex-col items-center gap-1 pointer-events-none">
+              <p className="text-[11px] font-mono font-bold text-bb-lime tracking-widest">
+                {parseInt(rpmDisplay) > 0 ? `${rpmDisplay} RPM` : 'Drag or tap center to spin'}
+              </p>
+              <p className="text-[9px] text-bb-text-muted font-mono uppercase tracking-wider opacity-60">
+                {parseInt(rpmDisplay) > 200 ? '🔥 zooming!' : parseInt(rpmDisplay) > 80 ? '⚡ nice spin' : parseInt(rpmDisplay) > 10 ? '🌀 spinning...' : 'try a flick drag!'}
               </p>
             </div>
           </div>
