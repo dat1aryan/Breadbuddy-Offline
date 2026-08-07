@@ -53,7 +53,7 @@ export function ChillZone() {
             Chill Zone
           </h2>
           <p className="text-xs text-bb-text-secondary mt-0.5">
-            Mini-games and fidgets to decompress between sessions.
+            Take a quick break with mini-games and fidgets to destress and lock back in.
           </p>
         </div>
 
