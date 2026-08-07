@@ -261,171 +261,102 @@ export function FidgetZone() {
                   <defs>
                     {/* 3D Drop shadow */}
                     <filter id="fidget-shadow" x="-20%" y="-20%" width="140%" height="140%">
-                      <feDropShadow dx="2" dy="5" stdDeviation="6" floodColor="#000000" floodOpacity="0.45" />
+                      <feDropShadow dx="2" dy="5" stdDeviation="5" floodColor="#000000" floodOpacity="0.4" />
                     </filter>
 
-                    {/* Neon green plastic body gradient */}
-                    <linearGradient id="neon-plastic-body" x1="30" y1="20" x2="170" y2="180" gradientUnits="userSpaceOnUse">
-                      <stop offset="0%" stopColor="#82ff8c" />
-                      <stop offset="20%" stopColor="#39ff14" />
-                      <stop offset="55%" stopColor="#22c55e" />
-                      <stop offset="80%" stopColor="#15803d" />
-                      <stop offset="100%" stopColor="#0e6629" />
+                    {/* Green plastic body gradient matching photo */}
+                    <linearGradient id="toy-green-body" x1="30" y1="20" x2="170" y2="180" gradientUnits="userSpaceOnUse">
+                      <stop offset="0%" stopColor="#55e882" />
+                      <stop offset="25%" stopColor="#22c55e" />
+                      <stop offset="65%" stopColor="#169c46" />
+                      <stop offset="100%" stopColor="#0f7433" />
                     </linearGradient>
 
-                    {/* Molded plastic specular surface sheen */}
+                    {/* Plastic surface sheen overlay */}
                     <linearGradient id="plastic-sheen" x1="0.2" y1="0" x2="0.8" y2="1">
-                      <stop offset="0%" stopColor="#ffffff" stopOpacity="0.55" />
-                      <stop offset="35%" stopColor="#ffffff" stopOpacity="0.12" />
-                      <stop offset="65%" stopColor="#000000" stopOpacity="0.05" />
-                      <stop offset="100%" stopColor="#000000" stopOpacity="0.28" />
+                      <stop offset="0%" stopColor="#ffffff" stopOpacity="0.5" />
+                      <stop offset="35%" stopColor="#ffffff" stopOpacity="0.1" />
+                      <stop offset="70%" stopColor="#000000" stopOpacity="0.05" />
+                      <stop offset="100%" stopColor="#000000" stopOpacity="0.25" />
                     </linearGradient>
 
-                    {/* Steel raceway metallic gradient */}
-                    <linearGradient id="bearing-steel-ring" x1="0.1" y1="0.1" x2="0.9" y2="0.9">
-                      <stop offset="0%" stopColor="#ffffff" />
-                      <stop offset="25%" stopColor="#e4e4e7" />
-                      <stop offset="50%" stopColor="#a1a1aa" />
-                      <stop offset="75%" stopColor="#52525b" />
-                      <stop offset="100%" stopColor="#27272a" />
-                    </linearGradient>
-
-                    {/* Steel ball bearing sphere gradient */}
-                    <radialGradient id="steel-ball-grad" cx="35%" cy="30%" r="65%">
-                      <stop offset="0%" stopColor="#ffffff" />
-                      <stop offset="35%" stopColor="#e4e4e7" />
-                      <stop offset="70%" stopColor="#71717a" />
-                      <stop offset="100%" stopColor="#27272a" />
-                    </radialGradient>
-
-                    {/* Center cap collar rim */}
-                    <linearGradient id="center-cap-collar" x1="0.2" y1="0" x2="0.8" y2="1">
-                      <stop offset="0%" stopColor="#82ff8c" />
-                      <stop offset="40%" stopColor="#39ff14" />
-                      <stop offset="100%" stopColor="#0e6629" />
-                    </linearGradient>
-
-                    {/* Center cap concave finger pad */}
-                    <radialGradient id="center-cap-dish" cx="40%" cy="38%" r="65%">
-                      <stop offset="0%" stopColor="#55ff66" />
+                    {/* Smooth green plastic center cap gradient */}
+                    <radialGradient id="smooth-green-cap" cx="40%" cy="36%" r="65%">
+                      <stop offset="0%" stopColor="#55ff85" />
                       <stop offset="45%" stopColor="#22c55e" />
-                      <stop offset="80%" stopColor="#15803d" />
-                      <stop offset="100%" stopColor="#0a4a1f" />
-                    </radialGradient>
-
-                    {/* Center micro pip */}
-                    <radialGradient id="neon-pip-grad" cx="35%" cy="35%" r="65%">
-                      <stop offset="0%" stopColor="#afffb6" />
-                      <stop offset="60%" stopColor="#39ff14" />
-                      <stop offset="100%" stopColor="#15803d" />
+                      <stop offset="85%" stopColor="#169c46" />
+                      <stop offset="100%" stopColor="#0f7433" />
                     </radialGradient>
                   </defs>
 
                   <g filter="url(#fidget-shadow)">
-                    {/* ── 1. MATHEMATICALLY EXACT NEON GREEN PLASTIC BODY ── */}
+                    {/* ── 1. MATHEMATICALLY EXACT TOY GREEN PLASTIC BODY ── */}
                     <path
                       d="M 77.72 57.41 A 25.50 25.50 0 1 1 122.28 57.41 A 30.00 30.00 0 0 0 148.02 102.00 A 25.50 25.50 0 1 1 125.75 140.59 A 30.00 30.00 0 0 0 74.25 140.59 A 25.50 25.50 0 1 1 51.98 102.00 A 30.00 30.00 0 0 0 77.72 57.41 Z"
-                      fill="url(#neon-plastic-body)"
-                      stroke="#0a471e"
-                      strokeWidth="2"
+                      fill="url(#toy-green-body)"
+                      stroke="#0d612b"
+                      strokeWidth="1.8"
                     />
 
-                    {/* Molded surface sheen / specular gloss overlay */}
+                    {/* Molded plastic surface sheen */}
                     <path
                       d="M 77.72 57.41 A 25.50 25.50 0 1 1 122.28 57.41 A 30.00 30.00 0 0 0 148.02 102.00 A 25.50 25.50 0 1 1 125.75 140.59 A 30.00 30.00 0 0 0 74.25 140.59 A 25.50 25.50 0 1 1 51.98 102.00 A 30.00 30.00 0 0 0 77.72 57.41 Z"
                       fill="url(#plastic-sheen)"
                     />
 
-                    {/* ── 2. RECESSED BEARING WELLS (SOCKETS) ── */}
-                    <circle cx="100" cy="45" r="17.8" fill="#0c5c27" fillOpacity="0.75" />
-                    <circle cx="147.63" cy="127.5" r="17.8" fill="#0c5c27" fillOpacity="0.75" />
-                    <circle cx="52.37" cy="127.5" r="17.8" fill="#0c5c27" fillOpacity="0.75" />
-
-                    {/* ── 3. THREE 608RS BALL BEARINGS ── */}
+                    {/* ── 2. THREE SEALED 608RS BEARINGS (matching reference image) ── */}
                     {/* Bearing 1: Top (100, 45) */}
                     <g>
-                      <circle cx="100" cy="45" r="16.2" fill="#18191c" stroke="#09090b" strokeWidth="0.8" />
-                      <circle cx="100" cy="45" r="14.2" fill="none" stroke="url(#bearing-steel-ring)" strokeWidth="1.2" />
-                      <circle cx="100" cy="45" r="11.8" fill="#101114" />
-                      {/* 6 Steel Chrome Balls */}
-                      <circle cx="111.8" cy="45" r="2.0" fill="url(#steel-ball-grad)" stroke="#27272a" strokeWidth="0.4" />
-                      <circle cx="111.2" cy="44.4" r="0.6" fill="#ffffff" fillOpacity="0.8" />
-                      <circle cx="105.9" cy="55.2" r="2.0" fill="url(#steel-ball-grad)" stroke="#27272a" strokeWidth="0.4" />
-                      <circle cx="105.3" cy="54.6" r="0.6" fill="#ffffff" fillOpacity="0.8" />
-                      <circle cx="94.1" cy="55.2" r="2.0" fill="url(#steel-ball-grad)" stroke="#27272a" strokeWidth="0.4" />
-                      <circle cx="93.5" cy="54.6" r="0.6" fill="#ffffff" fillOpacity="0.8" />
-                      <circle cx="88.2" cy="45" r="2.0" fill="url(#steel-ball-grad)" stroke="#27272a" strokeWidth="0.4" />
-                      <circle cx="87.6" cy="44.4" r="0.6" fill="#ffffff" fillOpacity="0.8" />
-                      <circle cx="94.1" cy="34.8" r="2.0" fill="url(#steel-ball-grad)" stroke="#27272a" strokeWidth="0.4" />
-                      <circle cx="93.5" cy="34.2" r="0.6" fill="#ffffff" fillOpacity="0.8" />
-                      <circle cx="105.9" cy="34.8" r="2.0" fill="url(#steel-ball-grad)" stroke="#27272a" strokeWidth="0.4" />
-                      <circle cx="105.3" cy="34.2" r="0.6" fill="#ffffff" fillOpacity="0.8" />
-                      {/* Inner Race & Center Bore */}
-                      <circle cx="100" cy="45" r="8.8" fill="none" stroke="url(#bearing-steel-ring)" strokeWidth="1.2" />
-                      <circle cx="100" cy="45" r="6.2" fill="#09090b" />
-                      <ellipse cx="96.5" cy="41.5" rx="3.5" ry="1.8" transform="rotate(-45 96.5 41.5)" fill="#ffffff" fillOpacity="0.28" />
+                      {/* Outer silver steel ring */}
+                      <circle cx="100" cy="45" r="16.5" fill="none" stroke="#e4e4e7" strokeWidth="1.4" />
+                      {/* Solid black rubber seal plate */}
+                      <circle cx="100" cy="45" r="15.8" fill="#1c1d22" stroke="#09090b" strokeWidth="0.8" />
+                      <circle cx="100" cy="45" r="11.2" fill="#151619" />
+                      {/* Inner silver steel ring */}
+                      <circle cx="100" cy="45" r="10.8" fill="none" stroke="#e4e4e7" strokeWidth="1.4" />
+                      <circle cx="100" cy="45" r="9.5" fill="#1a1b1e" stroke="#52525b" strokeWidth="0.5" />
+                      {/* Center hole through bearing */}
+                      <circle cx="100" cy="45" r="7.5" fill="#09090b" />
+                      {/* Specular glint on steel rings */}
+                      <ellipse cx="95" cy="40" rx="3.2" ry="1.2" transform="rotate(-45 95 40)" fill="#ffffff" fillOpacity="0.4" />
                     </g>
 
                     {/* Bearing 2: Bottom-Right (147.63, 127.5) */}
                     <g>
-                      <circle cx="147.63" cy="127.5" r="16.2" fill="#18191c" stroke="#09090b" strokeWidth="0.8" />
-                      <circle cx="147.63" cy="127.5" r="14.2" fill="none" stroke="url(#bearing-steel-ring)" strokeWidth="1.2" />
-                      <circle cx="147.63" cy="127.5" r="11.8" fill="#101114" />
-                      {/* 6 Steel Chrome Balls */}
-                      <circle cx="159.43" cy="127.5" r="2.0" fill="url(#steel-ball-grad)" stroke="#27272a" strokeWidth="0.4" />
-                      <circle cx="158.83" cy="126.9" r="0.6" fill="#ffffff" fillOpacity="0.8" />
-                      <circle cx="153.53" cy="137.7" r="2.0" fill="url(#steel-ball-grad)" stroke="#27272a" strokeWidth="0.4" />
-                      <circle cx="152.93" cy="137.1" r="0.6" fill="#ffffff" fillOpacity="0.8" />
-                      <circle cx="141.73" cy="137.7" r="2.0" fill="url(#steel-ball-grad)" stroke="#27272a" strokeWidth="0.4" />
-                      <circle cx="141.13" cy="137.1" r="0.6" fill="#ffffff" fillOpacity="0.8" />
-                      <circle cx="135.83" cy="127.5" r="2.0" fill="url(#steel-ball-grad)" stroke="#27272a" strokeWidth="0.4" />
-                      <circle cx="135.23" cy="126.9" r="0.6" fill="#ffffff" fillOpacity="0.8" />
-                      <circle cx="141.73" cy="117.3" r="2.0" fill="url(#steel-ball-grad)" stroke="#27272a" strokeWidth="0.4" />
-                      <circle cx="141.13" cy="116.7" r="0.6" fill="#ffffff" fillOpacity="0.8" />
-                      <circle cx="153.53" cy="117.3" r="2.0" fill="url(#steel-ball-grad)" stroke="#27272a" strokeWidth="0.4" />
-                      <circle cx="152.93" cy="116.7" r="0.6" fill="#ffffff" fillOpacity="0.8" />
-                      {/* Inner Race & Center Bore */}
-                      <circle cx="147.63" cy="127.5" r="8.8" fill="none" stroke="url(#bearing-steel-ring)" strokeWidth="1.2" />
-                      <circle cx="147.63" cy="127.5" r="6.2" fill="#09090b" />
-                      <ellipse cx="144.13" cy="124.0" rx="3.5" ry="1.8" transform="rotate(-45 144.13 124.0)" fill="#ffffff" fillOpacity="0.28" />
+                      {/* Outer silver steel ring */}
+                      <circle cx="147.63" cy="127.5" r="16.5" fill="none" stroke="#e4e4e7" strokeWidth="1.4" />
+                      {/* Solid black rubber seal plate */}
+                      <circle cx="147.63" cy="127.5" r="15.8" fill="#1c1d22" stroke="#09090b" strokeWidth="0.8" />
+                      <circle cx="147.63" cy="127.5" r="11.2" fill="#151619" />
+                      {/* Inner silver steel ring */}
+                      <circle cx="147.63" cy="127.5" r="10.8" fill="none" stroke="#e4e4e7" strokeWidth="1.4" />
+                      <circle cx="147.63" cy="127.5" r="9.5" fill="#1a1b1e" stroke="#52525b" strokeWidth="0.5" />
+                      {/* Center hole through bearing */}
+                      <circle cx="147.63" cy="127.5" r="7.5" fill="#09090b" />
+                      {/* Specular glint on steel rings */}
+                      <ellipse cx="142.63" cy="122.5" rx="3.2" ry="1.2" transform="rotate(-45 142.63 122.5)" fill="#ffffff" fillOpacity="0.4" />
                     </g>
 
                     {/* Bearing 3: Bottom-Left (52.37, 127.5) */}
                     <g>
-                      <circle cx="52.37" cy="127.5" r="16.2" fill="#18191c" stroke="#09090b" strokeWidth="0.8" />
-                      <circle cx="52.37" cy="127.5" r="14.2" fill="none" stroke="url(#bearing-steel-ring)" strokeWidth="1.2" />
-                      <circle cx="52.37" cy="127.5" r="11.8" fill="#101114" />
-                      {/* 6 Steel Chrome Balls */}
-                      <circle cx="64.17" cy="127.5" r="2.0" fill="url(#steel-ball-grad)" stroke="#27272a" strokeWidth="0.4" />
-                      <circle cx="63.57" cy="126.9" r="0.6" fill="#ffffff" fillOpacity="0.8" />
-                      <circle cx="58.27" cy="137.7" r="2.0" fill="url(#steel-ball-grad)" stroke="#27272a" strokeWidth="0.4" />
-                      <circle cx="57.67" cy="137.1" r="0.6" fill="#ffffff" fillOpacity="0.8" />
-                      <circle cx="46.47" cy="137.7" r="2.0" fill="url(#steel-ball-grad)" stroke="#27272a" strokeWidth="0.4" />
-                      <circle cx="45.87" cy="137.1" r="0.6" fill="#ffffff" fillOpacity="0.8" />
-                      <circle cx="40.57" cy="127.5" r="2.0" fill="url(#steel-ball-grad)" stroke="#27272a" strokeWidth="0.4" />
-                      <circle cx="39.97" cy="126.9" r="0.6" fill="#ffffff" fillOpacity="0.8" />
-                      <circle cx="46.47" cy="117.3" r="2.0" fill="url(#steel-ball-grad)" stroke="#27272a" strokeWidth="0.4" />
-                      <circle cx="45.87" cy="116.7" r="0.6" fill="#ffffff" fillOpacity="0.8" />
-                      <circle cx="58.27" cy="117.3" r="2.0" fill="url(#steel-ball-grad)" stroke="#27272a" strokeWidth="0.4" />
-                      <circle cx="57.67" cy="116.7" r="0.6" fill="#ffffff" fillOpacity="0.8" />
-                      {/* Inner Race & Center Bore */}
-                      <circle cx="52.37" cy="127.5" r="8.8" fill="none" stroke="url(#bearing-steel-ring)" strokeWidth="1.2" />
-                      <circle cx="52.37" cy="127.5" r="6.2" fill="#09090b" />
-                      <ellipse cx="48.87" cy="124.0" rx="3.5" ry="1.8" transform="rotate(-45 48.87 124.0)" fill="#ffffff" fillOpacity="0.28" />
+                      {/* Outer silver steel ring */}
+                      <circle cx="52.37" cy="127.5" r="16.5" fill="none" stroke="#e4e4e7" strokeWidth="1.4" />
+                      {/* Solid black rubber seal plate */}
+                      <circle cx="52.37" cy="127.5" r="15.8" fill="#1c1d22" stroke="#09090b" strokeWidth="0.8" />
+                      <circle cx="52.37" cy="127.5" r="11.2" fill="#151619" />
+                      {/* Inner silver steel ring */}
+                      <circle cx="52.37" cy="127.5" r="10.8" fill="none" stroke="#e4e4e7" strokeWidth="1.4" />
+                      <circle cx="52.37" cy="127.5" r="9.5" fill="#1a1b1e" stroke="#52525b" strokeWidth="0.5" />
+                      {/* Center hole through bearing */}
+                      <circle cx="52.37" cy="127.5" r="7.5" fill="#09090b" />
+                      {/* Specular glint on steel rings */}
+                      <ellipse cx="47.37" cy="122.5" rx="3.2" ry="1.2" transform="rotate(-45 47.37 122.5)" fill="#ffffff" fillOpacity="0.4" />
                     </g>
 
-                    {/* ── 4. RAISED NEON GREEN CENTER HUB (THUMB GRIP CAP) ── */}
+                    {/* ── 3. PLAIN SMOOTH GREEN CENTER CAP (matching reference image) ── */}
                     <g>
-                      {/* Outer collar */}
-                      <circle cx="100" cy="100" r="19" fill="url(#center-cap-collar)" stroke="#09401b" strokeWidth="1.5" />
-                      {/* Concave finger pad dish */}
-                      <circle cx="100" cy="100" r="15.5" fill="url(#center-cap-dish)" />
-                      {/* Concentric grip groove */}
-                      <circle cx="100" cy="100" r="11" fill="none" stroke="#0e6629" strokeWidth="0.8" strokeDasharray="3 1.5" opacity="0.8" />
-                      {/* Center micro neon pip */}
-                      <circle cx="100" cy="100" r="4.5" fill="url(#neon-pip-grad)" stroke="#0b5424" strokeWidth="0.6" />
-                      {/* Gloss specular shine */}
-                      <ellipse cx="94.5" cy="94.5" rx="5" ry="2.5" transform="rotate(-40 94.5 94.5)" fill="#ffffff" fillOpacity="0.5" />
+                      <circle cx="100" cy="100" r="21.5" fill="url(#smooth-green-cap)" stroke="#159c46" strokeWidth="1.2" />
+                      <ellipse cx="94" cy="94" rx="7" ry="3.5" transform="rotate(-35 94 94)" fill="#ffffff" fillOpacity="0.32" />
                     </g>
                   </g>
                 </svg>
