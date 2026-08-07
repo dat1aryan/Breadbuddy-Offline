@@ -420,104 +420,116 @@ export function FidgetZone() {
                   : 'transform 0.85s cubic-bezier(0.34, 1.56, 0.64, 1)', // Slow-rising memory foam effect!
               }}
             >
-              {/* 3D Hokkaido Milk Bread Loaf Squishy Toy */}
+              {/* Cartoon-Hyper-Realistic 3D Bread Loaf Squishy Toy */}
               <svg width="210" height="155" viewBox="0 0 200 150" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <defs>
                   {/* Soft Memory Foam Drop Shadow */}
                   <filter id="foam-shadow" x="-20%" y="-20%" width="140%" height="140%">
-                    <feDropShadow dx="0" dy="8" stdDeviation="6" floodColor="#000000" floodOpacity="0.38" />
+                    <feDropShadow dx="0" dy="7" stdDeviation="6" floodColor="#000000" floodOpacity="0.45" />
                   </filter>
 
-                  {/* Golden Baked Top Crust Gradient */}
-                  <linearGradient id="crust-golden" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#f3a743" />
-                    <stop offset="30%" stopColor="#d97724" />
-                    <stop offset="75%" stopColor="#b35717" />
-                    <stop offset="100%" stopColor="#873c0a" />
+                  {/* Golden Baked 3D Crust Gradient */}
+                  <linearGradient id="crust-golden-3d" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#fbbd54" />
+                    <stop offset="25%" stopColor="#e38622" />
+                    <stop offset="65%" stopColor="#b95914" />
+                    <stop offset="100%" stopColor="#7c3209" />
                   </linearGradient>
 
-                  {/* Warm Cream Bread Crumb Body Gradient */}
-                  <linearGradient id="crumb-body" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#fff8e7" />
-                    <stop offset="45%" stopColor="#fae7b5" />
-                    <stop offset="85%" stopColor="#edd08a" />
-                    <stop offset="100%" stopColor="#cfa85e" />
+                  {/* Soft Cream Bread Crumb Body Gradient */}
+                  <linearGradient id="crumb-soft-body" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#fffef5" />
+                    <stop offset="40%" stopColor="#f9e8be" />
+                    <stop offset="80%" stopColor="#e6c57f" />
+                    <stop offset="100%" stopColor="#cca052" />
                   </linearGradient>
 
-                  {/* Side Toast Spot Radial Gradient (matching reference photo) */}
-                  <radialGradient id="side-toast-spot" cx="50%" cy="50%" r="50%">
-                    <stop offset="0%" stopColor="#e28c38" stopOpacity="0.85" />
-                    <stop offset="60%" stopColor="#f3b562" stopOpacity="0.4" />
-                    <stop offset="100%" stopColor="#fae7b5" stopOpacity="0" />
+                  {/* Soft Toast Blush Patch Gradient */}
+                  <radialGradient id="toast-blush-patch" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" stopColor="#df852c" stopOpacity="0.75" />
+                    <stop offset="55%" stopColor="#f2b260" stopOpacity="0.3" />
+                    <stop offset="100%" stopColor="#f9e8be" stopOpacity="0" />
                   </radialGradient>
+
+                  {/* Crust Underside Ambient Shadow */}
+                  <linearGradient id="crust-shadow" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#4a1e04" stopOpacity="0.35" />
+                    <stop offset="100%" stopColor="#4a1e04" stopOpacity="0" />
+                  </linearGradient>
                 </defs>
 
                 <g filter="url(#foam-shadow)">
-                  {/* ── 1. MAIN BREAD FOAM BODY (Cream Crumb Side) ── */}
+                  {/* ── 1. BREAD CRUMB BODY (Cream Side) ── */}
                   <path
-                    d="M 30 65 C 30 48, 52 45, 68 55 C 80 45, 102 45, 115 55 C 128 45, 150 48, 170 65 C 174 80, 172 118, 168 128 C 164 136, 145 138, 100 138 C 55 138, 36 136, 32 128 C 28 118, 26 80, 30 65 Z"
-                    fill="url(#crumb-body)"
-                    stroke="#9c561a"
-                    strokeWidth="2"
+                    d="M 25 70 C 25 45, 52 38, 70 52 C 82 38, 118 38, 130 52 C 148 38, 175 45, 175 70 C 175 115, 170 135, 155 138 C 130 141, 70 141, 45 138 C 30 135, 25 115, 25 70 Z"
+                    fill="url(#crumb-soft-body)"
+                    stroke="#4a2206"
+                    strokeWidth="2.5"
                   />
 
-                  {/* ── 2. SIDE TOAST SPOT (Authentic bread squishy look from photo) ── */}
-                  <ellipse cx="100" cy="100" rx="42" ry="24" fill="url(#side-toast-spot)" />
+                  {/* Toast Blush Spot in Middle */}
+                  <ellipse cx="100" cy="102" rx="44" ry="25" fill="url(#toast-blush-patch)" />
 
-                  {/* ── 3. GOLDEN BAKED 3-HUMP TOP CRUST ── */}
+                  {/* Ambient Shadow under Crust overhang */}
                   <path
-                    d="M 28 65 C 28 38, 58 32, 72 48 C 85 32, 115 32, 128 48 C 142 32, 172 38, 172 65 C 172 75, 162 78, 150 77 C 135 73, 125 73, 115 76 C 100 73, 85 73, 70 76 C 55 73, 40 73, 28 65 Z"
-                    fill="url(#crust-golden)"
-                    stroke="#733508"
-                    strokeWidth="2"
+                    d="M 25 72 C 38 82, 162 82, 175 72 L 175 85 C 162 93, 38 93, 25 85 Z"
+                    fill="url(#crust-shadow)"
                   />
 
-                  {/* Hump crevices / score lines */}
-                  <path d="M 72 45 C 71 56, 72 68, 74 76" stroke="#5c2906" strokeWidth="2.5" strokeLinecap="round" opacity="0.8" />
-                  <path d="M 128 45 C 129 56, 128 68, 126 76" stroke="#5c2906" strokeWidth="2.5" strokeLinecap="round" opacity="0.8" />
+                  {/* ── 2. GOLDEN BAKED 3-HUMP TOP CRUST ── */}
+                  <path
+                    d="M 25 72 C 25 45, 52 38, 70 52 C 82 38, 118 38, 130 52 C 148 38, 175 45, 175 72 C 175 82, 162 84, 148 83 C 132 82, 118 82, 100 84 C 82 82, 68 82, 52 83 C 38 84, 25 82, 25 72 Z"
+                    fill="url(#crust-golden-3d)"
+                    stroke="#4a2206"
+                    strokeWidth="2.5"
+                  />
 
-                  {/* Flour Dusting Highlights on Humps */}
-                  <ellipse cx="50" cy="44" rx="14" ry="5" fill="#ffffff" fillOpacity="0.4" />
-                  <ellipse cx="100" cy="41" rx="16" ry="6" fill="#ffffff" fillOpacity="0.45" />
-                  <ellipse cx="150" cy="44" rx="14" ry="5" fill="#ffffff" fillOpacity="0.4" />
+                  {/* Hump Crevices / Score Lines */}
+                  <path d="M 70 52 C 68 64, 70 76, 72 83" stroke="#4a2206" strokeWidth="2.5" strokeLinecap="round" opacity="0.9" />
+                  <path d="M 130 52 C 132 64, 130 76, 128 83" stroke="#4a2206" strokeWidth="2.5" strokeLinecap="round" opacity="0.9" />
 
-                  {/* ── 4. KAWAII FACE EXPRESSION ── */}
+                  {/* 3D Specular Gloss Caps on Humps (Matching reference screenshot) */}
+                  <ellipse cx="48" cy="46" rx="14" ry="6" fill="#ffffff" fillOpacity="0.42" />
+                  <ellipse cx="100" cy="43" rx="18" ry="7" fill="#ffffff" fillOpacity="0.48" />
+                  <ellipse cx="152" cy="46" rx="14" ry="6" fill="#ffffff" fillOpacity="0.42" />
+
+                  {/* ── 3. KAWAII CHARACTER EXPRESSIONS ── */}
                   {loafExpression === 'calm' && (
                     <g>
                       {/* Calm happy eyes ^ ^ */}
-                      <path d="M 74 94 Q 80 88 86 94" stroke="#4a2507" strokeWidth="2.5" strokeLinecap="round" fill="none" />
-                      <path d="M 114 94 Q 120 88 126 94" stroke="#4a2507" strokeWidth="2.5" strokeLinecap="round" fill="none" />
-                      {/* Soft mouth */}
-                      <path d="M 97 102 Q 100 106 103 102" stroke="#4a2507" strokeWidth="2" strokeLinecap="round" fill="none" />
+                      <path d="M 74 96 Q 80 90 86 96" stroke="#3d1c05" strokeWidth="2.8" strokeLinecap="round" fill="none" />
+                      <path d="M 114 96 Q 120 90 126 96" stroke="#3d1c05" strokeWidth="2.8" strokeLinecap="round" fill="none" />
+                      {/* Cute small mouth */}
+                      <path d="M 97 103 Q 100 107 103 103" stroke="#3d1c05" strokeWidth="2.2" strokeLinecap="round" fill="none" />
                     </g>
                   )}
 
                   {loafExpression === 'squished' && (
                     <g>
                       {/* Squeezed shut eyes > < */}
-                      <path d="M 74 90 L 82 96 L 74 102" stroke="#4a2507" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-                      <path d="M 126 90 L 118 96 L 126 102" stroke="#4a2507" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+                      <path d="M 74 92 L 82 98 L 74 104" stroke="#3d1c05" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+                      <path d="M 126 92 L 118 98 L 126 104" stroke="#3d1c05" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round" fill="none" />
                       {/* Open squish mouth */}
-                      <ellipse cx="100" cy="104" rx="5" ry="6" fill="#c0392b" />
-                      <path d="M 97 102 Q 100 105 103 102" fill="#ff7675" />
+                      <ellipse cx="100" cy="106" rx="5" ry="6" fill="#c0392b" />
+                      <path d="M 97 104 Q 100 107 103 104" fill="#ff7675" />
                     </g>
                   )}
 
                   {loafExpression === 'happy' && (
                     <g>
                       {/* Joyful shiny eyes */}
-                      <circle cx="80" cy="94" r="4" fill="#4a2507" />
-                      <circle cx="78.5" cy="92.5" r="1.5" fill="#ffffff" />
-                      <circle cx="120" cy="94" r="4" fill="#4a2507" />
-                      <circle cx="118.5" cy="92.5" r="1.5" fill="#ffffff" />
+                      <circle cx="80" cy="96" r="4.2" fill="#3d1c05" />
+                      <circle cx="78.5" cy="94.5" r="1.5" fill="#ffffff" />
+                      <circle cx="120" cy="96" r="4.2" fill="#3d1c05" />
+                      <circle cx="118.5" cy="94.5" r="1.5" fill="#ffffff" />
                       {/* Big happy smile */}
-                      <path d="M 94 100 Q 100 108 106 100" stroke="#4a2507" strokeWidth="2.5" strokeLinecap="round" fill="none" />
+                      <path d="M 94 102 Q 100 110 106 102" stroke="#3d1c05" strokeWidth="2.8" strokeLinecap="round" fill="none" />
                     </g>
                   )}
 
                   {/* Rosy blush cheeks */}
-                  <ellipse cx="68" cy="100" rx="6" ry="4" fill="#ff7675" fillOpacity="0.45" />
-                  <ellipse cx="132" cy="100" rx="6" ry="4" fill="#ff7675" fillOpacity="0.45" />
+                  <ellipse cx="68" cy="102" rx="7" ry="4.5" fill="#ff7675" fillOpacity="0.5" />
+                  <ellipse cx="132" cy="102" rx="7" ry="4.5" fill="#ff7675" fillOpacity="0.5" />
                 </g>
               </svg>
             </div>
