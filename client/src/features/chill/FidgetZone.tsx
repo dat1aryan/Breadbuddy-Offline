@@ -47,26 +47,37 @@ const BUBBLE_COLORS = [
   'bg-bb-lime text-black',
 ];
 
+type SpinnerModel = 'fs01' | 'fs02' | 'svg';
+
 // ─── Component ────────────────────────────────────────────────────────────────
 export function FidgetZone() {
   const [activeTab, setActiveTab] = useState<FidgetTab>('spinner');
 
   // ── Fidget Spinner ──────────────────────────────────────────────────────────
-  const [rotation, setRotation] = useState(0);
-  const [speed, setSpeed]       = useState(0);
+  const [spinnerModel, setSpinnerModel] = useState<SpinnerModel>('fs01');
+  const [rotation, setRotation]         = useState(0);
+  const [speed, setSpeed]               = useState(0);
   const requestRef      = useRef<number>(0);
   const prevTimeRef     = useRef<number>(0);
   const cumulativeAngle = useRef<number>(0);
 
-  const spin = (boost: number = 15) => {
-    setSpeed((s) => Math.min(s + boost, 80));
+  const spin = (boost: number = 20) => {
+    setSpeed((s) => Math.min(s + boost, 100));
+  };
+
+  const slowDown = () => {
+    setSpeed((s) => Math.max(0, s - 12));
+  };
+
+  const stopSpinner = () => {
+    setSpeed(0);
   };
 
   const animateSpinner = (time: number) => {
     if (prevTimeRef.current !== undefined) {
       setSpeed((s) => {
-        const nextSpeed = s * 0.982;
-        if (nextSpeed < 0.1) return 0;
+        const nextSpeed = s * 0.985;
+        if (nextSpeed < 0.05) return 0;
         setRotation((r) => (r + nextSpeed) % 360);
         cumulativeAngle.current += nextSpeed;
         if (cumulativeAngle.current >= 360) cumulativeAngle.current %= 360;
@@ -82,7 +93,7 @@ export function FidgetZone() {
     return () => cancelAnimationFrame(requestRef.current);
   }, []);
 
-  const rpm = Math.round((speed * 60) / 6);
+  const rpm = (speed * 10).toFixed(1);
 
   // ── Squishy Loaf ───────────────────────────────────────────────────────────
   const [isSquished, setIsSquished]         = useState(false);
@@ -159,41 +170,104 @@ export function FidgetZone() {
       {/* Play area */}
       <Card
         accent={activeTab === 'spinner' ? 'lime' : activeTab === 'squishy' ? 'coral' : 'violet'}
-        className="h-72 flex flex-col items-center justify-center relative p-6 transition-all duration-150"
+        className="min-h-80 flex flex-col items-center justify-center relative p-6 transition-all duration-150"
       >
 
         {/* ── SPINNER ── */}
         {activeTab === 'spinner' && (
-          <div className="flex flex-col items-center justify-center gap-5">
-            <div
-              onClick={() => spin(22)}
-              className="cursor-pointer"
-              style={{ transform: `rotate(${rotation}deg)` }}
-            >
-              <svg width="120" height="120" viewBox="0 0 120 120" fill="none">
-                <circle cx="60" cy="60" r="16" fill="var(--bb-lime)" stroke="var(--bb-border)" strokeWidth="2" />
-                <circle cx="60" cy="60" r="8" fill="#121212" />
-
-                <path d="M60 16C50 16 46 28 50 36C54 44 66 44 70 36C74 28 70 16 60 16Z" fill="var(--bb-lime)" />
-                <circle cx="60" cy="30" r="10" fill="#121212" stroke="var(--bb-border)" strokeWidth="2" />
-                <circle cx="60" cy="30" r="4" fill="var(--bb-lime)" />
-
-                <path d="M21.9 82C16.9 73.3 29.5 68.3 35.3 75.2C41.1 82.2 32.1 92.6 26.3 89.2C20.5 85.8 26.9 90.7 21.9 82Z" fill="var(--bb-coral)" />
-                <circle cx="34" cy="76.2" r="10" fill="#121212" stroke="var(--bb-border)" strokeWidth="2" />
-                <circle cx="34" cy="76.2" r="4" fill="var(--bb-coral)" />
-
-                <path d="M98.1 82C103.1 73.3 90.5 68.3 84.7 75.2C78.9 82.2 87.9 92.6 93.7 89.2C99.5 85.8 93.1 90.7 98.1 82Z" fill="var(--bb-violet)" />
-                <circle cx="86" cy="76.2" r="10" fill="#121212" stroke="var(--bb-border)" strokeWidth="2" />
-                <circle cx="86" cy="76.2" r="4" fill="var(--bb-violet)" />
-              </svg>
+          <div className="flex flex-col items-center justify-center gap-4 w-full">
+            {/* Model Selector Bar */}
+            <div className="flex items-center gap-2 bg-black/40 p-1 rounded-bb-xs border border-white/10">
+              <button
+                onClick={() => setSpinnerModel('fs01')}
+                className={`px-3 py-1 rounded-bb-xs text-[11px] font-bold transition-all ${
+                  spinnerModel === 'fs01'
+                    ? 'bg-bb-coral text-white shadow-sm'
+                    : 'text-bb-text-muted hover:text-white'
+                }`}
+              >
+                FS Model 1 🔴
+              </button>
+              <button
+                onClick={() => setSpinnerModel('fs02')}
+                className={`px-3 py-1 rounded-bb-xs text-[11px] font-bold transition-all ${
+                  spinnerModel === 'fs02'
+                    ? 'bg-bb-violet text-white shadow-sm'
+                    : 'text-bb-text-muted hover:text-white'
+                }`}
+              >
+                FS Model 2 🔵
+              </button>
+              <button
+                onClick={() => setSpinnerModel('svg')}
+                className={`px-3 py-1 rounded-bb-xs text-[11px] font-bold transition-all ${
+                  spinnerModel === 'svg'
+                    ? 'bg-bb-lime text-black shadow-sm'
+                    : 'text-bb-text-muted hover:text-white'
+                }`}
+              >
+                Neon SVG ✨
+              </button>
             </div>
 
-            <div className="flex flex-col items-center gap-1.5">
-              <Button variant="secondary" size="sm" onClick={() => spin(35)} leftIcon={<Zap size={12} />} className="font-mono">
-                Turbo Spin
-              </Button>
-              <p className="text-[10px] text-bb-text-muted font-mono">
-                {rpm > 0 ? `${rpm} RPM` : 'Click to spin'}
+            {/* Spinner Display */}
+            <div
+              onClick={() => spin(25)}
+              className="cursor-pointer active:scale-95 transition-transform duration-75 p-2 rounded-full flex items-center justify-center"
+              title="Click or flick to spin!"
+            >
+              <div style={{ transform: `rotate(${rotation}deg)` }} className="transition-transform ease-out">
+                {spinnerModel === 'fs01' && (
+                  <img
+                    src="/fidget-spinner/fs01.png"
+                    alt="Fidget Spinner 1"
+                    className="w-36 h-36 object-contain drop-shadow-[0_8px_16px_rgba(0,0,0,0.6)] select-none pointer-events-none"
+                  />
+                )}
+                {spinnerModel === 'fs02' && (
+                  <img
+                    src="/fidget-spinner/fs02.png"
+                    alt="Fidget Spinner 2"
+                    className="w-36 h-36 object-contain drop-shadow-[0_8px_16px_rgba(0,0,0,0.6)] select-none pointer-events-none"
+                  />
+                )}
+                {spinnerModel === 'svg' && (
+                  <svg width="130" height="130" viewBox="0 0 120 120" fill="none">
+                    <circle cx="60" cy="60" r="16" fill="var(--bb-lime)" stroke="var(--bb-border)" strokeWidth="2" />
+                    <circle cx="60" cy="60" r="8" fill="#121212" />
+
+                    <path d="M60 16C50 16 46 28 50 36C54 44 66 44 70 36C74 28 70 16 60 16Z" fill="var(--bb-lime)" />
+                    <circle cx="60" cy="30" r="10" fill="#121212" stroke="var(--bb-border)" strokeWidth="2" />
+                    <circle cx="60" cy="30" r="4" fill="var(--bb-lime)" />
+
+                    <path d="M21.9 82C16.9 73.3 29.5 68.3 35.3 75.2C41.1 82.2 32.1 92.6 26.3 89.2C20.5 85.8 26.9 90.7 21.9 82Z" fill="var(--bb-coral)" />
+                    <circle cx="34" cy="76.2" r="10" fill="#121212" stroke="var(--bb-border)" strokeWidth="2" />
+                    <circle cx="34" cy="76.2" r="4" fill="var(--bb-coral)" />
+
+                    <path d="M98.1 82C103.1 73.3 90.5 68.3 84.7 75.2C78.9 82.2 87.9 92.6 93.7 89.2C99.5 85.8 93.1 90.7 98.1 82Z" fill="var(--bb-violet)" />
+                    <circle cx="86" cy="76.2" r="10" fill="#121212" stroke="var(--bb-border)" strokeWidth="2" />
+                    <circle cx="86" cy="76.2" r="4" fill="var(--bb-violet)" />
+                  </svg>
+                )}
+              </div>
+            </div>
+
+            {/* Spinner Control Buttons & RPM Gauge */}
+            <div className="flex flex-col items-center gap-2">
+              <div className="flex items-center gap-2">
+                <Button variant="secondary" size="sm" onClick={() => spin(35)} leftIcon={<Zap size={12} />} className="font-mono">
+                  Spin (+)
+                </Button>
+                <Button variant="secondary" size="sm" onClick={slowDown} className="font-mono">
+                  Slow (-)
+                </Button>
+                <Button variant="danger" size="sm" onClick={stopSpinner} className="font-mono">
+                  Stop (Parar)
+                </Button>
+              </div>
+
+              <p className="text-xs text-bb-lime font-mono font-bold tracking-wider">
+                RPM = {rpm}
               </p>
             </div>
           </div>
