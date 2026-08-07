@@ -259,33 +259,51 @@ export function FidgetZone() {
               <div ref={spinnerElemRef} style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <svg width="220" height="220" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <defs>
-                    {/* 3D Drop shadow */}
+                    {/* 3D Soft Drop shadow */}
                     <filter id="fidget-shadow" x="-20%" y="-20%" width="140%" height="140%">
-                      <feDropShadow dx="2" dy="5" stdDeviation="5" floodColor="#000000" floodOpacity="0.4" />
+                      <feDropShadow dx="2" dy="5" stdDeviation="5" floodColor="#000000" floodOpacity="0.45" />
                     </filter>
 
-                    {/* Green plastic body gradient matching photo */}
-                    <linearGradient id="toy-green-body" x1="30" y1="20" x2="170" y2="180" gradientUnits="userSpaceOnUse">
-                      <stop offset="0%" stopColor="#55e882" />
-                      <stop offset="25%" stopColor="#22c55e" />
-                      <stop offset="65%" stopColor="#169c46" />
-                      <stop offset="100%" stopColor="#0f7433" />
+                    {/* Authentic Toy Green Plastic Body Gradient (matching reference photo) */}
+                    <linearGradient id="toy-green-body" x1="25" y1="15" x2="175" y2="185" gradientUnits="userSpaceOnUse">
+                      <stop offset="0%" stopColor="#4de078" />
+                      <stop offset="25%" stopColor="#25cb68" />
+                      <stop offset="65%" stopColor="#1bb454" />
+                      <stop offset="85%" stopColor="#149544" />
+                      <stop offset="100%" stopColor="#0d7232" />
                     </linearGradient>
 
-                    {/* Plastic surface sheen overlay */}
+                    {/* Plastic Surface Sheen & Edge Chamfer Highlight */}
                     <linearGradient id="plastic-sheen" x1="0.2" y1="0" x2="0.8" y2="1">
                       <stop offset="0%" stopColor="#ffffff" stopOpacity="0.5" />
-                      <stop offset="35%" stopColor="#ffffff" stopOpacity="0.1" />
-                      <stop offset="70%" stopColor="#000000" stopOpacity="0.05" />
-                      <stop offset="100%" stopColor="#000000" stopOpacity="0.25" />
+                      <stop offset="28%" stopColor="#ffffff" stopOpacity="0.12" />
+                      <stop offset="70%" stopColor="#000000" stopOpacity="0.04" />
+                      <stop offset="100%" stopColor="#000000" stopOpacity="0.22" />
                     </linearGradient>
 
-                    {/* Smooth green plastic center cap gradient */}
-                    <radialGradient id="smooth-green-cap" cx="40%" cy="36%" r="65%">
+                    {/* Realistic Metallic Chrome/Steel Ring Gradient */}
+                    <linearGradient id="metallic-steel" x1="0" y1="0" x2="1" y2="1">
+                      <stop offset="0%" stopColor="#f4f4f5" />
+                      <stop offset="20%" stopColor="#a1a1aa" />
+                      <stop offset="40%" stopColor="#ffffff" />
+                      <stop offset="60%" stopColor="#71717a" />
+                      <stop offset="80%" stopColor="#e4e4e7" />
+                      <stop offset="100%" stopColor="#3f3f46" />
+                    </linearGradient>
+
+                    {/* Matte Rubber Seal Radial Gradient */}
+                    <radialGradient id="rubber-seal-grad" cx="42%" cy="40%" r="65%">
+                      <stop offset="0%" stopColor="#2a2b30" />
+                      <stop offset="60%" stopColor="#1b1c20" />
+                      <stop offset="100%" stopColor="#111215" />
+                    </radialGradient>
+
+                    {/* Smooth Green Plastic Center Cap Gradient */}
+                    <radialGradient id="smooth-green-cap" cx="38%" cy="34%" r="65%">
                       <stop offset="0%" stopColor="#55ff85" />
                       <stop offset="45%" stopColor="#22c55e" />
-                      <stop offset="85%" stopColor="#169c46" />
-                      <stop offset="100%" stopColor="#0f7433" />
+                      <stop offset="80%" stopColor="#159844" />
+                      <stop offset="100%" stopColor="#0d7030" />
                     </radialGradient>
                   </defs>
 
@@ -294,69 +312,78 @@ export function FidgetZone() {
                     <path
                       d="M 77.72 57.41 A 25.50 25.50 0 1 1 122.28 57.41 A 30.00 30.00 0 0 0 148.02 102.00 A 25.50 25.50 0 1 1 125.75 140.59 A 30.00 30.00 0 0 0 74.25 140.59 A 25.50 25.50 0 1 1 51.98 102.00 A 30.00 30.00 0 0 0 77.72 57.41 Z"
                       fill="url(#toy-green-body)"
-                      stroke="#0d612b"
+                      stroke="#0b5e28"
                       strokeWidth="1.8"
                     />
 
-                    {/* Molded plastic surface sheen */}
+                    {/* Molded plastic surface sheen & edge chamfer */}
                     <path
                       d="M 77.72 57.41 A 25.50 25.50 0 1 1 122.28 57.41 A 30.00 30.00 0 0 0 148.02 102.00 A 25.50 25.50 0 1 1 125.75 140.59 A 30.00 30.00 0 0 0 74.25 140.59 A 25.50 25.50 0 1 1 51.98 102.00 A 30.00 30.00 0 0 0 77.72 57.41 Z"
                       fill="url(#plastic-sheen)"
                     />
 
-                    {/* ── 2. THREE SEALED 608RS BEARINGS (matching reference image) ── */}
+                    {/* ── 2. THREE 608RS METALLIC & RUBBER BEARINGS ── */}
                     {/* Bearing 1: Top (100, 45) */}
                     <g>
-                      {/* Outer silver steel ring */}
-                      <circle cx="100" cy="45" r="16.5" fill="none" stroke="#e4e4e7" strokeWidth="1.4" />
-                      {/* Solid black rubber seal plate */}
-                      <circle cx="100" cy="45" r="15.8" fill="#1c1d22" stroke="#09090b" strokeWidth="0.8" />
-                      <circle cx="100" cy="45" r="11.2" fill="#151619" />
-                      {/* Inner silver steel ring */}
-                      <circle cx="100" cy="45" r="10.8" fill="none" stroke="#e4e4e7" strokeWidth="1.4" />
-                      <circle cx="100" cy="45" r="9.5" fill="#1a1b1e" stroke="#52525b" strokeWidth="0.5" />
-                      {/* Center hole through bearing */}
-                      <circle cx="100" cy="45" r="7.5" fill="#09090b" />
-                      {/* Specular glint on steel rings */}
-                      <ellipse cx="95" cy="40" rx="3.2" ry="1.2" transform="rotate(-45 95 40)" fill="#ffffff" fillOpacity="0.4" />
+                      {/* Outer metallic steel race */}
+                      <circle cx="100" cy="45" r="16.8" fill="url(#metallic-steel)" stroke="#27272a" strokeWidth="0.6" />
+                      <circle cx="100" cy="45" r="15.4" fill="#09090b" />
+                      {/* Solid matte black rubber seal plate */}
+                      <circle cx="100" cy="45" r="15.0" fill="url(#rubber-seal-grad)" />
+                      {/* Concentric rubber seal groove */}
+                      <circle cx="100" cy="45" r="13.2" fill="none" stroke="#101114" strokeWidth="0.8" />
+                      <circle cx="100" cy="45" r="11.2" fill="#141518" />
+                      {/* Inner metallic steel race */}
+                      <circle cx="100" cy="45" r="10.8" fill="url(#metallic-steel)" stroke="#18181b" strokeWidth="0.5" />
+                      <circle cx="100" cy="45" r="9.2" fill="#0f1012" />
+                      {/* Center hollow hole through bearing */}
+                      <circle cx="100" cy="45" r="7.5" fill="#070708" />
+                      {/* Specular metallic reflection gleams */}
+                      <ellipse cx="95.5" cy="40.5" rx="3.5" ry="1.2" transform="rotate(-45 95.5 40.5)" fill="#ffffff" fillOpacity="0.5" />
                     </g>
 
                     {/* Bearing 2: Bottom-Right (147.63, 127.5) */}
                     <g>
-                      {/* Outer silver steel ring */}
-                      <circle cx="147.63" cy="127.5" r="16.5" fill="none" stroke="#e4e4e7" strokeWidth="1.4" />
-                      {/* Solid black rubber seal plate */}
-                      <circle cx="147.63" cy="127.5" r="15.8" fill="#1c1d22" stroke="#09090b" strokeWidth="0.8" />
-                      <circle cx="147.63" cy="127.5" r="11.2" fill="#151619" />
-                      {/* Inner silver steel ring */}
-                      <circle cx="147.63" cy="127.5" r="10.8" fill="none" stroke="#e4e4e7" strokeWidth="1.4" />
-                      <circle cx="147.63" cy="127.5" r="9.5" fill="#1a1b1e" stroke="#52525b" strokeWidth="0.5" />
-                      {/* Center hole through bearing */}
-                      <circle cx="147.63" cy="127.5" r="7.5" fill="#09090b" />
-                      {/* Specular glint on steel rings */}
-                      <ellipse cx="142.63" cy="122.5" rx="3.2" ry="1.2" transform="rotate(-45 142.63 122.5)" fill="#ffffff" fillOpacity="0.4" />
+                      {/* Outer metallic steel race */}
+                      <circle cx="147.63" cy="127.5" r="16.8" fill="url(#metallic-steel)" stroke="#27272a" strokeWidth="0.6" />
+                      <circle cx="147.63" cy="127.5" r="15.4" fill="#09090b" />
+                      {/* Solid matte black rubber seal plate */}
+                      <circle cx="147.63" cy="127.5" r="15.0" fill="url(#rubber-seal-grad)" />
+                      {/* Concentric rubber seal groove */}
+                      <circle cx="147.63" cy="127.5" r="13.2" fill="none" stroke="#101114" strokeWidth="0.8" />
+                      <circle cx="147.63" cy="127.5" r="11.2" fill="#141518" />
+                      {/* Inner metallic steel race */}
+                      <circle cx="147.63" cy="127.5" r="10.8" fill="url(#metallic-steel)" stroke="#18181b" strokeWidth="0.5" />
+                      <circle cx="147.63" cy="127.5" r="9.2" fill="#0f1012" />
+                      {/* Center hollow hole through bearing */}
+                      <circle cx="147.63" cy="127.5" r="7.5" fill="#070708" />
+                      {/* Specular metallic reflection gleams */}
+                      <ellipse cx="143.13" cy="123" rx="3.5" ry="1.2" transform="rotate(-45 143.13 123)" fill="#ffffff" fillOpacity="0.5" />
                     </g>
 
                     {/* Bearing 3: Bottom-Left (52.37, 127.5) */}
                     <g>
-                      {/* Outer silver steel ring */}
-                      <circle cx="52.37" cy="127.5" r="16.5" fill="none" stroke="#e4e4e7" strokeWidth="1.4" />
-                      {/* Solid black rubber seal plate */}
-                      <circle cx="52.37" cy="127.5" r="15.8" fill="#1c1d22" stroke="#09090b" strokeWidth="0.8" />
-                      <circle cx="52.37" cy="127.5" r="11.2" fill="#151619" />
-                      {/* Inner silver steel ring */}
-                      <circle cx="52.37" cy="127.5" r="10.8" fill="none" stroke="#e4e4e7" strokeWidth="1.4" />
-                      <circle cx="52.37" cy="127.5" r="9.5" fill="#1a1b1e" stroke="#52525b" strokeWidth="0.5" />
-                      {/* Center hole through bearing */}
-                      <circle cx="52.37" cy="127.5" r="7.5" fill="#09090b" />
-                      {/* Specular glint on steel rings */}
-                      <ellipse cx="47.37" cy="122.5" rx="3.2" ry="1.2" transform="rotate(-45 47.37 122.5)" fill="#ffffff" fillOpacity="0.4" />
+                      {/* Outer metallic steel race */}
+                      <circle cx="52.37" cy="127.5" r="16.8" fill="url(#metallic-steel)" stroke="#27272a" strokeWidth="0.6" />
+                      <circle cx="52.37" cy="127.5" r="15.4" fill="#09090b" />
+                      {/* Solid matte black rubber seal plate */}
+                      <circle cx="52.37" cy="127.5" r="15.0" fill="url(#rubber-seal-grad)" />
+                      {/* Concentric rubber seal groove */}
+                      <circle cx="52.37" cy="127.5" r="13.2" fill="none" stroke="#101114" strokeWidth="0.8" />
+                      <circle cx="52.37" cy="127.5" r="11.2" fill="#141518" />
+                      {/* Inner metallic steel race */}
+                      <circle cx="52.37" cy="127.5" r="10.8" fill="url(#metallic-steel)" stroke="#18181b" strokeWidth="0.5" />
+                      <circle cx="52.37" cy="127.5" r="9.2" fill="#0f1012" />
+                      {/* Center hollow hole through bearing */}
+                      <circle cx="52.37" cy="127.5" r="7.5" fill="#070708" />
+                      {/* Specular metallic reflection gleams */}
+                      <ellipse cx="47.87" cy="123" rx="3.5" ry="1.2" transform="rotate(-45 47.87 123)" fill="#ffffff" fillOpacity="0.5" />
                     </g>
 
-                    {/* ── 3. PLAIN SMOOTH GREEN CENTER CAP (matching reference image) ── */}
+                    {/* ── 3. SMOOTH PLASTIC CENTER CAP (matching reference image) ── */}
                     <g>
-                      <circle cx="100" cy="100" r="21.5" fill="url(#smooth-green-cap)" stroke="#159c46" strokeWidth="1.2" />
-                      <ellipse cx="94" cy="94" rx="7" ry="3.5" transform="rotate(-35 94 94)" fill="#ffffff" fillOpacity="0.32" />
+                      <circle cx="100" cy="100" r="21.5" fill="url(#smooth-green-cap)" stroke="#11883a" strokeWidth="1.4" />
+                      <ellipse cx="93.5" cy="93.5" rx="7" ry="3.5" transform="rotate(-35 93.5 93.5)" fill="#ffffff" fillOpacity="0.38" />
                     </g>
                   </g>
                 </svg>
