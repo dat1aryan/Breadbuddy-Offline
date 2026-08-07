@@ -263,17 +263,17 @@ export function FidgetZone() {
                     <filter id="fs-shadow" x="-10%" y="-10%" width="130%" height="130%">
                       <feDropShadow dx="2" dy="4" stdDeviation="5" floodColor="#000000" floodOpacity="0.35" />
                     </filter>
-                    {/* Plastic body gradient — Electric Neon Green */}
+                    {/* Plastic body gradient — BreadBuddy Neon Lime (#A8E635) */}
                     <linearGradient id="plastic-body" x1="0" y1="0" x2="0.3" y2="1">
-                      <stop offset="0%" stopColor="#ccff00" />
-                      <stop offset="30%" stopColor="#39ff14" />
-                      <stop offset="70%" stopColor="#00e64d" />
-                      <stop offset="100%" stopColor="#00b33c" />
+                      <stop offset="0%" stopColor="#c7ff5c" />
+                      <stop offset="35%" stopColor="#a8e635" />
+                      <stop offset="75%" stopColor="#87c71e" />
+                      <stop offset="100%" stopColor="#68a10b" />
                     </linearGradient>
                     {/* Highlight for rubbery sheen */}
                     <linearGradient id="plastic-highlight" x1="0.3" y1="0" x2="0.7" y2="1">
-                      <stop offset="0%" stopColor="#ffffff" stopOpacity="0.45" />
-                      <stop offset="50%" stopColor="#ffffff" stopOpacity="0.1" />
+                      <stop offset="0%" stopColor="#ffffff" stopOpacity="0.4" />
+                      <stop offset="50%" stopColor="#ffffff" stopOpacity="0.08" />
                       <stop offset="100%" stopColor="#000000" stopOpacity="0.15" />
                     </linearGradient>
                     {/* Ball bearing outer ring gradient */}
@@ -288,20 +288,20 @@ export function FidgetZone() {
                       <stop offset="40%" stopColor="#aaa" />
                       <stop offset="100%" stopColor="#666" />
                     </radialGradient>
-                    {/* Center cap gradient — raised neon green button */}
+                    {/* Center cap gradient — raised bb-lime button */}
                     <radialGradient id="center-cap" cx="45%" cy="40%">
-                      <stop offset="0%" stopColor="#e6ff80" />
-                      <stop offset="50%" stopColor="#39ff14" />
-                      <stop offset="100%" stopColor="#00b33c" />
+                      <stop offset="0%" stopColor="#d3ff75" />
+                      <stop offset="50%" stopColor="#a8e635" />
+                      <stop offset="100%" stopColor="#68a10b" />
                     </radialGradient>
                   </defs>
 
                   <g filter="url(#fs-shadow)">
-                    {/* ─── PERFECT SYMMETRICAL NEON GREEN PLASTIC BODY ─── */}
+                    {/* ─── PERFECT SYMMETRICAL NEON LIME PLASTIC BODY ─── */}
                     <path
                       d="M 78.86 56.37 A 24 24 0 1 1 121.14 56.37 A 32 32 0 0 0 148.35 103.51 A 24 24 0 1 1 127.21 140.12 A 32 32 0 0 0 72.79 140.12 A 24 24 0 1 1 51.65 103.51 A 32 32 0 0 0 78.86 56.37 Z"
                       fill="url(#plastic-body)"
-                      stroke="#00802b"
+                      stroke="#4d7a04"
                       strokeWidth="1.2"
                     />
 
@@ -339,7 +339,7 @@ export function FidgetZone() {
                     {/* ─── CENTER HUB / CAP ─── */}
                     <circle cx="100" cy="100" r="18" fill="#18181b" stroke="#09090b" strokeWidth="1" />
                     <circle cx="100" cy="100" r="16" fill="url(#bearing-inner)" />
-                    <circle cx="100" cy="100" r="14" fill="url(#center-cap)" stroke="#00802b" strokeWidth="1" />
+                    <circle cx="100" cy="100" r="14" fill="url(#center-cap)" stroke="#4d7a04" strokeWidth="1" />
                     <ellipse cx="97" cy="96" rx="5" ry="3" fill="#ffffff" fillOpacity="0.4" />
                   </g>
                 </svg>
