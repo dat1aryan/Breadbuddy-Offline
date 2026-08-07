@@ -263,49 +263,45 @@ export function FidgetZone() {
                     <filter id="fs-shadow" x="-10%" y="-10%" width="130%" height="130%">
                       <feDropShadow dx="2" dy="4" stdDeviation="5" floodColor="#000000" floodOpacity="0.35" />
                     </filter>
-                    {/* Plastic body gradient — BreadBuddy Neon Lime (#A8E635) */}
-                    <linearGradient id="plastic-body" x1="0" y1="0" x2="0.3" y2="1">
-                      <stop offset="0%" stopColor="#c7ff5c" />
-                      <stop offset="35%" stopColor="#a8e635" />
-                      <stop offset="75%" stopColor="#87c71e" />
-                      <stop offset="100%" stopColor="#68a10b" />
+                    {/* Plastic body gradient — Toy Green Plastic (#23ce6b) */}
+                    <linearGradient id="plastic-body" x1="0.2" y1="0" x2="0.8" y2="1">
+                      <stop offset="0%" stopColor="#4ae37b" />
+                      <stop offset="35%" stopColor="#23ce6b" />
+                      <stop offset="75%" stopColor="#199f4f" />
+                      <stop offset="100%" stopColor="#127a3c" />
                     </linearGradient>
-                    {/* Highlight for rubbery sheen */}
-                    <linearGradient id="plastic-highlight" x1="0.3" y1="0" x2="0.7" y2="1">
-                      <stop offset="0%" stopColor="#ffffff" stopOpacity="0.4" />
-                      <stop offset="50%" stopColor="#ffffff" stopOpacity="0.08" />
-                      <stop offset="100%" stopColor="#000000" stopOpacity="0.15" />
+                    {/* Rubbery plastic specular highlight */}
+                    <linearGradient id="plastic-highlight" x1="0.2" y1="0" x2="0.8" y2="1">
+                      <stop offset="0%" stopColor="#ffffff" stopOpacity="0.5" />
+                      <stop offset="30%" stopColor="#ffffff" stopOpacity="0.15" />
+                      <stop offset="70%" stopColor="#000000" stopOpacity="0.05" />
+                      <stop offset="100%" stopColor="#000000" stopOpacity="0.2" />
                     </linearGradient>
-                    {/* Ball bearing outer ring gradient */}
-                    <radialGradient id="bearing-outer" cx="50%" cy="45%">
-                      <stop offset="0%" stopColor="#555" />
-                      <stop offset="50%" stopColor="#2a2a2a" />
-                      <stop offset="100%" stopColor="#111" />
+                    {/* Ball bearing metallic chrome gradient */}
+                    <radialGradient id="bearing-steel" cx="40%" cy="35%">
+                      <stop offset="0%" stopColor="#ffffff" />
+                      <stop offset="35%" stopColor="#d4d4d8" />
+                      <stop offset="70%" stopColor="#888891" />
+                      <stop offset="100%" stopColor="#484850" />
                     </radialGradient>
-                    {/* Ball bearing inner ring gradient — metallic silver */}
-                    <radialGradient id="bearing-inner" cx="40%" cy="35%">
-                      <stop offset="0%" stopColor="#e0e0e0" />
-                      <stop offset="40%" stopColor="#aaa" />
-                      <stop offset="100%" stopColor="#666" />
-                    </radialGradient>
-                    {/* Center cap gradient — raised bb-lime button */}
-                    <radialGradient id="center-cap" cx="45%" cy="40%">
-                      <stop offset="0%" stopColor="#d3ff75" />
-                      <stop offset="50%" stopColor="#a8e635" />
-                      <stop offset="100%" stopColor="#68a10b" />
+                    {/* Center cap gradient — raised green plastic button */}
+                    <radialGradient id="center-cap" cx="40%" cy="35%">
+                      <stop offset="0%" stopColor="#55eb90" />
+                      <stop offset="50%" stopColor="#23ce6b" />
+                      <stop offset="100%" stopColor="#148c44" />
                     </radialGradient>
                   </defs>
 
                   <g filter="url(#fs-shadow)">
-                    {/* ─── PERFECT SYMMETRICAL NEON LIME PLASTIC BODY ─── */}
+                    {/* ─── GREEN PLASTIC BODY ─── */}
                     <path
                       d="M 78.86 56.37 A 24 24 0 1 1 121.14 56.37 A 32 32 0 0 0 148.35 103.51 A 24 24 0 1 1 127.21 140.12 A 32 32 0 0 0 72.79 140.12 A 24 24 0 1 1 51.65 103.51 A 32 32 0 0 0 78.86 56.37 Z"
                       fill="url(#plastic-body)"
-                      stroke="#4d7a04"
-                      strokeWidth="1.2"
+                      stroke="#116e35"
+                      strokeWidth="1.5"
                     />
 
-                    {/* Top plastic highlight / bevel overlay */}
+                    {/* Plastic 3D surface sheen / bevel overlay */}
                     <path
                       d="M 78.86 56.37 A 24 24 0 1 1 121.14 56.37 A 32 32 0 0 0 148.35 103.51 A 24 24 0 1 1 127.21 140.12 A 32 32 0 0 0 72.79 140.12 A 24 24 0 1 1 51.65 103.51 A 32 32 0 0 0 78.86 56.37 Z"
                       fill="url(#plastic-highlight)"
@@ -313,34 +309,29 @@ export function FidgetZone() {
 
                     {/* ─── 3 BALL BEARINGS AT ARM TIPS ─── */}
                     {/* Bearing 1 (Top: 100, 45) */}
-                    <circle cx="100" cy="45" r="14.5" fill="#18181b" stroke="#09090b" strokeWidth="1" />
-                    <circle cx="100" cy="45" r="12" fill="url(#bearing-inner)" />
-                    <circle cx="100" cy="45" r="9.5" fill="#18181b" />
-                    <circle cx="100" cy="45" r="7" fill="url(#bearing-inner)" />
-                    <circle cx="100" cy="45" r="5" fill="#09090b" />
-                    <ellipse cx="97.5" cy="42.5" rx="2" ry="1.2" fill="#ffffff" fillOpacity="0.4" />
+                    <circle cx="100" cy="45" r="16" fill="url(#bearing-steel)" />
+                    <circle cx="100" cy="45" r="14" fill="#202023" stroke="#09090b" strokeWidth="0.8" />
+                    <circle cx="100" cy="45" r="8.5" fill="url(#bearing-steel)" />
+                    <circle cx="100" cy="45" r="6.5" fill="#0f0f11" />
+                    <ellipse cx="97.5" cy="42" rx="3" ry="1.8" fill="#ffffff" fillOpacity="0.45" />
 
                     {/* Bearing 2 (Bottom-right: 147.63, 127.5) */}
-                    <circle cx="147.63" cy="127.5" r="14.5" fill="#18181b" stroke="#09090b" strokeWidth="1" />
-                    <circle cx="147.63" cy="127.5" r="12" fill="url(#bearing-inner)" />
-                    <circle cx="147.63" cy="127.5" r="9.5" fill="#18181b" />
-                    <circle cx="147.63" cy="127.5" r="7" fill="url(#bearing-inner)" />
-                    <circle cx="147.63" cy="127.5" r="5" fill="#09090b" />
-                    <ellipse cx="145.13" cy="125" rx="2" ry="1.2" fill="#ffffff" fillOpacity="0.4" />
+                    <circle cx="147.63" cy="127.5" r="16" fill="url(#bearing-steel)" />
+                    <circle cx="147.63" cy="127.5" r="14" fill="#202023" stroke="#09090b" strokeWidth="0.8" />
+                    <circle cx="147.63" cy="127.5" r="8.5" fill="url(#bearing-steel)" />
+                    <circle cx="147.63" cy="127.5" r="6.5" fill="#0f0f11" />
+                    <ellipse cx="145" cy="124.5" rx="3" ry="1.8" fill="#ffffff" fillOpacity="0.45" />
 
                     {/* Bearing 3 (Bottom-left: 52.37, 127.5) */}
-                    <circle cx="52.37" cy="127.5" r="14.5" fill="#18181b" stroke="#09090b" strokeWidth="1" />
-                    <circle cx="52.37" cy="127.5" r="12" fill="url(#bearing-inner)" />
-                    <circle cx="52.37" cy="127.5" r="9.5" fill="#18181b" />
-                    <circle cx="52.37" cy="127.5" r="7" fill="url(#bearing-inner)" />
-                    <circle cx="52.37" cy="127.5" r="5" fill="#09090b" />
-                    <ellipse cx="49.87" cy="125" rx="2" ry="1.2" fill="#ffffff" fillOpacity="0.4" />
+                    <circle cx="52.37" cy="127.5" r="16" fill="url(#bearing-steel)" />
+                    <circle cx="52.37" cy="127.5" r="14" fill="#202023" stroke="#09090b" strokeWidth="0.8" />
+                    <circle cx="52.37" cy="127.5" r="8.5" fill="url(#bearing-steel)" />
+                    <circle cx="52.37" cy="127.5" r="6.5" fill="#0f0f11" />
+                    <ellipse cx="49.8" cy="124.5" rx="3" ry="1.8" fill="#ffffff" fillOpacity="0.45" />
 
-                    {/* ─── CENTER HUB / CAP ─── */}
-                    <circle cx="100" cy="100" r="18" fill="#18181b" stroke="#09090b" strokeWidth="1" />
-                    <circle cx="100" cy="100" r="16" fill="url(#bearing-inner)" />
-                    <circle cx="100" cy="100" r="14" fill="url(#center-cap)" stroke="#4d7a04" strokeWidth="1" />
-                    <ellipse cx="97" cy="96" rx="5" ry="3" fill="#ffffff" fillOpacity="0.4" />
+                    {/* ─── RAISED GREEN CENTER CAP ─── */}
+                    <circle cx="100" cy="100" r="17.5" fill="url(#center-cap)" stroke="#116e35" strokeWidth="1.2" />
+                    <ellipse cx="96" cy="95" rx="6" ry="3.5" fill="#ffffff" fillOpacity="0.35" />
                   </g>
                 </svg>
               </div>
