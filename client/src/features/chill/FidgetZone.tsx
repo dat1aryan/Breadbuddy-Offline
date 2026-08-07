@@ -241,96 +241,147 @@ export function FidgetZone() {
         {activeTab === 'spinner' && (
           <div className="flex flex-col items-center justify-center gap-4 select-none">
 
-            {/* Drag zone — captures all pointer events over the full spinner area */}
+            {/* Drag zone */}
             <div
               onPointerDown={onPointerDown}
               onPointerMove={onPointerMove}
               onPointerUp={onPointerUp}
               onPointerLeave={onPointerUp}
               className="relative flex items-center justify-center cursor-grab active:cursor-grabbing"
-              style={{ width: 170, height: 170, touchAction: 'none' }}
-              title="Drag to spin, or click the center bearing"
+              style={{ width: 220, height: 220, touchAction: 'none' }}
+              title="Drag to spin, or click the center to boost"
             >
-              {/* Spinner blades (rotate via ref — no setState per frame) */}
+              {/* Spinner body (rotate via ref) */}
               <div ref={spinnerElemRef} style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <svg width="160" height="160" viewBox="0 0 160 160" fill="none">
+                <svg width="210" height="210" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <defs>
-                    {/* Neon lime glow filter */}
-                    <filter id="spinner-glow" x="-40%" y="-40%" width="180%" height="180%">
-                      <feGaussianBlur stdDeviation="3" result="blur" />
-                      <feMerge>
-                        <feMergeNode in="blur" />
-                        <feMergeNode in="SourceGraphic" />
-                      </feMerge>
+                    {/* Drop shadow for depth */}
+                    <filter id="fs-shadow" x="-10%" y="-10%" width="130%" height="130%">
+                      <feDropShadow dx="2" dy="4" stdDeviation="5" floodColor="#000000" floodOpacity="0.35" />
                     </filter>
-                    <filter id="blade-glow" x="-30%" y="-30%" width="160%" height="160%">
-                      <feGaussianBlur stdDeviation="2.5" result="blur" />
-                      <feMerge>
-                        <feMergeNode in="blur" />
-                        <feMergeNode in="SourceGraphic" />
-                      </feMerge>
-                    </filter>
-                    {/* Neon lime radial gradient for blades */}
-                    <radialGradient id="blade-grad-top" cx="50%" cy="50%">
-                      <stop offset="0%" stopColor="#d9f99d" />
-                      <stop offset="60%" stopColor="#84cc16" />
-                      <stop offset="100%" stopColor="#3f6212" />
+                    {/* Plastic body gradient — bright green rubber */}
+                    <linearGradient id="plastic-body" x1="0" y1="0" x2="0.3" y2="1">
+                      <stop offset="0%" stopColor="#5ef59d" />
+                      <stop offset="35%" stopColor="#34d46a" />
+                      <stop offset="70%" stopColor="#22b856" />
+                      <stop offset="100%" stopColor="#16a34a" />
+                    </linearGradient>
+                    {/* Highlight for rubbery sheen */}
+                    <linearGradient id="plastic-highlight" x1="0.3" y1="0" x2="0.7" y2="1">
+                      <stop offset="0%" stopColor="#ffffff" stopOpacity="0.35" />
+                      <stop offset="50%" stopColor="#ffffff" stopOpacity="0.05" />
+                      <stop offset="100%" stopColor="#000000" stopOpacity="0.1" />
+                    </linearGradient>
+                    {/* Ball bearing outer ring gradient */}
+                    <radialGradient id="bearing-outer" cx="50%" cy="45%">
+                      <stop offset="0%" stopColor="#555" />
+                      <stop offset="50%" stopColor="#2a2a2a" />
+                      <stop offset="100%" stopColor="#111" />
                     </radialGradient>
-                    <radialGradient id="hub-grad" cx="50%" cy="50%">
-                      <stop offset="0%" stopColor="#ecfccb" />
-                      <stop offset="50%" stopColor="#a3e635" />
-                      <stop offset="100%" stopColor="#4d7c0f" />
+                    {/* Ball bearing inner ring gradient — metallic silver */}
+                    <radialGradient id="bearing-inner" cx="40%" cy="35%">
+                      <stop offset="0%" stopColor="#e0e0e0" />
+                      <stop offset="40%" stopColor="#aaa" />
+                      <stop offset="100%" stopColor="#666" />
+                    </radialGradient>
+                    {/* Center cap gradient — raised green button */}
+                    <radialGradient id="center-cap" cx="45%" cy="40%">
+                      <stop offset="0%" stopColor="#6ef5a5" />
+                      <stop offset="50%" stopColor="#34d46a" />
+                      <stop offset="100%" stopColor="#1a9e45" />
                     </radialGradient>
                   </defs>
 
-                  {/* Blade 1 — Top */}
-                  <path
-                    d="M80 80 C65 75 52 52 60 25 C64 10 74 5 80 5 C86 5 96 10 100 25 C108 52 95 75 80 80Z"
-                    fill="url(#blade-grad-top)"
-                    stroke="#84cc16"
-                    strokeWidth="1.5"
-                    filter="url(#blade-glow)"
-                  />
-                  <circle cx="80" cy="32" r="10" fill="#0a0a0a" stroke="#84cc16" strokeWidth="1.5" filter="url(#blade-glow)" />
-                  <circle cx="80" cy="32" r="4.5" fill="#a3e635" />
+                  <g filter="url(#fs-shadow)">
+                    {/* ─── GREEN PLASTIC BODY (3 smooth arms) ─── */}
+                    {/* Arm 1 — Top */}
+                    <path
+                      d="M100 100 Q82 85 78 55 Q76 38 82 28 Q88 18 100 18 Q112 18 118 28 Q124 38 122 55 Q118 85 100 100 Z"
+                      fill="url(#plastic-body)"
+                    />
+                    {/* Arm 2 — Bottom-left */}
+                    <path
+                      d="M100 100 Q85 108 62 118 Q46 126 35 122 Q22 116 18 104 Q14 92 24 82 Q34 74 58 80 Q80 90 100 100 Z"
+                      fill="url(#plastic-body)"
+                    />
+                    {/* Arm 3 — Bottom-right */}
+                    <path
+                      d="M100 100 Q115 108 138 118 Q154 126 165 122 Q178 116 182 104 Q186 92 176 82 Q166 74 142 80 Q120 90 100 100 Z"
+                      fill="url(#plastic-body)"
+                    />
+                    {/* Center body mass (covers seams) */}
+                    <circle cx="100" cy="100" r="26" fill="url(#plastic-body)" />
 
-                  {/* Blade 2 — Bottom-left */}
-                  <path
-                    d="M80 80 C72 95 48 98 26 82 C13 72 12 61 17 56 C22 51 34 47 48 54 C70 66 80 80 80 80Z"
-                    fill="url(#blade-grad-top)"
-                    stroke="#84cc16"
-                    strokeWidth="1.5"
-                    filter="url(#blade-glow)"
-                  />
-                  <circle cx="38" cy="76" r="10" fill="#0a0a0a" stroke="#84cc16" strokeWidth="1.5" filter="url(#blade-glow)" />
-                  <circle cx="38" cy="76" r="4.5" fill="#a3e635" />
+                    {/* Rubbery sheen overlay on the whole body */}
+                    <path
+                      d="M100 100 Q82 85 78 55 Q76 38 82 28 Q88 18 100 18 Q112 18 118 28 Q124 38 122 55 Q118 85 100 100 Z"
+                      fill="url(#plastic-highlight)"
+                    />
+                    <path
+                      d="M100 100 Q85 108 62 118 Q46 126 35 122 Q22 116 18 104 Q14 92 24 82 Q34 74 58 80 Q80 90 100 100 Z"
+                      fill="url(#plastic-highlight)"
+                    />
+                    <path
+                      d="M100 100 Q115 108 138 118 Q154 126 165 122 Q178 116 182 104 Q186 92 176 82 Q166 74 142 80 Q120 90 100 100 Z"
+                      fill="url(#plastic-highlight)"
+                    />
 
-                  {/* Blade 3 — Bottom-right */}
-                  <path
-                    d="M80 80 C95 95 112 82 134 80 C147 78 152 67 149 61 C146 55 136 50 120 54 C96 62 80 80 80 80Z"
-                    fill="url(#blade-grad-top)"
-                    stroke="#84cc16"
-                    strokeWidth="1.5"
-                    filter="url(#blade-glow)"
-                  />
-                  <circle cx="122" cy="76" r="10" fill="#0a0a0a" stroke="#84cc16" strokeWidth="1.5" filter="url(#blade-glow)" />
-                  <circle cx="122" cy="76" r="4.5" fill="#a3e635" />
+                    {/* Subtle edge stroke for plastic definition */}
+                    <path
+                      d="M100 100 Q82 85 78 55 Q76 38 82 28 Q88 18 100 18 Q112 18 118 28 Q124 38 122 55 Q118 85 100 100 Z"
+                      fill="none" stroke="#1a8a3e" strokeWidth="1" strokeOpacity="0.5"
+                    />
+                    <path
+                      d="M100 100 Q85 108 62 118 Q46 126 35 122 Q22 116 18 104 Q14 92 24 82 Q34 74 58 80 Q80 90 100 100 Z"
+                      fill="none" stroke="#1a8a3e" strokeWidth="1" strokeOpacity="0.5"
+                    />
+                    <path
+                      d="M100 100 Q115 108 138 118 Q154 126 165 122 Q178 116 182 104 Q186 92 176 82 Q166 74 142 80 Q120 90 100 100 Z"
+                      fill="none" stroke="#1a8a3e" strokeWidth="1" strokeOpacity="0.5"
+                    />
 
-                  {/* Center hub ring */}
-                  <circle cx="80" cy="80" r="20" fill="#0a0a0a" stroke="#84cc16" strokeWidth="2.5" filter="url(#spinner-glow)" />
-                  <circle cx="80" cy="80" r="13" fill="url(#hub-grad)" />
-                  {/* Inner bearing dot */}
-                  <circle cx="80" cy="80" r="5" fill="#0a0a0a" />
-                  <circle cx="78" cy="78" r="2" fill="#ecfccb" fillOpacity="0.6" />
+                    {/* ─── BALL BEARINGS (3 arm tips) ─── */}
+                    {/* Bearing 1 — Top */}
+                    <circle cx="100" cy="34" r="16" fill="url(#bearing-outer)" />
+                    <circle cx="100" cy="34" r="11" fill="#1a1a1a" />
+                    <circle cx="100" cy="34" r="8" fill="url(#bearing-inner)" />
+                    <circle cx="100" cy="34" r="4.5" fill="#333" />
+                    <ellipse cx="97" cy="31" rx="2.5" ry="1.5" fill="white" fillOpacity="0.25" />
+
+                    {/* Bearing 2 — Bottom-left */}
+                    <circle cx="30" cy="106" r="16" fill="url(#bearing-outer)" />
+                    <circle cx="30" cy="106" r="11" fill="#1a1a1a" />
+                    <circle cx="30" cy="106" r="8" fill="url(#bearing-inner)" />
+                    <circle cx="30" cy="106" r="4.5" fill="#333" />
+                    <ellipse cx="27" cy="103" rx="2.5" ry="1.5" fill="white" fillOpacity="0.25" />
+
+                    {/* Bearing 3 — Bottom-right */}
+                    <circle cx="170" cy="106" r="16" fill="url(#bearing-outer)" />
+                    <circle cx="170" cy="106" r="11" fill="#1a1a1a" />
+                    <circle cx="170" cy="106" r="8" fill="url(#bearing-inner)" />
+                    <circle cx="170" cy="106" r="4.5" fill="#333" />
+                    <ellipse cx="167" cy="103" rx="2.5" ry="1.5" fill="white" fillOpacity="0.25" />
+
+                    {/* ─── CENTER HUB ─── */}
+                    {/* Outer bearing ring */}
+                    <circle cx="100" cy="100" r="22" fill="url(#bearing-outer)" />
+                    <circle cx="100" cy="100" r="17" fill="#1a1a1a" />
+                    {/* Raised green center cap/button */}
+                    <circle cx="100" cy="100" r="14" fill="url(#center-cap)" />
+                    {/* Cap highlight shine */}
+                    <ellipse cx="96" cy="95" rx="6" ry="4" fill="white" fillOpacity="0.22" />
+                    {/* Center dot */}
+                    <circle cx="100" cy="100" r="3" fill="#1a8a3e" />
+                  </g>
                 </svg>
               </div>
 
-              {/* Invisible center click target — sits on top, covers the hub */}
+              {/* Invisible center click target */}
               <div
                 onClick={handleCenterClick}
                 className="absolute rounded-full z-10 cursor-pointer"
-                style={{ width: 44, height: 44, top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}
-                title="Click center bearing to spin!"
+                style={{ width: 50, height: 50, top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}
+                title="Click center to spin!"
               />
             </div>
 
@@ -340,7 +391,7 @@ export function FidgetZone() {
                 {parseInt(rpmDisplay) > 0 ? `${rpmDisplay} RPM` : 'Drag or tap center to spin'}
               </p>
               <p className="text-[9px] text-bb-text-muted font-mono uppercase tracking-wider opacity-60">
-                {parseInt(rpmDisplay) > 200 ? '🔥 zooming!' : parseInt(rpmDisplay) > 80 ? '⚡ nice spin' : parseInt(rpmDisplay) > 10 ? '🌀 spinning...' : 'try a flick drag!'}
+                {parseInt(rpmDisplay) > 200 ? '🔥 zooming!' : parseInt(rpmDisplay) > 80 ? '⚡ nice spin' : parseInt(rpmDisplay) > 10 ? '🌀 spinning...' : 'flick it!'}
               </p>
             </div>
           </div>
