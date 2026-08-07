@@ -1,0 +1,23 @@
+{
+  "name": "breadbuddy",
+  "version": "1.0.0",
+  "private": true,
+  "description": "BreadBuddy - A Gen Z financial AI assistant for college students to track monthly allowance and expenses.",
+  "main": "server/dist/index.js",
+  "scripts": {
+    "dev": "concurrently -k -n SERVER,CLIENT -c magenta,cyan \"npm:dev:server\" \"npm:dev:client\"",
+    "dev:server": "cd server && npm run dev",
+    "dev:client": "cd client && npm run dev",
+    "build": "npm run build:server && npm run build:client",
+    "build:server": "cd server && npm run build",
+    "build:client": "cd client && npm run build",
+    "start": "cd server && npm start",
+    "install:all": "npm install && cd server && npm install && cd ../client && npm install"
+  },
+  "keywords": ["finance", "ai", "college", "expense-tracker", "genz"],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^9.1.0"
+  }
+}

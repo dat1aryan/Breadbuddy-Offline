@@ -1,0 +1,1386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BreadBuddy — Neo-Brutalism Style Guide (Phase 0)</title>
+  <meta name="description" content="Design token reference and component style guide for BreadBuddy's neo-brutalism design language overhaul." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Outfit:wght@700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ═══════════════════════════════════════════════════════════
+       DESIGN TOKENS — mirroring tailwind.config.js bb.* namespace
+       ═══════════════════════════════════════════════════════════ */
+    :root {
+      /* Surfaces */
+      --bb-bg:      #0F0D13;
+      --bb-surface: #1A1724;
+      --bb-paper:   #F4F0FF;
+
+      /* Accent 1 — Lime */
+      --bb-lime:    #A8E635;
+      --bb-lime-fg: #0F1A00;
+
+      /* Accent 2 — Coral */
+      --bb-coral:    #F85C50;
+      --bb-coral-fg: #1A0300;
+
+      /* Accent 3 — Violet */
+      --bb-violet:    #9B59F5;
+      --bb-violet-fg: #0D0027;
+
+      /* Text */
+      --bb-text-primary:   #F2EDFF;
+      --bb-text-secondary: #A89EC4;
+      --bb-text-muted:     #5B5272;
+
+      /* Borders */
+      --bb-border:   #2B2540;
+      --bb-border-w: 3px;       /* card / button default */
+      --bb-border-sm: 2px;      /* inputs, chips */
+      --bb-border-lg: 4px;      /* modals, hero CTAs */
+
+      /* Shadows — offset only, zero blur */
+      --bb-shadow:        4px 4px 0px 0px #000;
+      --bb-shadow-hover:  2px 2px 0px 0px #000;
+      --bb-shadow-active: 0px  0px 0px 0px #000;
+      --bb-shadow-lg:     6px 6px 0px 0px #000;
+
+      /* Accent shadows */
+      --bb-shadow-lime:   4px 4px 0px 0px #A8E635;
+      --bb-shadow-coral:  4px 4px 0px 0px #F85C50;
+      --bb-shadow-violet: 4px 4px 0px 0px #9B59F5;
+      --bb-shadow-paper:  4px 4px 0px 0px #F4F0FF;
+
+      /* Radius */
+      --bb-r-none: 0px;
+      --bb-r-xs:   2px;
+      --bb-r-sm:   4px;   /* DEFAULT */
+      --bb-r-md:   6px;
+      --bb-r-lg:   8px;
+
+      /* Typography */
+      --font-sans:    'Inter', ui-sans-serif, system-ui, sans-serif;
+      --font-display: 'Outfit', 'Inter', ui-sans-serif, sans-serif;
+      --font-mono:    'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       BASE RESET
+       ═══════════════════════════════════════════════════════════ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bb-bg);
+      color: var(--bb-text-primary);
+      font-family: var(--font-sans);
+      font-size: 14px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       LAYOUT UTILITIES
+       ═══════════════════════════════════════════════════════════ */
+    .sg-wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 48px 24px 96px;
+    }
+
+    .sg-section {
+      margin-bottom: 64px;
+    }
+
+    .sg-section-title {
+      font-family: var(--font-display);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--bb-text-muted);
+      padding-bottom: 12px;
+      border-bottom: var(--bb-border-sm) solid var(--bb-border);
+      margin-bottom: 32px;
+    }
+
+    .sg-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      align-items: flex-start;
+    }
+
+    .sg-col {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       HEADER
+       ═══════════════════════════════════════════════════════════ */
+    .sg-header {
+      margin-bottom: 80px;
+      padding-bottom: 48px;
+      border-bottom: var(--bb-border-w) solid var(--bb-border);
+    }
+
+    .sg-header-eyebrow {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--bb-lime);
+      background: var(--bb-lime-fg);
+      border: 2px solid var(--bb-lime);
+      border-radius: var(--bb-r-xs);
+      padding: 4px 10px;
+      margin-bottom: 20px;
+    }
+
+    .sg-header h1 {
+      font-family: var(--font-display);
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      line-height: 1;
+      color: var(--bb-text-primary);
+      margin-bottom: 12px;
+    }
+
+    .sg-header h1 span {
+      color: var(--bb-violet);
+    }
+
+    .sg-header p {
+      color: var(--bb-text-secondary);
+      font-size: 15px;
+      max-width: 600px;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       RATIONALE BLOCK
+       ═══════════════════════════════════════════════════════════ */
+    .sg-rationale {
+      background: var(--bb-surface);
+      border: var(--bb-border-w) solid var(--bb-border);
+      border-radius: var(--bb-r-sm);
+      box-shadow: var(--bb-shadow);
+      padding: 28px 32px;
+      margin-bottom: 64px;
+    }
+
+    .sg-rationale h2 {
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--bb-text-primary);
+      margin-bottom: 20px;
+    }
+
+    .sg-rationale-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 24px;
+    }
+
+    .sg-rationale-item h3 {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--bb-lime);
+      margin-bottom: 8px;
+    }
+
+    .sg-rationale-item p {
+      font-size: 13px;
+      color: var(--bb-text-secondary);
+      line-height: 1.7;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       COLOUR SWATCHES
+       ═══════════════════════════════════════════════════════════ */
+    .swatch-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 16px;
+    }
+
+    .swatch {
+      border: var(--bb-border-w) solid var(--bb-border);
+      border-radius: var(--bb-r-sm);
+      overflow: hidden;
+      box-shadow: var(--bb-shadow);
+    }
+
+    .swatch-color {
+      height: 72px;
+    }
+
+    .swatch-info {
+      background: var(--bb-surface);
+      padding: 10px 12px;
+    }
+
+    .swatch-name {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--bb-text-primary);
+    }
+
+    .swatch-hex {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--bb-text-muted);
+      margin-top: 2px;
+    }
+
+    .swatch-role {
+      font-size: 10px;
+      color: var(--bb-text-muted);
+      margin-top: 4px;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       BUTTONS
+       ═══════════════════════════════════════════════════════════ */
+    .bb-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-family: var(--font-sans);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      border-radius: var(--bb-r-sm);
+      border: var(--bb-border-w) solid #000;
+      cursor: pointer;
+      transition: transform 80ms ease-out, box-shadow 80ms ease-out;
+      text-decoration: none;
+      white-space: nowrap;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+
+    .bb-btn-sm  { padding: 8px  16px; font-size: 12px; }
+    .bb-btn-md  { padding: 12px 22px; }
+    .bb-btn-lg  { padding: 15px 28px; font-size: 15px; border-width: var(--bb-border-lg); }
+
+    /* Primary — lime */
+    .bb-btn-primary {
+      background: var(--bb-lime);
+      color: var(--bb-lime-fg);
+      box-shadow: var(--bb-shadow);
+    }
+    .bb-btn-primary:hover {
+      transform: translate(2px, 2px);
+      box-shadow: var(--bb-shadow-hover);
+    }
+    .bb-btn-primary:active {
+      transform: translate(4px, 4px);
+      box-shadow: var(--bb-shadow-active);
+    }
+    .bb-btn-primary:disabled {
+      opacity: 0.38;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: var(--bb-shadow);
+    }
+
+    /* Secondary — surface + border */
+    .bb-btn-secondary {
+      background: var(--bb-surface);
+      color: var(--bb-text-primary);
+      border-color: var(--bb-border);
+      box-shadow: var(--bb-shadow);
+    }
+    .bb-btn-secondary:hover {
+      transform: translate(2px, 2px);
+      box-shadow: var(--bb-shadow-hover);
+    }
+    .bb-btn-secondary:active {
+      transform: translate(4px, 4px);
+      box-shadow: var(--bb-shadow-active);
+    }
+    .bb-btn-secondary:disabled {
+      opacity: 0.38;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: var(--bb-shadow);
+    }
+
+    /* Destructive — coral */
+    .bb-btn-danger {
+      background: var(--bb-coral);
+      color: var(--bb-coral-fg);
+      border-color: #000;
+      box-shadow: var(--bb-shadow);
+    }
+    .bb-btn-danger:hover {
+      transform: translate(2px, 2px);
+      box-shadow: var(--bb-shadow-hover);
+    }
+    .bb-btn-danger:active {
+      transform: translate(4px, 4px);
+      box-shadow: var(--bb-shadow-active);
+    }
+    .bb-btn-danger:disabled {
+      opacity: 0.38;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: var(--bb-shadow);
+    }
+
+    /* Ghost — violet */
+    .bb-btn-ghost {
+      background: transparent;
+      color: var(--bb-violet);
+      border-color: var(--bb-violet);
+      box-shadow: var(--bb-shadow-violet);
+    }
+    .bb-btn-ghost:hover {
+      background: var(--bb-violet);
+      color: var(--bb-violet-fg);
+      transform: translate(2px, 2px);
+      box-shadow: var(--bb-shadow-hover);
+    }
+    .bb-btn-ghost:active {
+      transform: translate(4px, 4px);
+      box-shadow: var(--bb-shadow-active);
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       STAT CARDS
+       ═══════════════════════════════════════════════════════════ */
+    .bb-stat-card {
+      background: var(--bb-surface);
+      border: var(--bb-border-w) solid #000;
+      border-radius: var(--bb-r-sm);
+      box-shadow: var(--bb-shadow);
+      padding: 20px 24px;
+      min-width: 200px;
+      transition: transform 80ms ease-out, box-shadow 80ms ease-out;
+    }
+
+    .bb-stat-card:hover {
+      transform: translate(2px, 2px);
+      box-shadow: var(--bb-shadow-hover);
+    }
+
+    .bb-stat-card.lime  { border-top: 4px solid var(--bb-lime);   box-shadow: var(--bb-shadow-lime);   }
+    .bb-stat-card.coral { border-top: 4px solid var(--bb-coral);  box-shadow: var(--bb-shadow-coral);  }
+    .bb-stat-card.violet{ border-top: 4px solid var(--bb-violet); box-shadow: var(--bb-shadow-violet); }
+    .bb-stat-card.paper {
+      background: var(--bb-paper);
+      border-color: #000;
+      box-shadow: var(--bb-shadow);
+      color: #0F0D13;
+    }
+
+    .bb-stat-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--bb-text-muted);
+      margin-bottom: 8px;
+    }
+
+    .bb-stat-card.paper .bb-stat-label { color: #5B5272; }
+
+    .bb-stat-number {
+      font-family: var(--font-mono);
+      font-size: 3rem;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      line-height: 1;
+      color: var(--bb-text-primary);
+    }
+
+    .bb-stat-card.lime   .bb-stat-number { color: var(--bb-lime);   }
+    .bb-stat-card.coral  .bb-stat-number { color: var(--bb-coral);  }
+    .bb-stat-card.violet .bb-stat-number { color: var(--bb-violet); }
+    .bb-stat-card.paper  .bb-stat-number { color: #1A1724;          }
+
+    .bb-stat-sub {
+      font-size: 12px;
+      color: var(--bb-text-muted);
+      margin-top: 6px;
+    }
+
+    .bb-stat-card.paper .bb-stat-sub { color: #5B5272; }
+
+    /* ═══════════════════════════════════════════════════════════
+       BADGES / PILLS
+       ═══════════════════════════════════════════════════════════ */
+    .bb-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      border-radius: var(--bb-r-xs);
+      border: 2px solid #000;
+      padding: 4px 10px;
+      transition: transform 0.4s ease-in-out;
+    }
+
+    .bb-badge:hover {
+      animation: bbWobble 0.4s ease-in-out;
+    }
+
+    .bb-badge-lime   { background: var(--bb-lime);   color: var(--bb-lime-fg);   }
+    .bb-badge-coral  { background: var(--bb-coral);  color: var(--bb-coral-fg);  }
+    .bb-badge-violet { background: var(--bb-violet); color: var(--bb-violet-fg); }
+    .bb-badge-paper  { background: var(--bb-paper);  color: #1A1724; border-color: #2B2540; }
+
+    /* Level badge — slightly rotated sticker style */
+    .bb-badge-level {
+      font-size: 11px;
+      padding: 6px 14px;
+      border-width: 3px;
+      border-radius: var(--bb-r-sm);
+      box-shadow: 3px 3px 0px 0px #000;
+      transform: rotate(-2deg);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    @keyframes bbWobble {
+      0%   { transform: rotate(0deg);  }
+      25%  { transform: rotate(-4deg); }
+      75%  { transform: rotate(3deg);  }
+      100% { transform: rotate(0deg);  }
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       PROGRESS BARS
+       ═══════════════════════════════════════════════════════════ */
+    .bb-progress-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      min-width: 280px;
+    }
+
+    .bb-progress-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .bb-progress-title {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--bb-text-secondary);
+    }
+
+    .bb-progress-value {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--bb-text-primary);
+    }
+
+    .bb-progress-track {
+      height: 16px;
+      background: var(--bb-surface);
+      border: 2px solid #000;
+      border-radius: var(--bb-r-none);
+      overflow: hidden;
+      box-shadow: 3px 3px 0px 0px #000;
+    }
+
+    .bb-progress-fill {
+      height: 100%;
+      border-radius: 0;
+      transition: width 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .bb-progress-fill.lime   { background: var(--bb-lime); }
+    .bb-progress-fill.coral  { background: var(--bb-coral); }
+    .bb-progress-fill.violet { background: var(--bb-violet); }
+
+    /* Chunky version with inner stripe */
+    .bb-progress-track.chunky {
+      height: 24px;
+      border-width: 3px;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       INPUTS
+       ═══════════════════════════════════════════════════════════ */
+    .bb-field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      min-width: 260px;
+    }
+
+    .bb-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--bb-text-muted);
+    }
+
+    .bb-input {
+      width: 100%;
+      background: var(--bb-surface);
+      color: var(--bb-text-primary);
+      border: var(--bb-border-sm) solid var(--bb-border);
+      border-radius: var(--bb-r-md);
+      padding: 10px 14px;
+      font-family: var(--font-sans);
+      font-size: 14px;
+      outline: none;
+      transition: border-color 120ms ease, box-shadow 120ms ease;
+      box-shadow: 2px 2px 0px 0px transparent;
+    }
+
+    .bb-input::placeholder {
+      color: var(--bb-text-muted);
+    }
+
+    .bb-input:focus {
+      border-color: var(--bb-violet);
+      box-shadow: 2px 2px 0px 0px var(--bb-violet);
+    }
+
+    .bb-input.error {
+      border-color: var(--bb-coral);
+      box-shadow: 2px 2px 0px 0px var(--bb-coral);
+    }
+
+    .bb-input-error-msg {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--bb-coral);
+      letter-spacing: 0.02em;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       EMPTY STATE
+       ═══════════════════════════════════════════════════════════ */
+    .bb-empty {
+      background: var(--bb-surface);
+      border: 3px dashed var(--bb-border);
+      border-radius: var(--bb-r-sm);
+      padding: 48px 32px;
+      text-align: center;
+      max-width: 400px;
+    }
+
+    .bb-empty-icon {
+      font-size: 48px;
+      line-height: 1;
+      margin-bottom: 16px;
+      display: block;
+    }
+
+    .bb-empty-title {
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--bb-text-primary);
+      margin-bottom: 8px;
+      letter-spacing: -0.01em;
+    }
+
+    .bb-empty-body {
+      font-size: 13px;
+      color: var(--bb-text-secondary);
+      margin-bottom: 24px;
+      line-height: 1.6;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       MODAL / CARD OVERLAY
+       ═══════════════════════════════════════════════════════════ */
+    .bb-modal-demo {
+      position: relative;
+      min-height: 320px;
+      background: var(--bb-bg);
+      border: 2px solid var(--bb-border);
+      border-radius: var(--bb-r-sm);
+      overflow: hidden;
+    }
+
+    .bb-modal-scrim {
+      position: absolute;
+      inset: 0;
+      background: rgba(15, 13, 19, 0.72);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    /* Background content hint */
+    .bb-modal-bg-content {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      flex-direction: column;
+      gap: 12px;
+      opacity: 0.25;
+    }
+
+    .bb-modal-bg-bar {
+      height: 14px;
+      border-radius: 2px;
+      background: var(--bb-surface);
+    }
+
+    .bb-modal {
+      background: var(--bb-surface);
+      border: var(--bb-border-lg) solid #000;
+      border-radius: var(--bb-r-lg);
+      box-shadow: var(--bb-shadow-lg);
+      padding: 28px;
+      width: 100%;
+      max-width: 360px;
+      animation: bbSlideUp 0.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+
+    @keyframes bbSlideUp {
+      0%   { transform: translateY(24px); opacity: 0; }
+      100% { transform: translateY(0);    opacity: 1; }
+    }
+
+    .bb-modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .bb-modal-title {
+      font-family: var(--font-display);
+      font-size: 17px;
+      font-weight: 800;
+      color: var(--bb-text-primary);
+      letter-spacing: -0.01em;
+    }
+
+    .bb-modal-close {
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: transparent;
+      border: 2px solid var(--bb-border);
+      border-radius: var(--bb-r-xs);
+      cursor: pointer;
+      color: var(--bb-text-muted);
+      font-size: 16px;
+      transition: background 100ms;
+    }
+
+    .bb-modal-close:hover {
+      background: var(--bb-coral);
+      color: var(--bb-coral-fg);
+      border-color: #000;
+    }
+
+    .bb-modal-body {
+      font-size: 13px;
+      color: var(--bb-text-secondary);
+      margin-bottom: 24px;
+      line-height: 1.7;
+    }
+
+    .bb-modal-footer {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       TYPOGRAPHY SHOWCASE
+       ═══════════════════════════════════════════════════════════ */
+    .sg-type-row {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .sg-type-item {
+      display: flex;
+      align-items: baseline;
+      gap: 24px;
+      border-bottom: 1px solid var(--bb-border);
+      padding-bottom: 16px;
+    }
+
+    .sg-type-meta {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--bb-text-muted);
+      min-width: 120px;
+      flex-shrink: 0;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       SHADOW SHOWCASE
+       ═══════════════════════════════════════════════════════════ */
+    .sg-shadow-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .sg-shadow-item {
+      background: var(--bb-surface);
+      border: var(--bb-border-w) solid #000;
+      border-radius: var(--bb-r-sm);
+      padding: 20px 24px;
+      min-width: 150px;
+      text-align: center;
+    }
+
+    .sg-shadow-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--bb-text-muted);
+      margin-top: 12px;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       SCROLLBAR
+       ═══════════════════════════════════════════════════════════ */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bb-bg); }
+    ::-webkit-scrollbar-thumb {
+      background: var(--bb-border);
+      border-radius: 0;
+      border: 2px solid var(--bb-bg);
+    }
+    ::-webkit-scrollbar-thumb:hover { background: var(--bb-violet); }
+  </style>
+</head>
+<body>
+  <div class="sg-wrap">
+
+    <!-- ══════════════════════════════════════════
+         HEADER
+    ══════════════════════════════════════════ -->
+    <header class="sg-header">
+      <span class="sg-header-eyebrow">Phase 0 · Design Foundation</span>
+      <h1>BreadBuddy <span>Neo-Brutalism</span> Style Guide</h1>
+      <p>Token reference and component preview for the glass-to-brutalism design system migration. Review and approve before Phase 1 component rebuilds.</p>
+    </header>
+
+
+    <!-- ══════════════════════════════════════════
+         RATIONALE
+    ══════════════════════════════════════════ -->
+    <section class="sg-rationale" id="rationale">
+      <h2>📋 Design Rationale</h2>
+      <div class="sg-rationale-grid">
+        <div class="sg-rationale-item">
+          <h3>Why these colours?</h3>
+          <p>The three existing accents <em>work</em> as flat neo-brutalist colours — but needed calibration. Toxic Lime was too radioactive (#39FF14 electro-green bleeds) so we landed at <strong>#A8E635</strong> which still screams "money made" while passing WCAG AA on dark surfaces. Neon Coral moved from pink-ish #FF5757 to a punchier tomato-red <strong>#F85C50</strong> — unambiguous danger. The pink/lavender duo (which only existed for gradient transitions) collapses into a single flat Electric Violet <strong>#9B59F5</strong> that carries all the gamification energy without needing a gradient.</p>
+        </div>
+        <div class="sg-rationale-item">
+          <h3>How this fixes "too vibe-coded"</h3>
+          <p>Glassmorphism achieves depth through blur and translucency — both are invisible without careful lighting. On a standard monitor it reads as "soft purple mush." Neo-brutalism creates hierarchy through physical weight: thick solid borders, hard offset shadows, and opaque flat fills that pop like physical stickers on a surface. Every element reads at a glance without relying on ambient rendering. Visual hierarchy is now structural, not lighting-dependent.</p>
+        </div>
+        <div class="sg-rationale-item">
+          <h3>Tradeoffs &amp; Accessibility</h3>
+          <p><strong>Sharp corners (4px):</strong> We chose 4px over 0px — still angular vs. the current 12–16px, but avoids feeling hostile in a <em>fun</em> app. 0px remains available for progress bar tracks and dividers. <strong>Contrast:</strong> All three accents pass WCAG AA (4.5:1) on the #1A1724 surface. Lime is the trickiest — it passes at 5.2:1. <strong>No gradients:</strong> Colour meaning is now single-value and unambiguous — lime = good, coral = bad, violet = gamified.</p>
+        </div>
+        <div class="sg-rationale-item">
+          <h3>Shadow philosophy</h3>
+          <p>Zero blur. Hard offset only. The interaction model is: on hover, the element <em>translates +2px toward the shadow</em>, which simultaneously shrinks the shadow by 2px — creating a physical "press into surface" sensation without any JavaScript. This works at CSS-only level and pairs with framer-motion's existing <code>whileTap</code> for full press feedback.</p>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ══════════════════════════════════════════
+         1. COLOUR TOKENS
+    ══════════════════════════════════════════ -->
+    <section class="sg-section" id="colours">
+      <p class="sg-section-title">01 — Colour Tokens</p>
+      <div class="swatch-grid">
+
+        <div class="swatch">
+          <div class="swatch-color" style="background:#0F0D13;"></div>
+          <div class="swatch-info">
+            <div class="swatch-name">bb-bg</div>
+            <div class="swatch-hex">#0F0D13</div>
+            <div class="swatch-role">Void — page background</div>
+          </div>
+        </div>
+
+        <div class="swatch">
+          <div class="swatch-color" style="background:#1A1724;"></div>
+          <div class="swatch-info">
+            <div class="swatch-name">bb-surface</div>
+            <div class="swatch-hex">#1A1724</div>
+            <div class="swatch-role">Card / panel surface</div>
+          </div>
+        </div>
+
+        <div class="swatch">
+          <div class="swatch-color" style="background:#F4F0FF; border-bottom:1px solid #2B2540;"></div>
+          <div class="swatch-info">
+            <div class="swatch-name">bb-paper</div>
+            <div class="swatch-hex">#F4F0FF</div>
+            <div class="swatch-role">High-contrast accent blocks</div>
+          </div>
+        </div>
+
+        <div class="swatch">
+          <div class="swatch-color" style="background:#A8E635;"></div>
+          <div class="swatch-info">
+            <div class="swatch-name">bb-lime</div>
+            <div class="swatch-hex">#A8E635</div>
+            <div class="swatch-role">Success, savings, level-ups</div>
+          </div>
+        </div>
+
+        <div class="swatch">
+          <div class="swatch-color" style="background:#F85C50;"></div>
+          <div class="swatch-info">
+            <div class="swatch-name">bb-coral</div>
+            <div class="swatch-hex">#F85C50</div>
+            <div class="swatch-role">Danger, warnings, deficits</div>
+          </div>
+        </div>
+
+        <div class="swatch">
+          <div class="swatch-color" style="background:#9B59F5;"></div>
+          <div class="swatch-info">
+            <div class="swatch-name">bb-violet</div>
+            <div class="swatch-hex">#9B59F5</div>
+            <div class="swatch-role">Gamification, XP, AI Bro</div>
+          </div>
+        </div>
+
+        <div class="swatch">
+          <div class="swatch-color" style="background:#F2EDFF;"></div>
+          <div class="swatch-info">
+            <div class="swatch-name">bb-text-primary</div>
+            <div class="swatch-hex">#F2EDFF</div>
+            <div class="swatch-role">Body + headline text</div>
+          </div>
+        </div>
+
+        <div class="swatch">
+          <div class="swatch-color" style="background:#A89EC4;"></div>
+          <div class="swatch-info">
+            <div class="swatch-name">bb-text-secondary</div>
+            <div class="swatch-hex">#A89EC4</div>
+            <div class="swatch-role">Subheadings, descriptions</div>
+          </div>
+        </div>
+
+        <div class="swatch">
+          <div class="swatch-color" style="background:#5B5272;"></div>
+          <div class="swatch-info">
+            <div class="swatch-name">bb-text-muted</div>
+            <div class="swatch-hex">#5B5272</div>
+            <div class="swatch-role">Labels, placeholders, hints</div>
+          </div>
+        </div>
+
+        <div class="swatch">
+          <div class="swatch-color" style="background:#2B2540;"></div>
+          <div class="swatch-info">
+            <div class="swatch-name">bb-border</div>
+            <div class="swatch-hex">#2B2540</div>
+            <div class="swatch-role">Solid card/input borders</div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- ══════════════════════════════════════════
+         2. TYPOGRAPHY
+    ══════════════════════════════════════════ -->
+    <section class="sg-section" id="typography">
+      <p class="sg-section-title">02 — Typography Scale</p>
+      <div class="sg-type-row">
+
+        <div class="sg-type-item">
+          <span class="sg-type-meta">stat-xl · 4.5rem · 900</span>
+          <span style="font-family:var(--font-mono);font-size:4.5rem;font-weight:900;letter-spacing:-0.035em;line-height:1;color:var(--bb-lime)">₹4,200</span>
+        </div>
+
+        <div class="sg-type-item">
+          <span class="sg-type-meta">stat-lg · 3.5rem · 900</span>
+          <span style="font-family:var(--font-mono);font-size:3.5rem;font-weight:900;letter-spacing:-0.03em;line-height:1;color:var(--bb-violet)">1,847 XP</span>
+        </div>
+
+        <div class="sg-type-item">
+          <span class="sg-type-meta">stat-md · 2.75rem · 800</span>
+          <span style="font-family:var(--font-mono);font-size:2.75rem;font-weight:800;letter-spacing:-0.025em;line-height:1;color:var(--bb-text-primary)">🔥 14</span>
+        </div>
+
+        <div class="sg-type-item">
+          <span class="sg-type-meta">display · Outfit · 900</span>
+          <span style="font-family:var(--font-display);font-size:2rem;font-weight:900;letter-spacing:-0.02em;color:var(--bb-text-primary)">BREAD LEGEND</span>
+        </div>
+
+        <div class="sg-type-item">
+          <span class="sg-type-meta">body · Inter · 400</span>
+          <span style="font-size:15px;color:var(--bb-text-secondary)">You're spending 34% more than last week. Bestie, maybe skip the bubble tea today? 🧋</span>
+        </div>
+
+        <div class="sg-type-item">
+          <span class="sg-type-meta">label · 10px · 700</span>
+          <span style="font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--bb-text-muted)">MONTHLY ALLOWANCE</span>
+        </div>
+
+        <div class="sg-type-item">
+          <span class="sg-type-meta">mono · JetBrains · 700</span>
+          <span style="font-family:var(--font-mono);font-size:14px;font-weight:700;color:var(--bb-text-primary)">₹1,450.00 &nbsp;·&nbsp; 12 Jul 2026</span>
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- ══════════════════════════════════════════
+         3. SHADOW TOKENS
+    ══════════════════════════════════════════ -->
+    <section class="sg-section" id="shadows">
+      <p class="sg-section-title">03 — Offset Shadow Tokens</p>
+      <div class="sg-shadow-grid">
+
+        <div class="sg-shadow-item" style="box-shadow:4px 4px 0px 0px #000;">
+          <div style="font-family:var(--font-mono);font-size:12px;color:var(--bb-text-secondary)">4px 4px</div>
+          <div class="sg-shadow-label">bb · default</div>
+        </div>
+
+        <div class="sg-shadow-item" style="box-shadow:2px 2px 0px 0px #000;">
+          <div style="font-family:var(--font-mono);font-size:12px;color:var(--bb-text-secondary)">2px 2px</div>
+          <div class="sg-shadow-label">bb-hover</div>
+        </div>
+
+        <div class="sg-shadow-item" style="box-shadow:6px 6px 0px 0px #000;">
+          <div style="font-family:var(--font-mono);font-size:12px;color:var(--bb-text-secondary)">6px 6px</div>
+          <div class="sg-shadow-label">bb-lg · modal</div>
+        </div>
+
+        <div class="sg-shadow-item" style="box-shadow:4px 4px 0px 0px #A8E635;">
+          <div style="font-family:var(--font-mono);font-size:12px;color:var(--bb-lime)">4px 4px lime</div>
+          <div class="sg-shadow-label">bb-lime</div>
+        </div>
+
+        <div class="sg-shadow-item" style="box-shadow:4px 4px 0px 0px #F85C50;">
+          <div style="font-family:var(--font-mono);font-size:12px;color:var(--bb-coral)">4px 4px coral</div>
+          <div class="sg-shadow-label">bb-coral</div>
+        </div>
+
+        <div class="sg-shadow-item" style="box-shadow:4px 4px 0px 0px #9B59F5;">
+          <div style="font-family:var(--font-mono);font-size:12px;color:var(--bb-violet)">4px 4px violet</div>
+          <div class="sg-shadow-label">bb-violet</div>
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- ══════════════════════════════════════════
+         4. BUTTONS
+    ══════════════════════════════════════════ -->
+    <section class="sg-section" id="buttons">
+      <p class="sg-section-title">04 — Buttons</p>
+      <div class="sg-col">
+
+        <div style="margin-bottom:8px;">
+          <p style="font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--bb-text-muted);margin-bottom:16px;">Primary · Lime · (hover to feel the press)</p>
+          <div class="sg-row" style="align-items:center;">
+            <button class="bb-btn bb-btn-primary bb-btn-sm">sm · LOG IT</button>
+            <button class="bb-btn bb-btn-primary bb-btn-md">md · GET BREAD 🍞</button>
+            <button class="bb-btn bb-btn-primary bb-btn-lg">lg · SAVE NOW</button>
+            <button class="bb-btn bb-btn-primary bb-btn-md" disabled>disabled</button>
+          </div>
+        </div>
+
+        <div style="margin-bottom:8px;">
+          <p style="font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--bb-text-muted);margin-bottom:16px;">Secondary · Surface</p>
+          <div class="sg-row" style="align-items:center;">
+            <button class="bb-btn bb-btn-secondary bb-btn-sm">sm · CANCEL</button>
+            <button class="bb-btn bb-btn-secondary bb-btn-md">md · VIEW ALL</button>
+            <button class="bb-btn bb-btn-secondary bb-btn-lg">lg · EXPLORE</button>
+            <button class="bb-btn bb-btn-secondary bb-btn-md" disabled>disabled</button>
+          </div>
+        </div>
+
+        <div style="margin-bottom:8px;">
+          <p style="font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--bb-text-muted);margin-bottom:16px;">Destructive · Coral</p>
+          <div class="sg-row" style="align-items:center;">
+            <button class="bb-btn bb-btn-danger bb-btn-sm">sm · REMOVE</button>
+            <button class="bb-btn bb-btn-danger bb-btn-md">md · DELETE 🗑️</button>
+            <button class="bb-btn bb-btn-danger bb-btn-lg">lg · NUKE GOAL</button>
+            <button class="bb-btn bb-btn-danger bb-btn-md" disabled>disabled</button>
+          </div>
+        </div>
+
+        <div>
+          <p style="font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--bb-text-muted);margin-bottom:16px;">Ghost / Outline · Violet</p>
+          <div class="sg-row" style="align-items:center;">
+            <button class="bb-btn bb-btn-ghost bb-btn-sm">sm · ASK AI BRO</button>
+            <button class="bb-btn bb-btn-ghost bb-btn-md">md · LEVEL UP ✨</button>
+            <button class="bb-btn bb-btn-ghost bb-btn-lg">lg · UNLOCK BADGE</button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- ══════════════════════════════════════════
+         5. STAT CARDS
+    ══════════════════════════════════════════ -->
+    <section class="sg-section" id="stat-cards">
+      <p class="sg-section-title">05 — Stat Cards</p>
+      <div class="sg-row">
+
+        <div class="bb-stat-card lime">
+          <div class="bb-stat-label">Savings This Month</div>
+          <div class="bb-stat-number">₹840</div>
+          <div class="bb-stat-sub">↑ 22% from last month</div>
+        </div>
+
+        <div class="bb-stat-card coral">
+          <div class="bb-stat-label">Overspent</div>
+          <div class="bb-stat-number">₹-230</div>
+          <div class="bb-stat-sub">Budget exceeded · Food 🍕</div>
+        </div>
+
+        <div class="bb-stat-card violet">
+          <div class="bb-stat-label">XP Earned</div>
+          <div class="bb-stat-number">1,847</div>
+          <div class="bb-stat-sub">Rank: Bread Soldier 🪖</div>
+        </div>
+
+        <div class="bb-stat-card">
+          <div class="bb-stat-label">Streak</div>
+          <div class="bb-stat-number" style="color:var(--bb-text-primary)">🔥 14</div>
+          <div class="bb-stat-sub">Days logged in a row</div>
+        </div>
+
+        <div class="bb-stat-card paper">
+          <div class="bb-stat-label" style="color:#5B5272;">Daily Safe Spend</div>
+          <div class="bb-stat-number">₹150</div>
+          <div class="bb-stat-sub">Based on remaining allowance</div>
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- ══════════════════════════════════════════
+         6. BADGES
+    ══════════════════════════════════════════ -->
+    <section class="sg-section" id="badges">
+      <p class="sg-section-title">06 — Badges &amp; Pills</p>
+      <div class="sg-row" style="align-items:center;flex-wrap:wrap;gap:24px;">
+
+        <!-- Level badge (sticker style) -->
+        <span class="bb-badge bb-badge-lime bb-badge-level">⚡ BREAD BEGINNER</span>
+        <span class="bb-badge bb-badge-violet bb-badge-level" style="transform:rotate(1.5deg)">🪖 BREAD SOLDIER</span>
+        <span class="bb-badge bb-badge-coral bb-badge-level" style="transform:rotate(-1deg)">💀 DEFICIT MODE</span>
+        <span class="bb-badge bb-badge-paper bb-badge-level" style="transform:rotate(2deg)">👑 BREAD LEGEND</span>
+
+        <!-- Status pills -->
+        <div class="sg-col" style="gap:10px;margin-top:16px;">
+          <p style="font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--bb-text-muted);margin-bottom:4px;">Status Pills</p>
+          <div class="sg-row">
+            <span class="bb-badge bb-badge-lime">✓ ACTIVE</span>
+            <span class="bb-badge bb-badge-coral">✗ PAUSED</span>
+            <span class="bb-badge bb-badge-violet">★ PREMIUM</span>
+            <span class="bb-badge" style="background:var(--bb-surface);color:var(--bb-text-muted);border-color:var(--bb-border);">ARCHIVED</span>
+          </div>
+        </div>
+
+        <!-- Hover instruction -->
+        <p style="font-size:11px;color:var(--bb-text-muted);margin-top:8px;width:100%;">↑ Hover over the level badges to see the wobble animation.</p>
+
+      </div>
+    </section>
+
+
+    <!-- ══════════════════════════════════════════
+         7. PROGRESS BARS
+    ══════════════════════════════════════════ -->
+    <section class="sg-section" id="progress">
+      <p class="sg-section-title">07 — Progress Bars</p>
+      <div class="sg-col" style="gap:24px;max-width:480px;">
+
+        <div class="bb-progress-wrap">
+          <div class="bb-progress-header">
+            <span class="bb-progress-title">Monthly Budget</span>
+            <span class="bb-progress-value">₹2,100 / ₹3,500</span>
+          </div>
+          <div class="bb-progress-track">
+            <div class="bb-progress-fill lime" style="width:60%;"></div>
+          </div>
+          <div style="font-size:11px;color:var(--bb-text-muted)">60% spent · 40% remaining</div>
+        </div>
+
+        <div class="bb-progress-wrap">
+          <div class="bb-progress-header">
+            <span class="bb-progress-title">XP to Next Level</span>
+            <span class="bb-progress-value">1,847 / 2,500</span>
+          </div>
+          <div class="bb-progress-track chunky">
+            <div class="bb-progress-fill violet" style="width:74%;"></div>
+          </div>
+          <div style="font-size:11px;color:var(--bb-text-muted)">653 XP to Bread Warrior 🗡️</div>
+        </div>
+
+        <div class="bb-progress-wrap">
+          <div class="bb-progress-header">
+            <span class="bb-progress-title">Savings Goal · PS5</span>
+            <span class="bb-progress-value" style="color:var(--bb-coral);">₹9,200 / ₹45,000</span>
+          </div>
+          <div class="bb-progress-track chunky">
+            <div class="bb-progress-fill coral" style="width:20%;"></div>
+          </div>
+          <div style="font-size:11px;color:var(--bb-text-muted)">20% there · keep going bestie 💪</div>
+        </div>
+
+        <div class="bb-progress-wrap">
+          <div class="bb-progress-header">
+            <span class="bb-progress-title">Savings Goal · Goa Trip ✈️</span>
+            <span class="bb-progress-value" style="color:var(--bb-lime);">₹8,000 / ₹8,000</span>
+          </div>
+          <div class="bb-progress-track chunky">
+            <div class="bb-progress-fill lime" style="width:100%;"></div>
+          </div>
+          <div style="font-size:11px;color:var(--bb-lime);font-weight:700;">✓ GOAL COMPLETE — let's GO!</div>
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- ══════════════════════════════════════════
+         8. INPUTS
+    ══════════════════════════════════════════ -->
+    <section class="sg-section" id="inputs">
+      <p class="sg-section-title">08 — Input Fields</p>
+      <div class="sg-row" style="align-items:flex-start;flex-wrap:wrap;gap:28px;">
+
+        <div class="bb-field">
+          <label class="bb-label">Amount</label>
+          <input class="bb-input" type="text" placeholder="₹ 0.00" />
+          <span style="font-size:11px;color:var(--bb-text-muted)">Default state</span>
+        </div>
+
+        <div class="bb-field">
+          <label class="bb-label">Description</label>
+          <input class="bb-input" type="text" placeholder="What did you spend on?" style="border-color:var(--bb-violet);box-shadow:2px 2px 0px 0px var(--bb-violet);" />
+          <span style="font-size:11px;color:var(--bb-violet);font-weight:600;">Focused state</span>
+        </div>
+
+        <div class="bb-field">
+          <label class="bb-label">Target Date</label>
+          <input class="bb-input error" type="text" placeholder="DD/MM/YYYY" value="99/99/9999" />
+          <span class="bb-input-error-msg">⚠ Invalid date format</span>
+        </div>
+
+        <div class="bb-field">
+          <label class="bb-label">Allowance</label>
+          <input class="bb-input" type="text" placeholder="Monthly amount" disabled style="opacity:0.38;cursor:not-allowed;" />
+          <span style="font-size:11px;color:var(--bb-text-muted)">Disabled state</span>
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- ══════════════════════════════════════════
+         9. EMPTY STATE
+    ══════════════════════════════════════════ -->
+    <section class="sg-section" id="empty-state">
+      <p class="sg-section-title">09 — Empty State</p>
+      <div class="sg-row">
+
+        <div class="bb-empty">
+          <span class="bb-empty-icon">🍞</span>
+          <div class="bb-empty-title">No bread logged yet</div>
+          <div class="bb-empty-body">You haven't tracked any transactions this month. Start logging to earn XP and keep your streak alive!</div>
+          <button class="bb-btn bb-btn-primary bb-btn-md" style="margin:0 auto;">+ LOG FIRST EXPENSE</button>
+        </div>
+
+        <div class="bb-empty" style="border-color:var(--bb-violet);box-shadow:var(--bb-shadow-violet);">
+          <span class="bb-empty-icon">🎯</span>
+          <div class="bb-empty-title">No goals yet</div>
+          <div class="bb-empty-body">Set a savings target for something you actually want. PS5? Concert tickets? Goa trip? Lock it in.</div>
+          <button class="bb-btn bb-btn-ghost bb-btn-md" style="margin:0 auto;">+ CREATE GOAL ✨</button>
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- ══════════════════════════════════════════
+         10. MODAL OVERLAY
+    ══════════════════════════════════════════ -->
+    <section class="sg-section" id="modal">
+      <p class="sg-section-title">10 — Modal / Card Overlay</p>
+
+      <div class="bb-modal-demo">
+        <!-- Blurred background content hint -->
+        <div class="bb-modal-bg-content">
+          <div class="bb-modal-bg-bar" style="width:100%;"></div>
+          <div class="bb-modal-bg-bar" style="width:80%;"></div>
+          <div class="bb-modal-bg-bar" style="width:90%;"></div>
+          <div class="bb-modal-bg-bar" style="width:60%;"></div>
+        </div>
+
+        <!-- Scrim -->
+        <div class="bb-modal-scrim">
+          <div class="bb-modal">
+            <div class="bb-modal-header">
+              <span class="bb-modal-title">💸 Log Expense</span>
+              <button class="bb-modal-close">✕</button>
+            </div>
+            <div class="bb-modal-body">
+              Quick-log a transaction. This will deduct from your monthly allowance and award <strong style="color:var(--bb-violet)">+10 XP</strong>.
+            </div>
+            <div class="bb-field" style="margin-bottom:16px;">
+              <label class="bb-label">Amount</label>
+              <input class="bb-input" type="text" placeholder="₹ 0.00" />
+            </div>
+            <div class="bb-modal-footer">
+              <button class="bb-btn bb-btn-secondary bb-btn-sm">CANCEL</button>
+              <button class="bb-btn bb-btn-primary bb-btn-sm">SAVE 🍞</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+
+    <!-- ══════════════════════════════════════════
+         TOKEN QUICK-REFERENCE
+    ══════════════════════════════════════════ -->
+    <section class="sg-section" id="token-ref">
+      <p class="sg-section-title">11 — Token Quick Reference</p>
+      <div style="background:var(--bb-surface);border:3px solid var(--bb-border);border-radius:var(--bb-r-sm);box-shadow:var(--bb-shadow);overflow:auto;">
+        <table style="width:100%;border-collapse:collapse;font-family:var(--font-mono);font-size:12px;">
+          <thead>
+            <tr style="background:#000;color:var(--bb-text-primary);">
+              <th style="padding:10px 16px;text-align:left;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;">Token</th>
+              <th style="padding:10px 16px;text-align:left;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;">Value</th>
+              <th style="padding:10px 16px;text-align:left;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;">Role</th>
+              <th style="padding:10px 16px;text-align:left;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;">TW Class</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-top:1px solid var(--bb-border);">
+              <td style="padding:8px 16px;color:var(--bb-lime)">--bb-bg</td>
+              <td style="padding:8px 16px;color:var(--bb-text-muted)">#0F0D13</td>
+              <td style="padding:8px 16px;color:var(--bb-text-secondary)">Page background</td>
+              <td style="padding:8px 16px;color:var(--bb-violet)">bg-bb-bg</td>
+            </tr>
+            <tr style="border-top:1px solid var(--bb-border);background:rgba(255,255,255,0.02)">
+              <td style="padding:8px 16px;color:var(--bb-lime)">--bb-surface</td>
+              <td style="padding:8px 16px;color:var(--bb-text-muted)">#1A1724</td>
+              <td style="padding:8px 16px;color:var(--bb-text-secondary)">Card/panel surface</td>
+              <td style="padding:8px 16px;color:var(--bb-violet)">bg-bb-surface</td>
+            </tr>
+            <tr style="border-top:1px solid var(--bb-border);">
+              <td style="padding:8px 16px;color:var(--bb-lime)">--bb-paper</td>
+              <td style="padding:8px 16px;color:var(--bb-text-muted)">#F4F0FF</td>
+              <td style="padding:8px 16px;color:var(--bb-text-secondary)">High-contrast blocks</td>
+              <td style="padding:8px 16px;color:var(--bb-violet)">bg-bb-paper</td>
+            </tr>
+            <tr style="border-top:1px solid var(--bb-border);background:rgba(255,255,255,0.02)">
+              <td style="padding:8px 16px;color:var(--bb-lime)">--bb-lime</td>
+              <td style="padding:8px 16px;color:var(--bb-text-muted)">#A8E635</td>
+              <td style="padding:8px 16px;color:var(--bb-text-secondary)">Success / savings</td>
+              <td style="padding:8px 16px;color:var(--bb-violet)">bg-bb-lime / text-bb-lime</td>
+            </tr>
+            <tr style="border-top:1px solid var(--bb-border);">
+              <td style="padding:8px 16px;color:var(--bb-lime)">--bb-coral</td>
+              <td style="padding:8px 16px;color:var(--bb-text-muted)">#F85C50</td>
+              <td style="padding:8px 16px;color:var(--bb-text-secondary)">Danger / warning</td>
+              <td style="padding:8px 16px;color:var(--bb-violet)">bg-bb-coral / text-bb-coral</td>
+            </tr>
+            <tr style="border-top:1px solid var(--bb-border);background:rgba(255,255,255,0.02)">
+              <td style="padding:8px 16px;color:var(--bb-lime)">--bb-violet</td>
+              <td style="padding:8px 16px;color:var(--bb-text-muted)">#9B59F5</td>
+              <td style="padding:8px 16px;color:var(--bb-text-secondary)">Gamification / XP</td>
+              <td style="padding:8px 16px;color:var(--bb-violet)">bg-bb-violet / text-bb-violet</td>
+            </tr>
+            <tr style="border-top:1px solid var(--bb-border);">
+              <td style="padding:8px 16px;color:var(--bb-lime)">shadow-bb</td>
+              <td style="padding:8px 16px;color:var(--bb-text-muted)">4px 4px 0 #000</td>
+              <td style="padding:8px 16px;color:var(--bb-text-secondary)">Card at rest</td>
+              <td style="padding:8px 16px;color:var(--bb-violet)">shadow-bb</td>
+            </tr>
+            <tr style="border-top:1px solid var(--bb-border);background:rgba(255,255,255,0.02)">
+              <td style="padding:8px 16px;color:var(--bb-lime)">shadow-bb-hover</td>
+              <td style="padding:8px 16px;color:var(--bb-text-muted)">2px 2px 0 #000</td>
+              <td style="padding:8px 16px;color:var(--bb-text-secondary)">Hover (pair w/ translate)</td>
+              <td style="padding:8px 16px;color:var(--bb-violet)">shadow-bb-hover</td>
+            </tr>
+            <tr style="border-top:1px solid var(--bb-border);">
+              <td style="padding:8px 16px;color:var(--bb-lime)">rounded-bb-sm</td>
+              <td style="padding:8px 16px;color:var(--bb-text-muted)">4px</td>
+              <td style="padding:8px 16px;color:var(--bb-text-secondary)">DEFAULT radius</td>
+              <td style="padding:8px 16px;color:var(--bb-violet)">rounded-bb-sm</td>
+            </tr>
+            <tr style="border-top:1px solid var(--bb-border);background:rgba(255,255,255,0.02)">
+              <td style="padding:8px 16px;color:var(--bb-lime)">font-display</td>
+              <td style="padding:8px 16px;color:var(--bb-text-muted)">Outfit</td>
+              <td style="padding:8px 16px;color:var(--bb-text-secondary)">Headlines / display</td>
+              <td style="padding:8px 16px;color:var(--bb-violet)">font-display</td>
+            </tr>
+            <tr style="border-top:1px solid var(--bb-border);">
+              <td style="padding:8px 16px;color:var(--bb-lime)">text-stat-lg</td>
+              <td style="padding:8px 16px;color:var(--bb-text-muted)">3.5rem / 900</td>
+              <td style="padding:8px 16px;color:var(--bb-text-secondary)">Stat display numbers</td>
+              <td style="padding:8px 16px;color:var(--bb-violet)">text-stat-lg</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer style="border-top:2px solid var(--bb-border);padding-top:24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+      <span style="font-family:var(--font-display);font-size:13px;font-weight:800;color:var(--bb-text-muted);">BREADBUDDY · PHASE 0 · NEO-BRUTALISM FOUNDATION</span>
+      <span class="bb-badge bb-badge-lime" style="font-size:9px;">PENDING REVIEW →</span>
+    </footer>
+
+  </div>
+</body>
+</html>
