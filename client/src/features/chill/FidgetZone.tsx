@@ -163,9 +163,6 @@ export function FidgetZone() {
     angularVelRef.current = Math.max(-1200, Math.min(1200, dragAngularVelRef.current));
   };
 
-  // Derived RPM display
-  const rpmDisplay = Math.round(Math.abs(angularVelRef.current) / 6).toString();
-
   // ── Squishy Loaf ───────────────────────────────────────────────────────────
   const [isSquished, setIsSquished]         = useState(false);
   const [loafExpression, setLoafExpression] = useState<'calm' | 'squished' | 'happy'>('calm');
@@ -266,18 +263,18 @@ export function FidgetZone() {
                     <filter id="fs-shadow" x="-10%" y="-10%" width="130%" height="130%">
                       <feDropShadow dx="2" dy="4" stdDeviation="5" floodColor="#000000" floodOpacity="0.35" />
                     </filter>
-                    {/* Plastic body gradient — bright green rubber */}
+                    {/* Plastic body gradient — Electric Neon Green */}
                     <linearGradient id="plastic-body" x1="0" y1="0" x2="0.3" y2="1">
-                      <stop offset="0%" stopColor="#5ef59d" />
-                      <stop offset="35%" stopColor="#34d46a" />
-                      <stop offset="70%" stopColor="#22b856" />
-                      <stop offset="100%" stopColor="#16a34a" />
+                      <stop offset="0%" stopColor="#ccff00" />
+                      <stop offset="30%" stopColor="#39ff14" />
+                      <stop offset="70%" stopColor="#00e64d" />
+                      <stop offset="100%" stopColor="#00b33c" />
                     </linearGradient>
                     {/* Highlight for rubbery sheen */}
                     <linearGradient id="plastic-highlight" x1="0.3" y1="0" x2="0.7" y2="1">
-                      <stop offset="0%" stopColor="#ffffff" stopOpacity="0.35" />
-                      <stop offset="50%" stopColor="#ffffff" stopOpacity="0.05" />
-                      <stop offset="100%" stopColor="#000000" stopOpacity="0.1" />
+                      <stop offset="0%" stopColor="#ffffff" stopOpacity="0.45" />
+                      <stop offset="50%" stopColor="#ffffff" stopOpacity="0.1" />
+                      <stop offset="100%" stopColor="#000000" stopOpacity="0.15" />
                     </linearGradient>
                     {/* Ball bearing outer ring gradient */}
                     <radialGradient id="bearing-outer" cx="50%" cy="45%">
@@ -291,20 +288,20 @@ export function FidgetZone() {
                       <stop offset="40%" stopColor="#aaa" />
                       <stop offset="100%" stopColor="#666" />
                     </radialGradient>
-                    {/* Center cap gradient — raised green button */}
+                    {/* Center cap gradient — raised neon green button */}
                     <radialGradient id="center-cap" cx="45%" cy="40%">
-                      <stop offset="0%" stopColor="#6ef5a5" />
-                      <stop offset="50%" stopColor="#34d46a" />
-                      <stop offset="100%" stopColor="#1a9e45" />
+                      <stop offset="0%" stopColor="#e6ff80" />
+                      <stop offset="50%" stopColor="#39ff14" />
+                      <stop offset="100%" stopColor="#00b33c" />
                     </radialGradient>
                   </defs>
 
                   <g filter="url(#fs-shadow)">
-                    {/* ─── PERFECT SYMMETRICAL GREEN PLASTIC BODY ─── */}
+                    {/* ─── PERFECT SYMMETRICAL NEON GREEN PLASTIC BODY ─── */}
                     <path
                       d="M 78.86 56.37 A 24 24 0 1 1 121.14 56.37 A 32 32 0 0 0 148.35 103.51 A 24 24 0 1 1 127.21 140.12 A 32 32 0 0 0 72.79 140.12 A 24 24 0 1 1 51.65 103.51 A 32 32 0 0 0 78.86 56.37 Z"
                       fill="url(#plastic-body)"
-                      stroke="#15803d"
+                      stroke="#00802b"
                       strokeWidth="1.2"
                     />
 
@@ -342,8 +339,8 @@ export function FidgetZone() {
                     {/* ─── CENTER HUB / CAP ─── */}
                     <circle cx="100" cy="100" r="18" fill="#18181b" stroke="#09090b" strokeWidth="1" />
                     <circle cx="100" cy="100" r="16" fill="url(#bearing-inner)" />
-                    <circle cx="100" cy="100" r="14" fill="url(#center-cap)" stroke="#15803d" strokeWidth="1" />
-                    <ellipse cx="97" cy="96" rx="5" ry="3" fill="#ffffff" fillOpacity="0.35" />
+                    <circle cx="100" cy="100" r="14" fill="url(#center-cap)" stroke="#00802b" strokeWidth="1" />
+                    <ellipse cx="97" cy="96" rx="5" ry="3" fill="#ffffff" fillOpacity="0.4" />
                   </g>
                 </svg>
               </div>
@@ -357,21 +354,12 @@ export function FidgetZone() {
               />
             </div>
 
-            {/* RPM, hint & Turbo Spin Button */}
-            <div className="flex flex-col items-center gap-2">
-              <div className="flex flex-col items-center gap-0.5 pointer-events-none">
-                <p className="text-[11px] font-mono font-bold text-bb-lime tracking-widest">
-                  {parseInt(rpmDisplay) > 0 ? `${rpmDisplay} RPM` : 'Drag or tap center to spin'}
-                </p>
-                <p className="text-[9px] text-bb-text-muted font-mono uppercase tracking-wider opacity-60">
-                  {parseInt(rpmDisplay) > 300 ? '⚡ TURBO HYPERSPACE!' : parseInt(rpmDisplay) > 150 ? '🔥 zooming!' : parseInt(rpmDisplay) > 40 ? '⚡ nice spin' : parseInt(rpmDisplay) > 0 ? '🌀 spinning...' : 'flick it!'}
-                </p>
-              </div>
-
+            {/* Turbo Spin Button Only */}
+            <div className="mt-2">
               <button
                 onClick={handleTurboSpin}
                 className={[
-                  'flex items-center gap-1.5 px-4 py-2 mt-1',
+                  'flex items-center gap-1.5 px-5 py-2.5',
                   'bg-bb-violet text-white font-mono text-xs font-black uppercase tracking-wider',
                   'border-2 border-black rounded-bb-xs shadow-[3px_3px_0px_#000]',
                   'hover:bg-[#833ab4] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none',
@@ -379,7 +367,7 @@ export function FidgetZone() {
                 ].join(' ')}
                 title="Turbo spin to maximum speed!"
               >
-                <Zap size={14} className="fill-current text-bb-lime" />
+                <Zap size={15} className="fill-current text-bb-lime" />
                 Turbo Spin ⚡
               </button>
             </div>
