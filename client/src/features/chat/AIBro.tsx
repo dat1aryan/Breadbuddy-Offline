@@ -102,8 +102,17 @@ export function AIBro({ user }: AIBroProps) {
     localStorage.setItem(`breadbuddy_aibro_history_${userId}`, JSON.stringify([welcome]));
   };
 
+  const chatContainerRef = useRef<HTMLDivElement>(null);
+  const isFirstRender = useRef(true);
+
   useEffect(() => {
-    scrollRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+    }
   }, [messages, loading]);
 
   const sendMessage = (text: string) => {
@@ -287,7 +296,7 @@ export function AIBro({ user }: AIBroProps) {
           )}
 
           {/* Conversation History */}
-          <div className="flex-1 overflow-y-auto space-y-4 pr-1 mb-4 scrollbar-thin">
+          <div ref={chatContainerRef} className="flex-1 overflow-y-auto space-y-4 pr-1 mb-4 scrollbar-thin">
             {messages.map((msg, idx) => (
               <div
                 key={idx}

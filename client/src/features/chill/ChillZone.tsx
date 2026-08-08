@@ -43,7 +43,7 @@ export function ChillZone() {
   const currentTab = TABS.find((t) => t.id === active) || TABS[0];
 
   return (
-    <div className={active === 'flappy' ? 'space-y-2' : 'space-y-6'}>
+    <div className="space-y-6">
 
       {/* ── Page header ── */}
       <div className="flex flex-row justify-between items-center gap-2 select-none">
@@ -52,11 +52,9 @@ export function ChillZone() {
             <Gamepad2 className={currentTab.iconColor} size={18} />
             Chill Zone
           </h2>
-          {active !== 'flappy' && (
-            <p className="text-xs text-bb-text-secondary mt-0.5 hidden sm:block">
-              Take a quick break with mini-games and fidgets to destress and lock back in.
-            </p>
-          )}
+          <p className="text-xs text-bb-text-secondary mt-0.5 hidden sm:block">
+            Take a quick break with mini-games and fidgets to destress and lock back in.
+          </p>
         </div>
 
         {/* ── Section switcher — balanced vibrant hero colors ── */}
@@ -92,6 +90,7 @@ export function ChillZone() {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -6 }}
           transition={{ duration: 0.15, ease: 'easeOut' }}
+          className={active === 'flappy' ? 'w-full flex justify-center items-center' : ''}
         >
           {active === 'fidgets' && <FidgetZone />}
           {active === 'flappy'  && <FlappyBread />}

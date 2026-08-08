@@ -500,7 +500,7 @@ export function Squishy() {
   return (
     <div
       ref={containerRef}
-      className="flex flex-col items-center justify-center w-full min-h-[420px] select-none relative overflow-hidden"
+      className="flex flex-col items-center justify-center w-full h-full min-h-[260px] max-h-[calc(100vh-270px)] select-none relative overflow-hidden my-auto"
     >
       <div
         onPointerDown={handlePointerDown}
@@ -508,7 +508,7 @@ export function Squishy() {
         onPointerUp={handlePointerUp}
         onPointerCancel={handlePointerUp}
         onDoubleClick={handleDoubleClick}
-        className="relative cursor-grab active:cursor-grabbing touch-none select-none flex items-center justify-center p-2 w-full min-h-[400px]"
+        className="relative cursor-grab active:cursor-grabbing touch-none select-none flex items-center justify-center p-2 w-full h-full min-h-[240px]"
       >
         <motion.div
           style={{

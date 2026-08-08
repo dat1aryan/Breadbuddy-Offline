@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Trash2, Search, Plus, Edit2, Copy, Tag, SlidersHorizontal, X } from 'lucide-react';
+import { Trash2, Search, Plus, Edit2, Copy, Tag, SlidersHorizontal, X, ChevronDown } from 'lucide-react';
 import { User } from '../../lib/types';
 import { Input } from '../../components/ui/Input';
 import { Button } from '../../components/ui/Button';
@@ -355,23 +355,30 @@ export function ExpenseList({ refreshKey, user, onRefresh }: ExpenseListProps) {
         </div>
 
         {/* Sort select — right side */}
-        <div className="flex-shrink-0">
+        <div className="relative flex-shrink-0 flex items-center">
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value as any)}
-            className="px-3 py-2.5 rounded-bb-sm bg-bb-surface border-2 border-bb-border text-xs text-bb-text-primary outline-none cursor-pointer font-sans"
+            className="px-3.5 pr-8 py-2.5 rounded-bb-sm bg-bb-surface border-2 border-bb-border text-xs font-bold uppercase tracking-wide text-bb-text-muted outline-none cursor-pointer font-mono appearance-none hover:text-bb-text-primary hover:border-bb-violet transition-colors"
           >
-            <option value="date-desc" className="bg-bb-surface">Latest First</option>
-            <option value="date-asc" className="bg-bb-surface">Oldest First</option>
-            <option value="amount-desc" className="bg-bb-surface">Highest Price</option>
-            <option value="amount-asc" className="bg-bb-surface">Lowest Price</option>
-            <option value="alpha-asc" className="bg-bb-surface">Alphabetical</option>
+            <option value="date-desc" className="bg-bb-surface text-white font-sans">Latest First</option>
+            <option value="date-asc" className="bg-bb-surface text-white font-sans">Oldest First</option>
+            <option value="amount-desc" className="bg-bb-surface text-white font-sans">Highest Price</option>
+            <option value="amount-asc" className="bg-bb-surface text-white font-sans">Lowest Price</option>
+            <option value="alpha-asc" className="bg-bb-surface text-white font-sans">Alphabetical</option>
           </select>
+          <ChevronDown size={14} className="absolute right-2.5 text-bb-text-muted pointer-events-none" />
         </div>
 
         {/* Filters toggle with active count */}
         <button
-          onClick={() => setFiltersOpen((v) => !v)}
+          onClick={() => {
+            setFiltersOpen((prev) => {
+              const next = !prev;
+              if (!next) setShowAddCategory(false);
+              return next;
+            });
+          }}
           className="flex items-center gap-1.5 px-3 py-2.5 rounded-bb-sm border-2 text-xs font-bold font-mono uppercase tracking-wide transition-colors
             bg-bb-surface border-bb-border text-bb-text-muted hover:border-bb-violet hover:text-bb-text-primary"
         >
@@ -397,117 +404,127 @@ export function ExpenseList({ refreshKey, user, onRefresh }: ExpenseListProps) {
 
       {/* ── Section B Row 2: Advanced filters (collapsed) ── */}
       {filtersOpen && (
-        <div className="bg-bb-surface border-2 border-bb-border p-4 rounded-bb-sm grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 items-end">
-          {/* Category */}
-          <div className="flex flex-col gap-1.5">
-            <label className="text-label text-bb-text-muted">Category</label>
-            <select
-              value={categoryFilter}
-              onChange={(e) => setCategoryFilter(e.target.value)}
-              className="w-full px-3 py-2.5 rounded-bb-sm bg-bb-surface border-2 border-bb-border text-xs text-bb-text-primary outline-none cursor-pointer font-sans"
-            >
-              <option value="all" className="bg-bb-surface">All Categories</option>
-              {categories.map((c) => (
-                <option key={c.value} value={c.value} className="bg-bb-surface">
-                  {c.emoji} {c.label}
-                </option>
-              ))}
-            </select>
-          </div>
+        <div className="bg-bb-surface border-2 border-bb-border p-4 rounded-bb-sm space-y-3">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 items-end">
+            {/* Category */}
+            <div className="flex flex-col gap-1.5">
+              <label className="text-label text-bb-text-muted">Category</label>
+              <div className="relative flex items-center">
+                <select
+                  value={categoryFilter}
+                  onChange={(e) => setCategoryFilter(e.target.value)}
+                  className="w-full px-3.5 pr-8 py-2.5 rounded-bb-sm bg-bb-surface border-2 border-bb-border text-xs font-semibold text-bb-text-muted outline-none cursor-pointer font-sans appearance-none hover:text-bb-text-primary transition-colors"
+                >
+                  <option value="all" className="bg-bb-surface text-white">All Categories</option>
+                  {categories.map((c) => (
+                    <option key={c.value} value={c.value} className="bg-bb-surface text-white">
+                      {c.emoji} {c.label}
+                    </option>
+                  ))}
+                </select>
+                <ChevronDown size={14} className="absolute right-3 text-bb-text-muted pointer-events-none" />
+              </div>
+            </div>
 
-          {/* Payment */}
-          <div className="flex flex-col gap-1.5">
-            <label className="text-label text-bb-text-muted">Payment Method</label>
-            <select
-              value={paymentFilter}
-              onChange={(e) => setPaymentFilter(e.target.value)}
-              className="w-full px-3 py-2.5 rounded-bb-sm bg-bb-surface border-2 border-bb-border text-xs text-bb-text-primary outline-none cursor-pointer font-sans"
-            >
-              <option value="all" className="bg-bb-surface">All Methods</option>
-              {PAYMENT_METHODS.map((m) => (
-                <option key={m} value={m} className="bg-bb-surface">{m}</option>
-              ))}
-            </select>
-          </div>
+            {/* Payment */}
+            <div className="flex flex-col gap-1.5">
+              <label className="text-label text-bb-text-muted">Payment Method</label>
+              <div className="relative flex items-center">
+                <select
+                  value={paymentFilter}
+                  onChange={(e) => setPaymentFilter(e.target.value)}
+                  className="w-full px-3.5 pr-8 py-2.5 rounded-bb-sm bg-bb-surface border-2 border-bb-border text-xs font-semibold text-bb-text-muted outline-none cursor-pointer font-sans appearance-none hover:text-bb-text-primary transition-colors"
+                >
+                  <option value="all" className="bg-bb-surface text-white">All Methods</option>
+                  {PAYMENT_METHODS.map((m) => (
+                    <option key={m} value={m} className="bg-bb-surface text-white">{m}</option>
+                  ))}
+                </select>
+                <ChevronDown size={14} className="absolute right-3 text-bb-text-muted pointer-events-none" />
+              </div>
+            </div>
 
-          {/* Start Date */}
-          <div className="flex flex-col gap-1.5">
-            <label className="text-label text-bb-text-muted">Start Date</label>
-            <Input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
-          </div>
+            {/* Start Date */}
+            <div className="flex flex-col gap-1.5">
+              <label className="text-label text-bb-text-muted">Start Date</label>
+              <Input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
+            </div>
 
-          {/* End Date */}
-          <div className="flex flex-col gap-1.5">
-            <label className="text-label text-bb-text-muted">End Date</label>
-            <Input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
-          </div>
+            {/* End Date */}
+            <div className="flex flex-col gap-1.5">
+              <label className="text-label text-bb-text-muted">End Date</label>
+              <Input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
+            </div>
 
-          {/* Custom Category — moved from header into Row 2 panel */}
-          <div className="md:col-span-2 lg:col-span-4 border-t-2 border-bb-border pt-3 mt-1">
-            <Button
-              size="sm"
-              variant="secondary"
-              onClick={() => setShowAddCategory(!showAddCategory)}
-              leftIcon={<Tag size={12} />}
-            >
-              Custom Category
-            </Button>
-
-            {/* Clear all filters shortcut */}
-            {activeRow2Count > 0 && (
+            {/* Custom Category & Clear Filters Action Bar */}
+            <div className="md:col-span-2 lg:col-span-4 border-t-2 border-bb-border pt-3 mt-1 flex items-center justify-between">
               <Button
                 size="sm"
-                variant="ghost"
-                className="ml-2"
-                onClick={() => {
-                  setCategoryFilter('all');
-                  setPaymentFilter('all');
-                  setStartDate('');
-                  setEndDate('');
-                }}
-                leftIcon={<X size={12} />}
+                variant={showAddCategory ? 'primary' : 'secondary'}
+                onClick={() => setShowAddCategory(!showAddCategory)}
+                leftIcon={<Tag size={12} />}
               >
-                Clear Filters
+                {showAddCategory ? 'Hide Category Form' : 'Custom Category'}
               </Button>
-            )}
-          </div>
-        </div>
-      )}
 
-      {/* Add Custom Category Form */}
-      {showAddCategory && (
-        <form onSubmit={handleAddCustomCategory} className="p-4 rounded-bb-sm bg-bb-surface border-2 border-bb-border grid grid-cols-1 sm:grid-cols-4 gap-3 items-end">
-          <Input
-            type="text"
-            label="Category Name"
-            value={newCatLabel}
-            onChange={(e) => setNewCatLabel(e.target.value)}
-            required
-          />
-          <Input
-            type="text"
-            label="Emoji (Optional)"
-            value={newCatEmoji}
-            onChange={(e) => setNewCatEmoji(e.target.value)}
-          />
-          <div className="flex flex-col gap-1.5">
-            <label className="text-label text-bb-text-muted">
-              Apply to Type
-            </label>
-            <select
-              value={newCatType}
-              onChange={(e) => setNewCatType(e.target.value as any)}
-              className="w-full px-4 py-2.5 rounded-bb-sm bg-bb-surface border-2 border-bb-border text-xs text-bb-text-primary outline-none cursor-pointer font-sans"
-            >
-              <option value="both" className="bg-bb-surface">Both</option>
-              <option value="expense" className="bg-bb-surface">Expense Only</option>
-              <option value="income" className="bg-bb-surface">Income Only</option>
-            </select>
+              {/* Clear all filters shortcut */}
+              {activeRow2Count > 0 && (
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => {
+                    setCategoryFilter('all');
+                    setPaymentFilter('all');
+                    setStartDate('');
+                    setEndDate('');
+                  }}
+                  leftIcon={<X size={12} />}
+                >
+                  Clear Filters
+                </Button>
+              )}
+            </div>
           </div>
-          <Button type="submit" size="sm" variant="primary" className="w-full">
-            Save Category
-          </Button>
-        </form>
+
+          {/* Add Custom Category Form — tight, clean spacing inside filter panel */}
+          {showAddCategory && (
+            <form onSubmit={handleAddCustomCategory} className="pt-3 border-t-2 border-bb-border/40 grid grid-cols-1 sm:grid-cols-4 gap-3 items-end animate-bb-slide-down">
+              <Input
+                type="text"
+                label="Category Name"
+                value={newCatLabel}
+                onChange={(e) => setNewCatLabel(e.target.value)}
+                required
+              />
+              <Input
+                type="text"
+                label="Emoji (Optional)"
+                value={newCatEmoji}
+                onChange={(e) => setNewCatEmoji(e.target.value)}
+              />
+              <div className="flex flex-col gap-1.5">
+                <label className="text-label text-bb-text-muted">
+                  Apply to Type
+                </label>
+                <div className="relative flex items-center">
+                  <select
+                    value={newCatType}
+                    onChange={(e) => setNewCatType(e.target.value as any)}
+                    className="w-full px-3.5 pr-8 py-2.5 rounded-bb-sm bg-bb-surface border-2 border-bb-border text-xs font-semibold text-bb-text-muted outline-none cursor-pointer font-sans appearance-none hover:text-bb-text-primary transition-colors"
+                  >
+                    <option value="both" className="bg-bb-surface text-white">Both</option>
+                    <option value="expense" className="bg-bb-surface text-white">Expense Only</option>
+                    <option value="income" className="bg-bb-surface text-white">Income Only</option>
+                  </select>
+                  <ChevronDown size={14} className="absolute right-3 text-bb-text-muted pointer-events-none" />
+                </div>
+              </div>
+              <Button type="submit" size="sm" variant="primary" className="w-full">
+                Save Category
+              </Button>
+            </form>
+          )}
+        </div>
       )}
 
       {/* ── Transaction List: grouped by date (date sorts) or flat (other sorts) ── */}

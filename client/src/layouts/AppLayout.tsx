@@ -13,6 +13,15 @@ interface AppLayoutProps {
 }
 
 export function AppLayout({ user, activeTab, onChangeTab, onLogout, children }: AppLayoutProps) {
+  const mainRef = React.useRef<HTMLElement>(null);
+
+  React.useEffect(() => {
+    if (mainRef.current) {
+      mainRef.current.scrollTop = 0;
+    }
+    window.scrollTo(0, 0);
+  }, [activeTab]);
+
   return (
     <div className="h-screen flex flex-col md:flex-row bg-bb-bg text-white overflow-hidden">
       {/* Permanent Sidebar (Desktop/Tablet) */}
@@ -34,7 +43,7 @@ export function AppLayout({ user, activeTab, onChangeTab, onLogout, children }: 
         />
 
         {/* Dynamic Content Panel — ONLY this scrolls */}
-        <main className="flex-1 overflow-y-auto p-4 md:p-8 pb-24 md:pb-8 max-w-5xl w-full mx-auto">
+        <main ref={mainRef} className="flex-1 overflow-y-auto p-4 md:p-8 pb-24 md:pb-8 max-w-5xl w-full mx-auto">
           {children}
         </main>
       </div>

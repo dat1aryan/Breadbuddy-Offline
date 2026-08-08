@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Card } from '../../components/ui/Card';
-import { Volume2, VolumeX, RotateCcw, Play, Pause, Trophy, Sparkles, Maximize2, Minimize2 } from 'lucide-react';
+import { Volume2, VolumeX, RotateCcw, Play, Pause, Trophy, Sparkles } from 'lucide-react';
 
 const W = 434;
 const H = 483;
@@ -49,45 +49,11 @@ export function FlappyBread() {
   const [isMuted, setIsMuted] = useState<boolean>(() =>
     localStorage.getItem('flappy_bread_muted') === 'true'
   );
-  const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
   const isMutedRef = useRef<boolean>(isMuted);
   useEffect(() => {
     isMutedRef.current = isMuted;
   }, [isMuted]);
   const [isNewHigh, setIsNewHigh] = useState<boolean>(false);
-
-  // Helper to smoothly scroll main viewport directly to FlappyBread card
-  const scrollToGameFocus = () => {
-    if (!containerRef.current) return;
-    // Native scrollIntoView smoothly centers the game in whatever scroll container holds it
-    containerRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  };
-
-  // Smooth scroll into focus on mount / tab open
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      scrollToGameFocus();
-    }, 150);
-
-    const handleFSChange = () => {
-      setIsFullscreen(!!document.fullscreenElement);
-    };
-    document.addEventListener('fullscreenchange', handleFSChange);
-
-    return () => {
-      clearTimeout(timer);
-      document.removeEventListener('fullscreenchange', handleFSChange);
-    };
-  }, []);
-
-  const toggleFullscreen = () => {
-    if (!containerRef.current) return;
-    if (!document.fullscreenElement) {
-      containerRef.current.requestFullscreen().catch(() => {});
-    } else {
-      document.exitFullscreen().catch(() => {});
-    }
-  };
 
   const audioCtxRef = useRef<AudioContext | null>(null);
 
@@ -277,15 +243,6 @@ export function FlappyBread() {
       engine.toasters = [createToaster()];
       engine.bird.vel = JUMP_FORCE;
       playSound('jump');
-
-      // Adjust viewport automatically so the user can see the whole game without scrolling
-      if (containerRef.current && !document.fullscreenElement) {
-        containerRef.current.requestFullscreen().catch(() => {
-          scrollToGameFocus();
-        });
-      } else {
-        scrollToGameFocus();
-      }
     }
   };
 
@@ -1584,8 +1541,8 @@ export function FlappyBread() {
   }, []);
 
   return (
-    <div ref={containerRef} className={['w-full flex justify-center items-center py-0 select-none', isFullscreen ? 'bg-[#0a0202] h-screen w-screen p-4 flex-col justify-center' : ''].join(' ')}>
-      <Card accent="coral" className={['p-0 flex flex-col items-center select-none overflow-hidden relative bg-[#0f0404] border-2 border-red-900/30 shadow-[0_20px_50px_rgba(0,0,0,0.5)] shrink-0 mx-auto transition-all duration-300', isFullscreen ? 'max-w-[500px] h-full max-h-[92vh]' : 'w-fit max-w-[380px] sm:max-w-[400px] max-h-[calc(100vh-160px)]'].join(' ')}>
+    <div ref={containerRef} className="w-full flex justify-center items-center py-0 select-none">
+      <Card accent="coral" className="p-0 flex flex-col items-center select-none overflow-hidden relative bg-[#0f0404] border-2 border-red-900/30 shadow-[0_20px_50px_rgba(0,0,0,0.5)] shrink-0 mx-auto transition-all duration-300 w-fit max-w-full rounded-2xl">
       {/* ── Top Header Bar ── */}
       <div className="w-full flex items-center justify-between p-3 bg-gradient-to-b from-black/80 to-transparent absolute top-0 z-10 pointer-events-none">
         <div></div>
@@ -1597,14 +1554,6 @@ export function FlappyBread() {
             title={isMuted ? 'Unmute Sound' : 'Mute Sound'}
           >
             {isMuted ? <VolumeX size={16} className="text-white/50" /> : <Volume2 size={16} className="text-amber-400" />}
-          </button>
-
-          <button
-            onClick={toggleFullscreen}
-            className="p-1.5 bg-black/50 backdrop-blur-md border border-white/10 rounded-full hover:bg-black/70 transition-transform active:scale-95 shadow-lg"
-            title={isFullscreen ? 'Exit Fullscreen' : 'Fullscreen Focus Mode'}
-          >
-            {isFullscreen ? <Minimize2 size={16} className="text-white" /> : <Maximize2 size={16} className="text-amber-400" />}
           </button>
 
           {gameState === 'PLAYING' && (
@@ -1620,7 +1569,7 @@ export function FlappyBread() {
       </div>
 
       {/* ── Game Canvas Wrapper ── */}
-      <div className="relative w-full flex justify-center items-center overflow-hidden shadow-2xl bg-[#0f0404] py-0.5">
+      <div className="relative w-fit flex justify-center items-center overflow-hidden shadow-2xl bg-[#0f0404]">
         <canvas
           ref={canvasRef}
           width={W}
@@ -1630,7 +1579,7 @@ export function FlappyBread() {
             e.preventDefault();
             jump();
           }}
-          className={['cursor-pointer block w-auto aspect-[434/483] max-w-full object-contain mx-auto transition-all duration-300 drop-shadow-xl', isFullscreen ? 'h-[75vh]' : 'h-[clamp(220px,46vh,360px)] max-h-[calc(100vh-230px)]'].join(' ')}
+          className="cursor-pointer block w-auto h-[clamp(340px,65vh,540px)] max-w-[90vw] aspect-[434/483] object-contain mx-auto transition-all duration-300 drop-shadow-xl"
           style={{ 
              filter: 'contrast(1.05) saturate(1.1)', // Enhance colors slightly via CSS
           }}

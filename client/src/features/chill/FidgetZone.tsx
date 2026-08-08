@@ -58,10 +58,7 @@ export function FidgetZone() {
       {/* Play area */}
       <Card
         accent={activeTab === 'spinner' ? 'lime' : activeTab === 'squishy' ? 'coral' : 'violet'}
-        className={[
-          'flex flex-col items-center justify-center relative p-6 transition-all duration-300',
-          activeTab === 'squishy' ? 'min-h-[480px]' : 'min-h-80',
-        ].join(' ')}
+        className="flex flex-col items-center justify-center relative p-4 sm:p-6 transition-all duration-300 min-h-[320px] h-[calc(100vh-250px)] max-h-[calc(100vh-230px)] overflow-hidden"
       >
         {activeTab === 'spinner' && <Spinner />}
         {activeTab === 'squishy' && <Squishy />}
