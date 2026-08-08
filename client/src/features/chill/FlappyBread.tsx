@@ -55,11 +55,25 @@ export function FlappyBread() {
   }, [isMuted]);
   const [isNewHigh, setIsNewHigh] = useState<boolean>(false);
 
-  // Auto-center viewport when FlappyBread mounts
+  // Helper to smoothly scroll main viewport directly to FlappyBread card
+  const scrollToGameFocus = () => {
+    if (!containerRef.current) return;
+    const mainEl = containerRef.current.closest('main');
+    if (mainEl) {
+      const cardRect = containerRef.current.getBoundingClientRect();
+      const mainRect = mainEl.getBoundingClientRect();
+      const relativeTop = cardRect.top - mainRect.top + mainEl.scrollTop;
+      mainEl.scrollTo({ top: Math.max(0, relativeTop - 12), behavior: 'smooth' });
+    } else {
+      containerRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
+  // Smooth scroll into focus on mount / tab open
   useEffect(() => {
     const timer = setTimeout(() => {
-      containerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }, 100);
+      scrollToGameFocus();
+    }, 150);
     return () => clearTimeout(timer);
   }, []);
 
@@ -252,8 +266,8 @@ export function FlappyBread() {
       engine.bird.vel = JUMP_FORCE;
       playSound('jump');
 
-      // Adjust viewport orientation & center game on screen
-      containerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      // Adjust viewport orientation & smoothly scroll into full-screen focus
+      scrollToGameFocus();
     }
   };
 
@@ -1552,8 +1566,8 @@ export function FlappyBread() {
   }, []);
 
   return (
-    <div ref={containerRef} className="w-full flex justify-center items-center py-2 sm:py-4">
-      <Card accent="coral" className="p-0 flex flex-col items-center select-none overflow-hidden relative bg-[#0f0404] w-full max-w-[420px] max-h-[calc(100vh-140px)] border-2 border-red-900/30 shadow-[0_20px_50px_rgba(0,0,0,0.5)] shrink-0">
+    <div ref={containerRef} className="w-full flex justify-center items-center py-1 sm:py-2">
+      <Card accent="coral" className="p-0 flex flex-col items-center select-none overflow-hidden relative bg-[#0f0404] w-fit max-w-[420px] max-h-[calc(100vh-140px)] border-2 border-red-900/30 shadow-[0_20px_50px_rgba(0,0,0,0.5)] shrink-0 mx-auto transition-all duration-300">
       {/* ── Top Header Bar ── */}
       <div className="w-full flex items-center justify-between p-4 bg-gradient-to-b from-black/80 to-transparent absolute top-0 z-10 pointer-events-none">
         <div></div>
@@ -1580,7 +1594,7 @@ export function FlappyBread() {
       </div>
 
       {/* ── Game Canvas Wrapper ── */}
-      <div className="relative w-full flex justify-center items-center overflow-hidden shadow-2xl bg-[#0f0404]">
+      <div className="relative w-full flex justify-center items-center overflow-hidden shadow-2xl bg-[#0f0404] py-1">
         <canvas
           ref={canvasRef}
           width={W}
@@ -1590,7 +1604,7 @@ export function FlappyBread() {
             e.preventDefault();
             jump();
           }}
-          className="cursor-pointer block w-full max-w-[420px] h-auto max-h-[calc(100vh-210px)] object-contain"
+          className="cursor-pointer block h-[clamp(280px,56vh,440px)] w-auto aspect-[434/483] max-w-full object-contain mx-auto transition-all duration-300 drop-shadow-xl"
           style={{ 
              filter: 'contrast(1.05) saturate(1.1)', // Enhance colors slightly via CSS
           }}
@@ -1598,10 +1612,10 @@ export function FlappyBread() {
 
         {/* ── Overlay: START SCREEN ── */}
         {gameState === 'START' && (
-          <div className="absolute inset-0 bg-black/30 backdrop-blur-[2px] flex flex-col items-center justify-center p-6 text-center text-white pointer-events-auto transition-all duration-300">
+          <div className="absolute inset-0 bg-black/30 backdrop-blur-[2px] flex flex-col items-center justify-center p-4 text-center text-white pointer-events-auto transition-all duration-300">
             {/* SVG Logo (Centered in the middle of preview, 100% exact replica) */}
-            <div className="relative mb-6 select-none">
-              <svg viewBox="0 0 400 210" className="w-full max-w-[340px] drop-shadow-[0_12px_24px_rgba(0,0,0,0.8)] select-none overflow-visible">
+            <div className="relative mb-3 sm:mb-4 select-none">
+              <svg viewBox="0 0 400 210" className="w-full max-w-[260px] sm:max-w-[300px] drop-shadow-[0_12px_24px_rgba(0,0,0,0.8)] select-none overflow-visible">
                 <defs>
                   <linearGradient id="breadGrad" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="0%" stopColor="#fff350" />
