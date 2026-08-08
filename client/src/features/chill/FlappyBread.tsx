@@ -59,15 +59,8 @@ export function FlappyBread() {
   // Helper to smoothly scroll main viewport directly to FlappyBread card
   const scrollToGameFocus = () => {
     if (!containerRef.current) return;
-    const mainEl = containerRef.current.closest('main');
-    if (mainEl) {
-      const cardRect = containerRef.current.getBoundingClientRect();
-      const mainRect = mainEl.getBoundingClientRect();
-      const relativeTop = cardRect.top - mainRect.top + mainEl.scrollTop;
-      mainEl.scrollTo({ top: Math.max(0, relativeTop - 12), behavior: 'smooth' });
-    } else {
-      containerRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
+    // Native scrollIntoView smoothly centers the game in whatever scroll container holds it
+    containerRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
   };
 
   // Smooth scroll into focus on mount / tab open
@@ -285,8 +278,14 @@ export function FlappyBread() {
       engine.bird.vel = JUMP_FORCE;
       playSound('jump');
 
-      // Adjust viewport orientation & smoothly scroll into full-screen focus
-      scrollToGameFocus();
+      // Adjust viewport automatically so the user can see the whole game without scrolling
+      if (containerRef.current && !document.fullscreenElement) {
+        containerRef.current.requestFullscreen().catch(() => {
+          scrollToGameFocus();
+        });
+      } else {
+        scrollToGameFocus();
+      }
     }
   };
 
