@@ -38,6 +38,7 @@ interface ToasterObstacle {
 }
 
 export function FlappyBread() {
+  const containerRef = useRef<HTMLDivElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   const [gameState, setGameState] = useState<GameState>('START');
@@ -53,6 +54,14 @@ export function FlappyBread() {
     isMutedRef.current = isMuted;
   }, [isMuted]);
   const [isNewHigh, setIsNewHigh] = useState<boolean>(false);
+
+  // Auto-center viewport when FlappyBread mounts
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      containerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 100);
+    return () => clearTimeout(timer);
+  }, []);
 
   const audioCtxRef = useRef<AudioContext | null>(null);
 
@@ -242,6 +251,9 @@ export function FlappyBread() {
       engine.toasters = [createToaster()];
       engine.bird.vel = JUMP_FORCE;
       playSound('jump');
+
+      // Adjust viewport orientation & center game on screen
+      containerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
   };
 
@@ -1540,8 +1552,8 @@ export function FlappyBread() {
   }, []);
 
   return (
-    <div className="w-full flex justify-center items-center py-4 sm:py-8">
-      <Card accent="coral" className="p-0 flex flex-col items-center select-none overflow-hidden relative bg-[#0f0404] w-full max-w-[600px] border-2 border-red-900/30 shadow-[0_20px_50px_rgba(0,0,0,0.5)] shrink-0">
+    <div ref={containerRef} className="w-full flex justify-center items-center py-2 sm:py-4">
+      <Card accent="coral" className="p-0 flex flex-col items-center select-none overflow-hidden relative bg-[#0f0404] w-full max-w-[420px] max-h-[calc(100vh-140px)] border-2 border-red-900/30 shadow-[0_20px_50px_rgba(0,0,0,0.5)] shrink-0">
       {/* ── Top Header Bar ── */}
       <div className="w-full flex items-center justify-between p-4 bg-gradient-to-b from-black/80 to-transparent absolute top-0 z-10 pointer-events-none">
         <div></div>
@@ -1568,7 +1580,7 @@ export function FlappyBread() {
       </div>
 
       {/* ── Game Canvas Wrapper ── */}
-      <div className="relative w-full overflow-hidden shadow-2xl">
+      <div className="relative w-full flex justify-center items-center overflow-hidden shadow-2xl bg-[#0f0404]">
         <canvas
           ref={canvasRef}
           width={W}
@@ -1578,7 +1590,7 @@ export function FlappyBread() {
             e.preventDefault();
             jump();
           }}
-          className="cursor-pointer block w-full h-auto"
+          className="cursor-pointer block w-full max-w-[420px] h-auto max-h-[calc(100vh-210px)] object-contain"
           style={{ 
              filter: 'contrast(1.05) saturate(1.1)', // Enhance colors slightly via CSS
           }}
