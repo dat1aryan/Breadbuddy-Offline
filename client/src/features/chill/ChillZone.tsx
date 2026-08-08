@@ -43,22 +43,24 @@ export function ChillZone() {
   const currentTab = TABS.find((t) => t.id === active) || TABS[0];
 
   return (
-    <div className="space-y-6">
+    <div className={active === 'flappy' ? 'space-y-2' : 'space-y-6'}>
 
       {/* ── Page header ── */}
-      <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 select-none">
+      <div className="flex flex-row justify-between items-center gap-2 select-none">
         <div>
-          <h2 className="text-xl md:text-2xl font-display font-black text-bb-text-primary flex items-center gap-2 tracking-tight">
-            <Gamepad2 className={currentTab.iconColor} size={20} />
+          <h2 className="text-lg md:text-xl font-display font-black text-bb-text-primary flex items-center gap-2 tracking-tight">
+            <Gamepad2 className={currentTab.iconColor} size={18} />
             Chill Zone
           </h2>
-          <p className="text-xs text-bb-text-secondary mt-0.5">
-            Take a quick break with mini-games and fidgets to destress and lock back in.
-          </p>
+          {active !== 'flappy' && (
+            <p className="text-xs text-bb-text-secondary mt-0.5 hidden sm:block">
+              Take a quick break with mini-games and fidgets to destress and lock back in.
+            </p>
+          )}
         </div>
 
         {/* ── Section switcher — balanced vibrant hero colors ── */}
-        <div className="flex bg-bb-surface border-2 border-bb-border p-1 rounded-bb-sm gap-1">
+        <div className="flex bg-bb-surface border-2 border-bb-border p-1 rounded-bb-sm gap-1 shrink-0">
           {TABS.map((tab) => {
             const isActive = active === tab.id;
             return (
@@ -66,8 +68,8 @@ export function ChillZone() {
                 key={tab.id}
                 onClick={() => setActive(tab.id)}
                 className={[
-                  'relative flex items-center gap-1.5 px-3 py-1.5',
-                  'rounded-bb-xs text-xs font-bold uppercase tracking-wider border-2',
+                  'relative flex items-center gap-1.5 px-2.5 py-1 sm:px-3 sm:py-1.5',
+                  'rounded-bb-xs text-[11px] sm:text-xs font-bold uppercase tracking-wider border-2',
                   'transition-all cursor-pointer select-none',
                   isActive
                     ? tab.activeClass

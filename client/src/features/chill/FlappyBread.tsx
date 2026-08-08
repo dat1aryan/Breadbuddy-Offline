@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Card } from '../../components/ui/Card';
-import { Volume2, VolumeX, RotateCcw, Play, Pause, Trophy, Sparkles } from 'lucide-react';
+import { Volume2, VolumeX, RotateCcw, Play, Pause, Trophy, Sparkles, Maximize2, Minimize2 } from 'lucide-react';
 
 const W = 434;
 const H = 483;
@@ -49,6 +49,7 @@ export function FlappyBread() {
   const [isMuted, setIsMuted] = useState<boolean>(() =>
     localStorage.getItem('flappy_bread_muted') === 'true'
   );
+  const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
   const isMutedRef = useRef<boolean>(isMuted);
   useEffect(() => {
     isMutedRef.current = isMuted;
@@ -74,8 +75,26 @@ export function FlappyBread() {
     const timer = setTimeout(() => {
       scrollToGameFocus();
     }, 150);
-    return () => clearTimeout(timer);
+
+    const handleFSChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+    document.addEventListener('fullscreenchange', handleFSChange);
+
+    return () => {
+      clearTimeout(timer);
+      document.removeEventListener('fullscreenchange', handleFSChange);
+    };
   }, []);
+
+  const toggleFullscreen = () => {
+    if (!containerRef.current) return;
+    if (!document.fullscreenElement) {
+      containerRef.current.requestFullscreen().catch(() => {});
+    } else {
+      document.exitFullscreen().catch(() => {});
+    }
+  };
 
   const audioCtxRef = useRef<AudioContext | null>(null);
 
@@ -1566,35 +1585,43 @@ export function FlappyBread() {
   }, []);
 
   return (
-    <div ref={containerRef} className="w-full flex justify-center items-center py-1 sm:py-2">
-      <Card accent="coral" className="p-0 flex flex-col items-center select-none overflow-hidden relative bg-[#0f0404] w-fit max-w-[420px] max-h-[calc(100vh-140px)] border-2 border-red-900/30 shadow-[0_20px_50px_rgba(0,0,0,0.5)] shrink-0 mx-auto transition-all duration-300">
+    <div ref={containerRef} className={['w-full flex justify-center items-center py-0 select-none', isFullscreen ? 'bg-[#0a0202] h-screen w-screen p-4 flex-col justify-center' : ''].join(' ')}>
+      <Card accent="coral" className={['p-0 flex flex-col items-center select-none overflow-hidden relative bg-[#0f0404] border-2 border-red-900/30 shadow-[0_20px_50px_rgba(0,0,0,0.5)] shrink-0 mx-auto transition-all duration-300', isFullscreen ? 'max-w-[500px] h-full max-h-[92vh]' : 'w-fit max-w-[380px] sm:max-w-[400px] max-h-[calc(100vh-160px)]'].join(' ')}>
       {/* ── Top Header Bar ── */}
-      <div className="w-full flex items-center justify-between p-4 bg-gradient-to-b from-black/80 to-transparent absolute top-0 z-10 pointer-events-none">
+      <div className="w-full flex items-center justify-between p-3 bg-gradient-to-b from-black/80 to-transparent absolute top-0 z-10 pointer-events-none">
         <div></div>
 
         <div className="flex items-center gap-2 pointer-events-auto">
           <button
             onClick={toggleMute}
-            className="p-2 bg-black/50 backdrop-blur-md border border-white/10 rounded-full hover:bg-black/70 transition-transform active:scale-95 shadow-lg"
+            className="p-1.5 bg-black/50 backdrop-blur-md border border-white/10 rounded-full hover:bg-black/70 transition-transform active:scale-95 shadow-lg"
             title={isMuted ? 'Unmute Sound' : 'Mute Sound'}
           >
-            {isMuted ? <VolumeX size={18} className="text-white/50" /> : <Volume2 size={18} className="text-amber-400" />}
+            {isMuted ? <VolumeX size={16} className="text-white/50" /> : <Volume2 size={16} className="text-amber-400" />}
+          </button>
+
+          <button
+            onClick={toggleFullscreen}
+            className="p-1.5 bg-black/50 backdrop-blur-md border border-white/10 rounded-full hover:bg-black/70 transition-transform active:scale-95 shadow-lg"
+            title={isFullscreen ? 'Exit Fullscreen' : 'Fullscreen Focus Mode'}
+          >
+            {isFullscreen ? <Minimize2 size={16} className="text-white" /> : <Maximize2 size={16} className="text-amber-400" />}
           </button>
 
           {gameState === 'PLAYING' && (
             <button
               onClick={togglePause}
-              className="p-2 bg-black/50 backdrop-blur-md border border-white/10 rounded-full hover:bg-black/70 transition-transform active:scale-95 shadow-lg"
+              className="p-1.5 bg-black/50 backdrop-blur-md border border-white/10 rounded-full hover:bg-black/70 transition-transform active:scale-95 shadow-lg"
               title="Pause Game"
             >
-              <Pause size={18} className="text-white" />
+              <Pause size={16} className="text-white" />
             </button>
           )}
         </div>
       </div>
 
       {/* ── Game Canvas Wrapper ── */}
-      <div className="relative w-full flex justify-center items-center overflow-hidden shadow-2xl bg-[#0f0404] py-1">
+      <div className="relative w-full flex justify-center items-center overflow-hidden shadow-2xl bg-[#0f0404] py-0.5">
         <canvas
           ref={canvasRef}
           width={W}
@@ -1604,7 +1631,7 @@ export function FlappyBread() {
             e.preventDefault();
             jump();
           }}
-          className="cursor-pointer block h-[clamp(280px,56vh,440px)] w-auto aspect-[434/483] max-w-full object-contain mx-auto transition-all duration-300 drop-shadow-xl"
+          className={['cursor-pointer block w-auto aspect-[434/483] max-w-full object-contain mx-auto transition-all duration-300 drop-shadow-xl', isFullscreen ? 'h-[75vh]' : 'h-[clamp(220px,46vh,360px)] max-h-[calc(100vh-230px)]'].join(' ')}
           style={{ 
              filter: 'contrast(1.05) saturate(1.1)', // Enhance colors slightly via CSS
           }}
