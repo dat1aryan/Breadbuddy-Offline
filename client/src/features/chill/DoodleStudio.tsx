@@ -133,8 +133,7 @@ export function DoodleStudio() {
     try {
       const dataUrl = cv.toDataURL("image/png");
       localStorage.setItem("doodle_studio_canvas", dataUrl);
-      localStorage.setItem("breadbuddy_doodle_draft", dataUrl);
-      localStorage.setItem("breadbuddy_doodle_dims", JSON.stringify(canvasDims));
+      localStorage.setItem("doodle_studio_temp_dims", JSON.stringify(canvasDims));
     } catch (_) { /* quota exceeded – silently skip */ }
   }, [canvasDims]);
 
@@ -354,7 +353,7 @@ export function DoodleStudio() {
         // Try restoring saved dimensions first to prevent canvas dimension jumps on refresh
         let targetW = 0;
         let targetH = 0;
-        const savedDimsRaw = localStorage.getItem("breadbuddy_doodle_dims");
+        const savedDimsRaw = localStorage.getItem("breadbuddy_doodle_dims") || localStorage.getItem("doodle_studio_temp_dims");
         if (savedDimsRaw) {
           try {
             const parsed = JSON.parse(savedDimsRaw);
@@ -378,7 +377,7 @@ export function DoodleStudio() {
         setCanvasDims({ width: targetW, height: targetH });
 
         // ── Restore saved drawing from localStorage ──
-        const savedDataUrl = localStorage.getItem("breadbuddy_doodle_draft") || localStorage.getItem("doodle_studio_canvas");
+        const savedDataUrl = localStorage.getItem("doodle_studio_canvas") || localStorage.getItem("breadbuddy_doodle_draft");
         if (savedDataUrl) {
           const img = new Image();
           img.onload = () => {
@@ -618,6 +617,13 @@ export function DoodleStudio() {
   function confirmExit(saveFirst: boolean) {
     if (saveFirst) {
       saveLocalDraft();
+    } else {
+      localStorage.removeItem("doodle_studio_canvas");
+      localStorage.removeItem("doodle_studio_temp_dims");
+      const hasSavedDraft = localStorage.getItem("breadbuddy_doodle_draft");
+      if (!hasSavedDraft) {
+        localStorage.removeItem("breadbuddy_doodle_dims");
+      }
     }
     setModalType("none");
     exitFullscreen();
