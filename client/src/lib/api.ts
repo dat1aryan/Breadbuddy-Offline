@@ -37,6 +37,8 @@ export const api = {
   updateProfile: (body: Partial<User>) =>
     request<{ ok: boolean }>('/auth/me', { method: 'PATCH', body: JSON.stringify(body) }),
 
+  deleteAccount: () => request<{ ok: boolean }>('/auth/me', { method: 'DELETE' }),
+
   getSummary: () => request<Summary>('/expenses/summary'),
 
   getExpenses: (month?: string) =>

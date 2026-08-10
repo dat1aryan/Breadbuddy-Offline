@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { api } from '../../lib/api';
 import { setAuth } from '../../lib/auth';
 import { User } from '../../lib/types';
+import { onboardingEngine } from '../../lib/onboardingEngine';
 import { Card } from '../../components/ui/Card';
 import { Input } from '../../components/ui/Input';
 import { Button } from '../../components/ui/Button';
@@ -40,15 +41,15 @@ export default function Login({ onAuth }: LoginProps) {
       setAuth(data.token, data.user);
 
       toast.success(`Welcome back, ${data.user.name}! ✨`);
-      onAuth(data.user);
 
-      // Check if onboarding completed for this user
-      const hasOnboarded = localStorage.getItem(`onboarded_${data.user.id}`);
+      // Check if onboarding completed for this user using onboardingEngine
+      const hasOnboarded = onboardingEngine.isCompleted(data.user.id, data.user);
       if (hasOnboarded) {
         navigate('/dashboard');
       } else {
         navigate('/onboarding');
       }
+      onAuth(data.user);
     } catch (err) {
       const errMsg = err instanceof Error ? err.message : 'Login failed, try again bestie 💀';
       setError(errMsg);
@@ -70,14 +71,14 @@ export default function Login({ onAuth }: LoginProps) {
       vibe: 'toast'
     };
     setAuth('mock-google-token', mockUser);
-    onAuth(mockUser);
 
-    const hasOnboarded = localStorage.getItem(`onboarded_${mockUser.id}`);
+    const hasOnboarded = onboardingEngine.isCompleted(mockUser.id, mockUser);
     if (hasOnboarded) {
       navigate('/dashboard');
     } else {
       navigate('/onboarding');
     }
+    onAuth(mockUser);
   };
 
   return (

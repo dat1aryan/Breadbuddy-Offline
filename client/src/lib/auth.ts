@@ -1,4 +1,5 @@
 import { User } from './types';
+import { onboardingEngine } from './onboardingEngine';
 
 const TOKEN_KEY = 'breadbuddy_token';
 const USER_KEY = 'breadbuddy_user';
@@ -13,6 +14,9 @@ export function setAuth(token: string, user: User): void {
         sessionStorage.removeItem(key);
       }
     }
+  }
+  if (user.isOnboarded || (user.monthlyAllowance !== undefined && user.monthlyAllowance > 0)) {
+    onboardingEngine.setCompleted(user.id, true);
   }
   localStorage.setItem(TOKEN_KEY, token);
   localStorage.setItem(USER_KEY, JSON.stringify(user));

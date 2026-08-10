@@ -612,19 +612,16 @@ export function DoodleZone() {
     setCursorPt(null); setDrawing(false); lastPt.current = null;
   }, []);
 
-  /* ── Switch tool: bake text objects & reset active tool modes ── */
+  /* ── Switch tool: bake text objects ── */
   function activateTool(action: () => void) {
     if (textObjects.length > 0) bakeAllTextObjects();
     setSelectedTextId(null);
     setTextMode("idle");
-    setIsText(false);
-    setIsFill(false);
-    setEyedropper(false);
     action();
   }
 
   /* ── Computed values ── */
-  const isEraser    = brush === "eraser" && !isText && !isFill && !eyedropper;
+  const isEraser    = brush === "eraser";
   const canUndo     = history.length > 0;
   const canRedo     = future.length > 0;
   const isWhiteColor = color.toUpperCase() === "#FFFFFF" || color.toUpperCase() === "#FFF";
@@ -776,13 +773,10 @@ export function DoodleZone() {
 
         {/* Eyedropper */}
         <button onClick={() => {
-          if (textObjects.length > 0) bakeAllTextObjects();
-          setSelectedTextId(null);
-          setTextMode("idle");
           if (!eyedropper) prevBrushRef.current = brushRef.current;
-          setIsFill(false);
-          setIsText(false);
-          setEyedropper(v => !v);
+          setEyedropper(v => !v); setIsFill(false);
+          if (isText) bakeAllTextObjects();
+          setIsText(false); setSelectedTextId(null); setTextMode("idle");
         }} title="Color Picker"
           className={`flex items-center justify-center w-8 h-8 rounded-bb-xs border-2 transition-colors ${
             eyedropper ? "bg-bb-violet text-bb-violet-fg border-black shadow-[2px_2px_0px_#000]"
@@ -791,14 +785,7 @@ export function DoodleZone() {
         </button>
 
         {/* Fill */}
-        <button onClick={() => {
-          if (textObjects.length > 0) bakeAllTextObjects();
-          setSelectedTextId(null);
-          setTextMode("idle");
-          setEyedropper(false);
-          setIsText(false);
-          setIsFill(v => !v);
-        }} title="Fill area"
+        <button onClick={() => { activateTool(() => { setIsFill(v => !v); setEyedropper(false); }); }} title="Fill area"
           className={`flex items-center justify-center w-8 h-8 rounded-bb-xs border-2 transition-colors ${
             isFill ? "bg-bb-violet text-bb-violet-fg border-black shadow-[2px_2px_0px_#000]"
               : "border-bb-border bg-bb-bg text-bb-text-muted hover:border-bb-violet hover:text-bb-violet"}`}>
@@ -807,17 +794,13 @@ export function DoodleZone() {
 
         {/* Text Tool */}
         <button onClick={() => {
-          setEyedropper(false);
-          setIsFill(false);
           if (isText) {
             bakeAllTextObjects();
             setIsText(false);
-            setSelectedTextId(null);
-            setTextMode("idle");
           } else {
             if (textObjects.length > 0) bakeAllTextObjects();
-            setIsText(true);
-            setTextMode("idle");
+            setEyedropper(false); setIsFill(false);
+            setIsText(true); setTextMode("idle");
           }
         }} title="Text Tool (drag to create)"
           className={`flex items-center justify-center w-8 h-8 rounded-bb-xs border-2 transition-colors ${

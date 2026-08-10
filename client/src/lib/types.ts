@@ -6,6 +6,7 @@ export interface User {
   currency: string;
   vibe?: 'toast' | 'roast';
   fidgetScore?: number;
+  isOnboarded?: boolean;
 }
 
 export interface Expense {

@@ -41,9 +41,9 @@ const SQUISHY_CONFIG = {
   },
 } as const;
 
-// ─── UTILITY HELPERS & PARTICLE BURSTS ─────────────────────────────────────────
-export interface BurstParticle {
-  uid: number;
+// ─── UTILITY HELPERS & PARTICLE POOL ──────────────────────────────────────────
+export interface PooledParticle {
+  id: number;
   emoji: string;
   startX: number;
   startY: number;
@@ -51,7 +51,7 @@ export interface BurstParticle {
   targetY: number;
   rotate: number;
   scale: number;
-  createdAt: number;
+  active: boolean;
 }
 
 function clamp(val: number, min: number, max: number): number {
@@ -101,39 +101,63 @@ function calculateSquashTransform(
   };
 }
 
-function createParticleBurst(
-  centerX: number = 130,
-  centerY: number = 105,
-  count: number = 8,
-  startUid: number = Date.now()
-): BurstParticle[] {
-  const emojis = SQUISHY_CONFIG.particles.emojis;
-  const list: BurstParticle[] = [];
+class ParticlePool {
+  private pool: PooledParticle[];
+  private nextId = 0;
 
-  for (let i = 0; i < count; i++) {
-    const angle = (Math.PI * 2 * i) / count + (Math.random() * 0.4 - 0.2);
-
-    // Crust perimeter sides (85px horizontal, 75px vertical)
-    const edgeX = centerX + Math.cos(angle) * 85;
-    const edgeY = centerY + Math.sin(angle) * 75;
-
-    // Ejection vector outward into surrounding space
-    const ejectionDist = 45 + Math.random() * 55;
-
-    list.push({
-      uid: startUid + i,
-      emoji: emojis[i % emojis.length],
-      startX: edgeX,
-      startY: edgeY,
-      targetX: Math.cos(angle) * ejectionDist,
-      targetY: Math.sin(angle) * ejectionDist,
-      rotate: Math.random() * 360 - 180,
-      scale: 0.9 + Math.random() * 0.5,
-      createdAt: Date.now(),
-    });
+  constructor(size: number = 16) {
+    this.pool = Array.from({ length: size }, (_, i) => ({
+      id: i,
+      emoji: SQUISHY_CONFIG.particles.emojis[0],
+      startX: 130,
+      startY: 105,
+      targetX: 0,
+      targetY: 0,
+      rotate: 0,
+      scale: 1,
+      active: false,
+    }));
   }
 
-  return list;
+  public spawnBurst(centerX: number = 130, centerY: number = 105, count: number = 10): PooledParticle[] {
+    const emojis = SQUISHY_CONFIG.particles.emojis;
+    let spawned = 0;
+
+    for (let i = 0; i < this.pool.length && spawned < count; i++) {
+      const p = this.pool[(this.nextId + i) % this.pool.length];
+      const angle = (Math.PI * 2 * spawned) / count + (Math.random() * 0.4 - 0.2);
+
+      // Position start point directly along the outer crust perimeter (85px horizontal, 75px vertical)
+      const edgeX = centerX + Math.cos(angle) * 85;
+      const edgeY = centerY + Math.sin(angle) * 75;
+
+      // Shoot outward from the crust edge into open space
+      const ejectionDist = 45 + Math.random() * 55;
+
+      p.active = true;
+      p.emoji = emojis[(this.nextId + spawned) % emojis.length];
+      p.startX = edgeX;
+      p.startY = edgeY;
+      p.targetX = Math.cos(angle) * ejectionDist;
+      p.targetY = Math.sin(angle) * ejectionDist;
+      p.rotate = Math.random() * 360 - 180;
+      p.scale = 0.9 + Math.random() * 0.5;
+      spawned++;
+    }
+
+    this.nextId = (this.nextId + spawned) % this.pool.length;
+    return this.getActive();
+  }
+
+  public getActive(): PooledParticle[] {
+    return this.pool.filter((p) => p.active);
+  }
+
+  public clear(): void {
+    for (const p of this.pool) {
+      p.active = false;
+    }
+  }
 }
 
 // ─── MEMOIZED SUBCOMPONENTS ───────────────────────────────────────────────────
@@ -266,11 +290,11 @@ export function Squishy() {
   const [expression, setExpression] = useState<LoafExpression>('sleepy');
   const [hasAwoken, setHasAwoken] = useState<boolean>(false);
   const [isBlinking, setIsBlinking] = useState<boolean>(false);
-  const [particles, setParticles] = useState<BurstParticle[]>([]);
+  const [particles, setParticles] = useState<PooledParticle[]>([]);
   const [eyeOffset, setEyeOffset] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
 
   const containerRef = useRef<HTMLDivElement>(null);
-  const particleUidRef = useRef<number>(0);
+  const particlePoolRef = useRef<ParticlePool>(new ParticlePool());
 
   const isPointerDownRef = useRef<boolean>(false);
   const pointerStartRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
@@ -297,22 +321,6 @@ export function Squishy() {
   const springButterX = useSpring(rawButterX, SQUISHY_CONFIG.springs.butter);
   const springButterY = useSpring(rawButterY, SQUISHY_CONFIG.springs.butter);
   const springButterRotate = useSpring(rawButterRotate, SQUISHY_CONFIG.springs.butter);
-
-  const triggerBurst = useCallback((centerX: number = 130, centerY: number = 105, count: number = 8) => {
-    const newBatch = createParticleBurst(centerX, centerY, count, particleUidRef.current);
-    particleUidRef.current += count;
-    setParticles((prev) => [...prev.slice(-24), ...newBatch]);
-  }, []);
-
-  // Periodic cleanup of expired particles
-  useEffect(() => {
-    if (particles.length === 0) return;
-    const timer = setTimeout(() => {
-      const now = Date.now();
-      setParticles((prev) => prev.filter((p) => now - p.createdAt < 750));
-    }, 400);
-    return () => clearTimeout(timer);
-  }, [particles]);
 
   const getContainerBounds = useCallback(() => {
     if (!containerRef.current) return { maxX: 120, maxY: 80 };
@@ -402,8 +410,14 @@ export function Squishy() {
     rawButterY.set(4);
     rawButterRotate.set(0);
 
-    // Instant smooth GPU particle burst directly from the sides
-    triggerBurst(130, 90, 8);
+    // Burst particles directly out of the squishy loaf on click
+    const newParticles = particlePoolRef.current.spawnBurst(130, 90, SQUISHY_CONFIG.particles.burstCount);
+    setParticles([...newParticles]);
+
+    setTimeout(() => {
+      particlePoolRef.current.clear();
+      setParticles([]);
+    }, SQUISHY_CONFIG.particles.lifespanMs);
 
     setExpression('squished');
     if (resetExprTimerRef.current) clearTimeout(resetExprTimerRef.current);
@@ -454,7 +468,13 @@ export function Squishy() {
     rawButterY.set(0);
     rawButterRotate.set(0);
 
-    triggerBurst(130, 100, 8);
+    const newParticles = particlePoolRef.current.spawnBurst(130, 100, SQUISHY_CONFIG.particles.burstCount);
+    setParticles([...newParticles]);
+
+    setTimeout(() => {
+      particlePoolRef.current.clear();
+      setParticles([]);
+    }, SQUISHY_CONFIG.particles.lifespanMs);
 
     setExpression('happy');
     resetExprTimerRef.current = setTimeout(() => {
@@ -467,9 +487,12 @@ export function Squishy() {
   const handleDoubleClick = () => {
     if (totalDragDistRef.current > 8) return; // Prevent accidental double click while dragging
     setExpression('surprised');
-    triggerBurst(130, 80, 10);
+    const newParticles = particlePoolRef.current.spawnBurst(130, 80, 8);
+    setParticles([...newParticles]);
 
     setTimeout(() => {
+      particlePoolRef.current.clear();
+      setParticles([]);
       setExpression('calm');
     }, SQUISHY_CONFIG.timings.expressionResetDelay);
   };
@@ -569,42 +592,36 @@ export function Squishy() {
             </g>
           </svg>
 
-          {/* Hardware Accelerated GPU CSS Keyframe Side Ejection Particles */}
-          <style>{`
-            @keyframes squishySideBurst {
-              0% {
-                transform: translate3d(0, 0, 0) scale(0.2) rotate(0deg);
-                opacity: 1;
-              }
-              60% {
-                opacity: 1;
-              }
-              100% {
-                transform: translate3d(var(--tx), var(--ty), 0) scale(var(--sc)) rotate(var(--rot));
-                opacity: 0;
-              }
-            }
-            .animate-squishy-burst {
-              animation: squishySideBurst 0.65s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-              will-change: transform, opacity;
-            }
-          `}</style>
-
+          {/* Floating Pooled Particles bursting 360° OUTWARDS past crust edges */}
           {particles.map((pt) => (
-            <span
-              key={pt.uid}
-              className="absolute text-xl pointer-events-none select-none font-bold z-40 drop-shadow-md animate-squishy-burst"
+            <motion.span
+              key={`${pt.id}-${pt.targetX.toFixed(1)}`}
+              initial={{
+                x: 0,
+                y: 0,
+                scale: 0.2,
+                opacity: 1,
+                rotate: 0,
+              }}
+              animate={{
+                x: pt.targetX,
+                y: pt.targetY,
+                scale: [0.2, pt.scale, 0.4],
+                opacity: [1, 1, 0],
+                rotate: pt.rotate,
+              }}
+              transition={{
+                duration: 0.65,
+                ease: [0.16, 1, 0.3, 1],
+              }}
+              className="absolute text-xl pointer-events-none select-none font-bold z-40 drop-shadow-md"
               style={{
                 left: pt.startX - 12,
                 top: pt.startY - 12,
-                ['--tx' as any]: `${pt.targetX.toFixed(1)}px`,
-                ['--ty' as any]: `${pt.targetY.toFixed(1)}px`,
-                ['--rot' as any]: `${pt.rotate.toFixed(1)}deg`,
-                ['--sc' as any]: pt.scale.toFixed(2),
               }}
             >
               {pt.emoji}
-            </span>
+            </motion.span>
           ))}
         </motion.div>
       </div>

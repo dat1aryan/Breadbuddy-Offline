@@ -23,6 +23,7 @@ export function initSchema(): void {
       currency TEXT NOT NULL DEFAULT '₹',
       vibe TEXT NOT NULL DEFAULT 'toast',
       fidget_score INTEGER NOT NULL DEFAULT 0,
+      is_onboarded INTEGER NOT NULL DEFAULT 0,
       created_at TEXT NOT NULL DEFAULT (datetime('now'))
     );
 
@@ -68,6 +69,13 @@ export function initSchema(): void {
   } catch (e) {
     // Ignore error if column already exists
   }
+
+  try {
+    db.exec('ALTER TABLE users ADD COLUMN is_onboarded INTEGER NOT NULL DEFAULT 0;');
+  } catch (e) {
+    // Ignore error if column already exists
+  }
 }
 
 initSchema();
+

@@ -90,7 +90,11 @@ function App() {
           path="/"
           element={
             user ? (
-              <Navigate to="/dashboard" replace />
+              onboardingEngine.isCompleted(user.id, user) ? (
+                <Navigate to="/dashboard" replace />
+              ) : (
+                <Navigate to="/onboarding" replace />
+              )
             ) : (
               <LandingPage />
             )
@@ -100,7 +104,11 @@ function App() {
           path="/login"
           element={
             user ? (
-              <Navigate to="/dashboard" replace />
+              onboardingEngine.isCompleted(user.id, user) ? (
+                <Navigate to="/dashboard" replace />
+              ) : (
+                <Navigate to="/onboarding" replace />
+              )
             ) : (
               <AuthLayout>
                 <Login onAuth={(u) => setUser(u)} />
@@ -112,7 +120,11 @@ function App() {
           path="/signup"
           element={
             user ? (
-              <Navigate to="/dashboard" replace />
+              onboardingEngine.isCompleted(user.id, user) ? (
+                <Navigate to="/dashboard" replace />
+              ) : (
+                <Navigate to="/onboarding" replace />
+              )
             ) : (
               <AuthLayout>
                 <Signup onAuth={(u) => setUser(u)} />
@@ -140,7 +152,7 @@ function App() {
           path="/onboarding"
           element={
             <ProtectedRoute>
-              {user && onboardingEngine.isCompleted(user.id) ? (
+              {user && onboardingEngine.isCompleted(user.id, user) ? (
                 <Navigate to="/dashboard" replace />
               ) : (
                 <Onboarding />
@@ -152,7 +164,7 @@ function App() {
           path="/dashboard"
           element={
             <ProtectedRoute>
-              {user && !onboardingEngine.isCompleted(user.id) ? (
+              {user && !onboardingEngine.isCompleted(user.id, user) ? (
                 <Navigate to="/onboarding" replace />
               ) : (
                 <Dashboard

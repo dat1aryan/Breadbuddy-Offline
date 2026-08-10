@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { api } from '../../lib/api';
 import { setAuth } from '../../lib/auth';
 import { User } from '../../lib/types';
+import { onboardingEngine } from '../../lib/onboardingEngine';
 import { Card } from '../../components/ui/Card';
 import { Input } from '../../components/ui/Input';
 import { Button } from '../../components/ui/Button';
@@ -84,13 +85,18 @@ export default function Signup({ onAuth }: SignupProps) {
         monthlyAllowance: 0,
       });
 
-      setAuth(data.token, data.user);
-      onAuth(data.user);
+      // Clear any stale local storage for a different user ID to prevent inheriting old user data
+      onboardingEngine.clearUserData(data.user.id, email);
+      if (!data.user.isOnboarded && !data.user.monthlyAllowance) {
+        onboardingEngine.setCompleted(data.user.id, false);
+      }
 
+      setAuth(data.token, data.user);
       toast.success('Account created! Now verify email ✨');
       // Save temp email to state/localStorage for verification screen to display
       localStorage.setItem('temp_verify_email', email);
       navigate('/verify');
+      onAuth(data.user);
     } catch (err) {
       const errMsg = err instanceof Error ? err.message : 'Signup failed 🫠';
       setError(errMsg);
@@ -102,17 +108,20 @@ export default function Signup({ onAuth }: SignupProps) {
 
   const handleGoogleSignup = () => {
     toast.success('Google Signup successful! 💖');
+    const randomId = Math.floor(100000 + Math.random() * 900000);
     const mockUser: User = {
-      id: 999,
+      id: randomId,
       email: 'bestie@gmail.com',
       name: 'Google Bestie',
       monthlyAllowance: 0,
       currency: '₹',
       vibe: 'toast'
     };
+    onboardingEngine.clearUserData(mockUser.id, mockUser.email);
+    onboardingEngine.setCompleted(mockUser.id, false);
     setAuth('mock-google-token', mockUser);
-    onAuth(mockUser);
     navigate('/onboarding');
+    onAuth(mockUser);
   };
 
   return (

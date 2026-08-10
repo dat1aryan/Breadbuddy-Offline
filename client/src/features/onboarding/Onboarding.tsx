@@ -12,6 +12,7 @@ import { preferencesEngine } from '../../lib/preferencesEngine';
 import { profileEngine } from '../../lib/profileEngine';
 import { savingsEngine } from '../../lib/savingsEngine';
 import { formatCurrency } from '../../utils/currencyUtils';
+import { api } from '../../lib/api';
 
 const AVATARS = ['🦊', '🐹', '🐼', '🦁', '🐯', '🐨', '🦄', '🦖', '🐱', '🐶', '🐻', '🦉'];
 
@@ -264,8 +265,17 @@ export default function Onboarding() {
         name: preferredName,
         monthlyAllowance: Number(monthlyIncome),
         currency: selectedCurrency,
+        isOnboarded: true,
       };
       setAuth(localStorage.getItem('breadbuddy_token') || '', updatedUser);
+
+      // Sync onboarding status to server
+      api.updateProfile({
+        name: preferredName,
+        monthlyAllowance: Number(monthlyIncome),
+        currency: selectedCurrency,
+        isOnboarded: true,
+      }).catch(() => {});
 
       // 2. Save profile settings and preferences locally
       const initialGoal = primaryGoal === 'custom' ? customGoalName : primaryGoal;

@@ -10,6 +10,8 @@ import { setAuth, clearAuth } from '../../lib/auth';
 import { User as UserType } from '../../lib/types';
 import { ConfirmModal } from '../../components/ui/ConfirmModal';
 import { notificationEngine } from '../../lib/notificationEngine';
+import { api } from '../../lib/api';
+import { onboardingEngine } from '../../lib/onboardingEngine';
 
 interface SettingsProps {
   user: UserType;
@@ -174,12 +176,23 @@ export function Settings({ user }: SettingsProps) {
     setIsDeleteLocalConfirmOpen(true);
   };
 
-  const executeDeleteLocalData = () => {
+  const executeDeleteLocalData = async () => {
+    const userId = user.id;
+    try {
+      // 1. Delete user account from server database
+      await api.deleteAccount();
+    } catch (e) {
+      console.error('Failed to delete account on server:', e);
+    }
+
+    // 2. Clear all local user data and auth
+    onboardingEngine.clearUserData(userId);
     clearAuth();
-    localStorage.clear();
-    toast.success('All local data wiped. Resetting app...');
-    // Force reload to trigger onboarding
-    window.location.reload();
+
+    toast.success('Account deleted successfully!');
+
+    // 3. Redirect to landing page (/)
+    window.location.href = '/';
   };
 
   return (
