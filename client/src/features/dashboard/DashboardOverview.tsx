@@ -5,7 +5,7 @@ import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import { StatBlock } from '../../components/ui/StatBlock';
 import { Badge } from '../../components/ui/Badge';
-import { TransactionModal } from '../ledger/TransactionModal';
+import { TransactionModal } from '../transaction/TransactionModal';
 import { financeEngine } from '../../lib/financeEngine';
 import { subscriptionEngine, getDaysUntilDue } from '../../lib/subscriptionEngine';
 import { preferencesEngine } from '../../lib/preferencesEngine';

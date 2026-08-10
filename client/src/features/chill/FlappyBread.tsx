@@ -1579,7 +1579,7 @@ export function FlappyBread() {
             e.preventDefault();
             jump();
           }}
-          className="cursor-pointer block w-auto h-[clamp(340px,65vh,540px)] max-w-[90vw] aspect-[434/483] object-contain mx-auto transition-all duration-300 drop-shadow-xl"
+          className="cursor-pointer block w-auto h-[clamp(440px,72vh,720px)] max-w-[95vw] aspect-[434/483] object-contain mx-auto transition-all duration-300 drop-shadow-xl"
           style={{ 
              filter: 'contrast(1.05) saturate(1.1)', // Enhance colors slightly via CSS
           }}

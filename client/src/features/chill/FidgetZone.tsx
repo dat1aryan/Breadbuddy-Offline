@@ -29,7 +29,15 @@ const FIDGET_TABS: {
 ];
 
 export function FidgetZone() {
-  const [activeTab, setActiveTab] = useState<FidgetTab>('spinner');
+  const [activeTab, setActiveTab] = useState<FidgetTab>(() => {
+    const saved = localStorage.getItem('fidget_zone_active_subtab') as FidgetTab;
+    return (saved && FIDGET_TABS.some((t) => t.id === saved)) ? saved : 'spinner';
+  });
+
+  const handleSubtabChange = (tabId: FidgetTab) => {
+    setActiveTab(tabId);
+    localStorage.setItem('fidget_zone_active_subtab', tabId);
+  };
 
   return (
     <div className="space-y-4">
@@ -40,7 +48,7 @@ export function FidgetZone() {
           return (
             <button
               key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
+              onClick={() => handleSubtabChange(tab.id)}
               className={[
                 'flex-1 py-2 rounded-bb-xs text-xs font-bold uppercase tracking-wider border-2',
                 'transition-all cursor-pointer select-none',

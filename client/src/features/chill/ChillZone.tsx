@@ -3,7 +3,7 @@ import { Gamepad2, Hand, Pencil } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FidgetZone } from './FidgetZone';
 import { FlappyBread } from './FlappyBread';
-import { DoodleZone } from './DoodleZone';
+import { DoodleStudio } from './DoodleStudio';
 
 type ChillSection = 'fidgets' | 'flappy' | 'doodle';
 
@@ -38,7 +38,15 @@ const TABS: {
 ];
 
 export function ChillZone() {
-  const [active, setActive] = useState<ChillSection>('fidgets');
+  const [active, setActive] = useState<ChillSection>(() => {
+    const saved = localStorage.getItem('chill_zone_active_tab') as ChillSection;
+    return (saved && TABS.some((t) => t.id === saved)) ? saved : 'fidgets';
+  });
+
+  const handleTabChange = (tabId: ChillSection) => {
+    setActive(tabId);
+    localStorage.setItem('chill_zone_active_tab', tabId);
+  };
 
   const currentTab = TABS.find((t) => t.id === active) || TABS[0];
 
@@ -64,7 +72,7 @@ export function ChillZone() {
             return (
               <button
                 key={tab.id}
-                onClick={() => setActive(tab.id)}
+                onClick={() => handleTabChange(tab.id)}
                 className={[
                   'relative flex items-center gap-1.5 px-2.5 py-1 sm:px-3 sm:py-1.5',
                   'rounded-bb-xs text-[11px] sm:text-xs font-bold uppercase tracking-wider border-2',
@@ -94,7 +102,7 @@ export function ChillZone() {
         >
           {active === 'fidgets' && <FidgetZone />}
           {active === 'flappy'  && <FlappyBread />}
-          {active === 'doodle'  && <DoodleZone />}
+          {active === 'doodle'  && <DoodleStudio />}
         </motion.div>
       </AnimatePresence>
 

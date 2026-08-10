@@ -6,7 +6,7 @@ import { clearAuth } from '../lib/auth';
 import { AppLayout } from '../layouts/AppLayout';
 import { Card } from './ui/Card';
 import { DashboardOverview } from '../features/dashboard/DashboardOverview';
-import { ExpenseList } from '../features/ledger/ExpenseList';
+import { ExpenseList } from '../features/transaction/ExpenseList';
 import { AIBro } from '../features/chat/AIBro';
 import { ChillZone } from '../features/chill/ChillZone';
 import { GoalsZone } from '../features/goals/GoalsZone';
