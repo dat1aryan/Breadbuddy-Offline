@@ -4,6 +4,7 @@ import {
   Minus, Plus, Pipette, PaintBucket, Type,
   AlignLeft, AlignCenter, AlignRight, Bold, Italic, Underline,
   PenTool, Highlighter, Sparkles, Feather, Wind, Star, Gamepad2, Palette, Disc,
+  Maximize2, X,
 } from "lucide-react";
 
 /* ── Brush types ────────────────────────────────────────────── */
@@ -74,24 +75,36 @@ let _hue = 0;
 function nextRainbow() { _hue = (_hue + 3) % 360; return `hsl(${_hue},100%,60%)`; }
 function getCanvasBg() { return "#FFFFFF"; }
 
+
+
 /* ── Component ─────────────────────────────────────────────── */
 export function DoodleZone() {
   const canvasRef    = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const fullscreenRef = useRef<HTMLDivElement>(null);
 
-  /* ── Drawing states ── */
+  /* ── Welcome / fullscreen state ── */
+  const [started, setStarted] = useState(false);
+
+  /* ── Active Tool Single Source of Truth ── */
+  type ActiveTool = "brush" | "eraser" | "fill" | "text" | "eyedropper";
+  const [activeTool, setActiveTool] = useState<ActiveTool>("brush");
   const [brush, setBrush]           = useState<BrushId>("pen");
   const [color, setColor]           = useState("#000000");
   const [size, setSize]             = useState(6);
   const [drawing, setDrawing]       = useState(false);
   const [history, setHistory]       = useState<ImageData[]>([]);
   const [future, setFuture]         = useState<ImageData[]>([]);
-  const [eyedropper, setEyedropper] = useState(false);
-  const [isFill, setIsFill]         = useState(false);
-  const [isText, setIsText]         = useState(false);
   const [customColors, setCustomColors] = useState<string[]>([]);
   const [cursorPt, setCursorPt]     = useState<{ x: number; y: number } | null>(null);
   const prevBrushRef                = useRef<BrushId>("pen");
+  const prevToolRef                 = useRef<ActiveTool>("brush");
+
+  /* ── Computed derived tool flags ── */
+  const isText       = activeTool === "text";
+  const isFill       = activeTool === "fill";
+  const eyedropper   = activeTool === "eyedropper";
+  const isEraser     = activeTool === "eraser";
 
   /* ── Text object states ── */
   const [textObjects, setTextObjects]   = useState<TextObject[]>([]);
@@ -122,8 +135,16 @@ export function DoodleZone() {
     ctx.fillRect(0, 0, c.width, c.height);
   }
 
-  function addCustomColor(c: string) {
+  function pickColor(c: string) {
     setColor(c);
+    if (activeTool === "eyedropper") {
+      const targetTool = (prevBrushRef.current === "eraser" || prevToolRef.current === "eraser") ? "eraser" : "brush";
+      selectTool(targetTool, prevBrushRef.current);
+    }
+  }
+
+  function addCustomColor(c: string) {
+    pickColor(c);
     setCustomColors(prev => {
       if (prev.includes(c)) return prev;
       if (prev.length < 10) return [...prev, c];
@@ -572,9 +593,10 @@ export function DoodleZone() {
       e.preventDefault();
       const pt = toPt(e);
       const px = ctx.getImageData(Math.max(0,Math.round(pt.x)), Math.max(0,Math.round(pt.y)), 1, 1).data;
-      setColor(`#${[px[0],px[1],px[2]].map(v=>v.toString(16).padStart(2,"0")).join("")}`);
-      setEyedropper(false);
-      setBrush(prevBrushRef.current);
+      const sampledHex = `#${[px[0],px[1],px[2]].map(v=>v.toString(16).padStart(2,"0")).join("")}`;
+      setColor(sampledHex);
+      const targetTool = (prevBrushRef.current === "eraser" || prevToolRef.current === "eraser") ? "eraser" : "brush";
+      selectTool(targetTool, prevBrushRef.current);
       return;
     }
     if (isFill) {
@@ -612,25 +634,140 @@ export function DoodleZone() {
     setCursorPt(null); setDrawing(false); lastPt.current = null;
   }, []);
 
-  /* ── Switch tool: bake text objects ── */
-  function activateTool(action: () => void) {
+  /* ── Switch tool: single source of truth ── */
+  function selectTool(tool: ActiveTool, bId?: BrushId) {
     if (textObjects.length > 0) bakeAllTextObjects();
     setSelectedTextId(null);
     setTextMode("idle");
-    action();
+
+    if (tool === "eyedropper" && activeTool !== "eyedropper") {
+      prevToolRef.current = activeTool;
+      prevBrushRef.current = brush;
+    }
+
+    if (bId) {
+      setBrush(bId);
+    }
+    setActiveTool(tool);
   }
 
   /* ── Computed values ── */
-  const isEraser    = brush === "eraser";
   const canUndo     = history.length > 0;
   const canRedo     = future.length > 0;
   const isWhiteColor = color.toUpperCase() === "#FFFFFF" || color.toUpperCase() === "#FFF";
   const cursorColor = isWhiteColor ? "#000000" : color;
   const selectedObj = textObjects.find(o => o.id === selectedTextId) ?? null;
 
+  /* ── Fullscreen enter/exit ── */
+  function enterFullscreen() {
+    setStarted(true);
+    fullscreenRef.current?.requestFullscreen?.().catch(() => {});
+  }
+
+  function exitFullscreen() {
+    setStarted(false);
+    if (document.fullscreenElement) {
+      document.exitFullscreen().catch(() => {});
+    }
+  }
+
+  useEffect(() => {
+    const handler = () => {
+      if (!document.fullscreenElement) {
+        setStarted(false);
+      }
+    };
+    document.addEventListener("fullscreenchange", handler);
+    return () => document.removeEventListener("fullscreenchange", handler);
+  }, []);
+
+  /* ── Welcome Splash (Gamified Arcade & Data-Abstract Studio) ── */
+  if (!started) {
+    return (
+      <div className="relative flex flex-col items-center justify-center select-none overflow-hidden rounded-bb-sm border-2 border-bb-border bg-bb-surface p-4"
+        style={{ height: "calc(100vh - 200px)", minHeight: "480px", maxHeight: "780px" }}>
+
+        {/* Abstract Blueprint Coordinate Grid */}
+        <div className="absolute inset-0 pointer-events-none opacity-30"
+          style={{
+            backgroundImage: "radial-gradient(circle, var(--color-bb-border, #3F375E) 1.5px, transparent 1.5px)",
+            backgroundSize: "24px 24px"
+          }}/>
+
+        {/* Abstract Corner Telemetry Markers */}
+        <div className="absolute top-4 left-4 text-[10px] font-mono font-bold text-bb-text-muted/60 uppercase tracking-widest pointer-events-none hidden sm:block">
+          SYS // CHILL_STUDIO.DOODLE_V2
+        </div>
+        <div className="absolute top-4 right-4 flex items-center gap-2 text-[10px] font-mono font-bold text-bb-lime bg-bb-bg border border-bb-border px-2.5 py-1 rounded-bb-xs shadow-[1px_1px_0px_#000] pointer-events-none">
+          <span className="w-2 h-2 rounded-full bg-bb-lime animate-pulse"/>
+          STUDIO ENGINE READY
+        </div>
+        <div className="absolute bottom-4 left-4 text-[10px] font-mono text-bb-text-muted/40 uppercase tracking-widest pointer-events-none hidden sm:block">
+          RESOLUTION: FREEFORM 2D
+        </div>
+        <div className="absolute bottom-4 right-4 text-[10px] font-mono text-bb-text-muted/40 uppercase tracking-widest pointer-events-none hidden sm:block">
+          GPU: ACCELERATED 60FPS
+        </div>
+
+        {/* Center Gamified Arcade Studio Launcher Card */}
+        <div className="relative flex flex-col items-center gap-6 px-8 py-8 md:px-12 md:py-10 z-10 max-w-md text-center bg-bb-bg border-2 border-black rounded-bb-sm shadow-[6px_6px_0px_#000]">
+          
+          {/* Studio Icon Badge */}
+          <div className="relative">
+            <div className="w-14 h-14 rounded-bb-xs border-2 border-black bg-bb-violet text-white flex items-center justify-center shadow-[4px_4px_0px_#000]">
+              <Palette size={26}/>
+            </div>
+            <div className="absolute -bottom-2 -right-2 px-1.5 py-0.5 rounded-bb-xs border border-black bg-bb-lime text-bb-lime-fg text-[9px] font-black font-mono shadow-[1px_1px_0px_#000]">
+              2D CANVAS
+            </div>
+          </div>
+
+          {/* Header Title */}
+          <div className="space-y-1">
+            <h1 className="text-2xl md:text-3xl font-black uppercase tracking-tight text-bb-text-primary leading-none font-display">
+              Doodle Studio
+            </h1>
+            <p className="text-xs text-bb-text-secondary font-mono tracking-wide">
+              Freeform Vector & Raster Drawing Sandbox
+            </p>
+          </div>
+
+          {/* Data Telemetry Grid (Abstract Technical Stats) */}
+          <div className="grid grid-cols-3 gap-2 w-full my-1">
+            <div className="flex flex-col items-center p-2.5 rounded-bb-xs bg-bb-surface border border-black text-center shadow-[1.5px_1.5px_0px_#000]">
+              <span className="text-[14px] font-black text-bb-lime font-mono leading-none">9</span>
+              <span className="text-[9px] font-bold text-bb-text-muted uppercase font-mono mt-1">Brushes</span>
+            </div>
+            <div className="flex flex-col items-center p-2.5 rounded-bb-xs bg-bb-surface border border-black text-center shadow-[1.5px_1.5px_0px_#000]">
+              <span className="text-[14px] font-black text-bb-coral font-mono leading-none">2.0</span>
+              <span className="text-[9px] font-bold text-bb-text-muted uppercase font-mono mt-1">3D Text</span>
+            </div>
+            <div className="flex flex-col items-center p-2.5 rounded-bb-xs bg-bb-surface border border-black text-center shadow-[1.5px_1.5px_0px_#000]">
+              <span className="text-[14px] font-black text-bb-violet font-mono leading-none">RAW</span>
+              <span className="text-[9px] font-bold text-bb-text-muted uppercase font-mono mt-1">Export</span>
+            </div>
+          </div>
+
+          {/* Gamified Action Button */}
+          <button
+            id="doodle-zone-start-btn"
+            onClick={enterFullscreen}
+            className="group relative flex items-center justify-center gap-2.5 w-full py-4 px-6 rounded-bb-xs border-2 border-black bg-bb-lime text-bb-lime-fg font-black uppercase tracking-widest text-xs md:text-sm font-mono shadow-[4px_4px_0px_#000] hover:bg-bb-violet hover:text-white hover:shadow-[2px_2px_0px_#000] hover:translate-x-[2px] hover:translate-y-[2px] transition-all cursor-pointer active:shadow-none active:translate-x-[4px] active:translate-y-[4px]">
+            <Maximize2 size={16} className="group-hover:scale-110 transition-transform"/>
+            [ PRESS START TO DRAW ]
+          </button>
+
+          <p className="text-[10px] text-bb-text-muted font-mono uppercase tracking-wider">
+            Launches fullscreen · Press <kbd className="px-1 py-0.5 bg-bb-surface border border-bb-border rounded text-bb-text-secondary font-bold">ESC</kbd> to exit
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   /* ── Render ── */
   return (
-    <div className="flex flex-col gap-3 select-none" style={{ height: "calc(100vh - 200px)", minHeight: "480px", maxHeight: "780px" }}>
+    <div ref={fullscreenRef} className="flex flex-col gap-3 select-none bg-bb-bg" style={{ width: "100vw", height: "100dvh", position: "fixed", inset: 0, zIndex: 9999 }}>
 
       {/* ── Text Formatting Toolbar (only when editing) ── */}
       {isText && textMode === "editing" && selectedObj && (
@@ -751,7 +888,7 @@ export function DoodleZone() {
           </button>
         </div>
         <div className="w-px h-6 bg-bb-border"/>
-        <button onClick={() => activateTool(() => setBrush(b => b === "eraser" ? "pen" : "eraser"))} title="Eraser"
+        <button onClick={() => selectTool(activeTool === "eraser" ? "brush" : "eraser", activeTool === "eraser" ? "pen" : "eraser")} title="Eraser"
           className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-bb-xs border-2 text-[11px] font-bold uppercase tracking-wide font-mono transition-all ${
             isEraser ? "bg-bb-coral text-bb-coral-fg border-black shadow-[2px_2px_0px_#000]"
               : "border-bb-border bg-bb-bg text-bb-text-muted hover:border-bb-coral hover:text-bb-coral"}`}>
@@ -772,12 +909,7 @@ export function DoodleZone() {
         <div className="w-px h-6 bg-bb-border"/>
 
         {/* Eyedropper */}
-        <button onClick={() => {
-          if (!eyedropper) prevBrushRef.current = brushRef.current;
-          setEyedropper(v => !v); setIsFill(false);
-          if (isText) bakeAllTextObjects();
-          setIsText(false); setSelectedTextId(null); setTextMode("idle");
-        }} title="Color Picker"
+        <button onClick={() => selectTool(activeTool === "eyedropper" ? "brush" : "eyedropper")} title="Color Picker"
           className={`flex items-center justify-center w-8 h-8 rounded-bb-xs border-2 transition-colors ${
             eyedropper ? "bg-bb-violet text-bb-violet-fg border-black shadow-[2px_2px_0px_#000]"
               : "border-bb-border bg-bb-bg text-bb-text-muted hover:border-bb-violet hover:text-bb-violet"}`}>
@@ -785,7 +917,7 @@ export function DoodleZone() {
         </button>
 
         {/* Fill */}
-        <button onClick={() => { activateTool(() => { setIsFill(v => !v); setEyedropper(false); }); }} title="Fill area"
+        <button onClick={() => selectTool(activeTool === "fill" ? "brush" : "fill")} title="Fill area"
           className={`flex items-center justify-center w-8 h-8 rounded-bb-xs border-2 transition-colors ${
             isFill ? "bg-bb-violet text-bb-violet-fg border-black shadow-[2px_2px_0px_#000]"
               : "border-bb-border bg-bb-bg text-bb-text-muted hover:border-bb-violet hover:text-bb-violet"}`}>
@@ -793,16 +925,7 @@ export function DoodleZone() {
         </button>
 
         {/* Text Tool */}
-        <button onClick={() => {
-          if (isText) {
-            bakeAllTextObjects();
-            setIsText(false);
-          } else {
-            if (textObjects.length > 0) bakeAllTextObjects();
-            setEyedropper(false); setIsFill(false);
-            setIsText(true); setTextMode("idle");
-          }
-        }} title="Text Tool (drag to create)"
+        <button onClick={() => selectTool(activeTool === "text" ? "brush" : "text")} title="Text Tool (drag to create)"
           className={`flex items-center justify-center w-8 h-8 rounded-bb-xs border-2 transition-colors ${
             isText ? "bg-bb-violet text-bb-violet-fg border-black shadow-[2px_2px_0px_#000]"
               : "border-bb-border bg-bb-bg text-bb-text-muted hover:border-bb-violet hover:text-bb-violet"}`}>
@@ -821,19 +944,19 @@ export function DoodleZone() {
         {/* Color Palette */}
         <div className="grid grid-cols-10 gap-2 items-center">
           {ROW_1.map(c => (
-            <button key={c} title={c} onClick={() => setColor(c)}
+            <button key={c} title={c} onClick={() => pickColor(c)}
               className={`w-6 h-6 rounded-bb-xs border-2 transition-all ${color.toLowerCase()===c.toLowerCase() ? "border-white scale-110 shadow-md ring-2 ring-white z-10" : "border-black/60 hover:scale-105"}`}
               style={{ backgroundColor: c }}/>
           ))}
           {ROW_2.map(c => (
-            <button key={c} title={c} onClick={() => setColor(c)}
+            <button key={c} title={c} onClick={() => pickColor(c)}
               className={`w-6 h-6 rounded-bb-xs border-2 transition-all ${color.toLowerCase()===c.toLowerCase() ? "border-white scale-110 shadow-md ring-2 ring-white z-10" : "border-black/60 hover:scale-105"}`}
               style={{ backgroundColor: c }}/>
           ))}
           {Array.from({ length: 10 }).map((_, idx) => {
             const cc = customColors[idx];
             return cc ? (
-              <button key={`c-${idx}`} title={cc} onClick={() => setColor(cc)}
+              <button key={`c-${idx}`} title={cc} onClick={() => pickColor(cc)}
                 className={`w-6 h-6 rounded-bb-xs border-2 transition-all ${color.toLowerCase()===cc.toLowerCase() ? "border-white scale-110 shadow-md ring-2 ring-white z-10" : "border-black/60 hover:scale-105"}`}
                 style={{ backgroundColor: cc }}/>
             ) : (
@@ -858,11 +981,11 @@ export function DoodleZone() {
         {/* Brush sidebar */}
         <div className="flex flex-col bg-bb-surface border-2 border-bb-border rounded-bb-sm p-1 overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden shrink-0 w-[84px] divide-y divide-bb-border/40">
           {BRUSHES.map(b => {
-            const isActive = brush === b.id && !eyedropper && !isFill && !isText;
+            const isActive = activeTool === "brush" && brush === b.id;
             const Icon = b.icon;
             return (
               <div key={b.id} className="py-1 first:pt-0 last:pb-0">
-                <button onClick={() => activateTool(() => { setBrush(b.id); setEyedropper(false); setIsFill(false); })} title={b.desc}
+                <button onClick={() => selectTool(b.id === "eraser" ? "eraser" : "brush", b.id)} title={b.desc}
                   className={["w-full flex flex-col items-center gap-1.5 py-2 rounded-bb-xs border-2 text-center transition-all",
                     isActive
                       ? "bg-bb-violet border-black shadow-[2px_2px_0px_#000]"
@@ -1114,6 +1237,22 @@ export function DoodleZone() {
           />
         </div>
       </div>
+
+      {/* ── Exit fullscreen button ── */}
+      <button
+        onClick={exitFullscreen}
+        title="Exit fullscreen (Esc)"
+        className="fixed top-4 right-4 z-[99999] flex items-center gap-1.5 px-3 py-1.5 rounded-bb-xs border-2 border-bb-border bg-bb-surface text-bb-text-muted text-[11px] font-bold font-mono uppercase tracking-wide shadow-[2px_2px_0px_#000] hover:border-bb-coral hover:text-bb-coral transition-all">
+        <X size={12}/> Exit
+      </button>
     </div>
   );
+}
+
+/* ── Float keyframe (injected once) ── */
+if (typeof document !== "undefined" && !document.getElementById("doodle-float-style")) {
+  const s = document.createElement("style");
+  s.id = "doodle-float-style";
+  s.textContent = `@keyframes float { from { transform: translateY(0px) rotate(var(--r, 0deg)); } to { transform: translateY(-8px) rotate(var(--r, 0deg)); } }`;
+  document.head.appendChild(s);
 }
